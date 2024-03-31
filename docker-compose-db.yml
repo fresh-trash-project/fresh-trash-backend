@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  fresh-trash-database:
+    container_name: fresh-trash-database
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: mariadb:10
+    environment:
+      - MARIADB_DATABASE=fresh_trash
+      - MARIADB_USER=${SPRING_DATASOURCE_USER}
+      - MARIADB_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${SPRING_DATASOURCE_ROOT_PASSWORD}
+    volumes:
+      - ./database/conf.d:/etc/mysql/conf.d
+      - ./database/initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "3307:3307"
