@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Getter
 @ToString(callSuper = true)
-@Table(name = "waste")
+@Table(name = "wastes")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
