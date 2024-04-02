@@ -1,5 +1,7 @@
 package freshtrash.freshtrashbackend.service;
 
+import freshtrash.freshtrashbackend.exception.MailException;
+import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,28 +12,46 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MailService implements MailServiceInterface{
+public class MailService implements MailServiceInterface {
     private final JavaMailSender mailSender;
+    private final RedisService redisService;
+    public static final String AUTH_SUCCESS = "AuthSuccess";
 
     @Override
-    public void sendMailWithCode(String email, String subject, String text) {
+    public void sendMailWithCode(String email, String subject, String code) {
+        String text = "fresh-trash 메일 인증 코드입니다. <br/>인증코드:" + code;
         sendMail(email, subject, text);
-  }
-
-  public void sendMail(String toMail, String subject, String text) {
-      MimeMessage mimeMessage = mailSender.createMimeMessage();
-
-    try {
-      MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-      mimeMessageHelper.setTo(toMail);
-      mimeMessageHelper.setSubject(subject);
-      mimeMessageHelper.setText(text, true);
-      mailSender.send(mimeMessage);
-    } catch (Exception e) {
-      log.error(e.getMessage());
+        redisService.saveEmailVerificationCode(email, code, 10);
+        log.info("reids 에 code 저장 ");
     }
-  }
 
+    @Override
+    public boolean verifyEmailCode(String email, String code) {
+        String authCode = redisService.getData(email);
+        if (code.length() == 0) {
+            throw new MailException(ErrorCode.AUTH_CODE_UNMATCHED);
+        }
 
+        if (!authCode.equals(code)) {
+            throw new MailException(ErrorCode.AUTH_CODE_UNMATCHED);
+        }
 
+        // 인증완료 redis 저장
+        redisService.saveEmailVerificationCode(email, AUTH_SUCCESS, 300);
+        return true;
+    }
+
+    public void sendMail(String toMail, String subject, String text) {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+            mimeMessageHelper.setTo(toMail);
+            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setText(text, true);
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
 }
