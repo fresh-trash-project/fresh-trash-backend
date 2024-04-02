@@ -16,3 +16,19 @@ services:
       - ./database/initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "3307:3307"
+  fresh-trash-redis:
+    container_name: fresh-trash-redis
+    build:
+      dockerfile: Dockerfile
+      context: ./database/redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+
+
