@@ -34,13 +34,13 @@ public class Waste extends AuditingAt implements Persistable<Long> {
     private String content;
 
     @Column(nullable = false)
-    private Integer wastePrice;
+    private int wastePrice;
 
     @Column(nullable = false)
-    private Integer likeCount;
+    private int likeCount;
 
     @Column(nullable = false)
-    private Integer viewCount;
+    private int viewCount;
 
     @Column(nullable = false)
     private String fileName;
