@@ -1,9 +1,10 @@
-package freshtrash.freshtrashbackend.service;
+package freshtrash.freshtrashbackend.service.impl;
 
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.repository.WasteRepository;
+import freshtrash.freshtrashbackend.service.WasteServiceInterface;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
