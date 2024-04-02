@@ -31,4 +31,14 @@ public class WasteApi {
         WasteDto wasteDto = wasteService.addWaste(imgFile, wasteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(wasteDto);
     }
+
+    /**
+     * 폐기물 삭제
+     */
+    @DeleteMapping("/{wasteId}")
+    public ResponseEntity<Void> deleteWaste(@PathVariable Long wasteId) {
+        // TODO: 작성자와 관리자만 삭제할 수 있음
+        wasteService.deleteWaste(wasteId);
+        return ResponseEntity.ok(null);
+    }
 }

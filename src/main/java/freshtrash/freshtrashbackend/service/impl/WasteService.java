@@ -37,4 +37,9 @@ public class WasteService implements WasteServiceInterface {
         fileService.uploadFile(imgFile, savedFileName);
         return WasteDto.fromEntity(savedWaste);
     }
+
+    @Override
+    public void deleteWaste(Long wasteId) {
+        wasteRepository.deleteById(wasteId);
+    }
 }
