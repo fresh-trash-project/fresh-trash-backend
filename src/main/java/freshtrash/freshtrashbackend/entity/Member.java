@@ -1,28 +1,28 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.entity.constants.LoginType;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.springframework.data.domain.Persistable;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="members")
+@Table(name = "members")
 @Getter
-@Setter
-@ToString
-@EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(of = "id")
-public class Member implements Persistable<Long> {
+@ToString(callSuper = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@TypeDef(name = "json", typeClass = JsonType.class)
+public class Member extends AuditingAt implements Persistable<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(nullable = false)
@@ -34,7 +34,8 @@ public class Member implements Persistable<Long> {
     @Column(nullable = false)
     private String nickname;
 
-    @Embedded
+    @Type(type = "json")
+    @Column(columnDefinition = "longtext")
     private Address address;
 
     @Column
@@ -52,13 +53,16 @@ public class Member implements Persistable<Long> {
     @Column(nullable = false)
     private AccountStatus accountStatus;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
-
-    public Member(Long id, String email, double rating, String nickname, String fileName, LoginType loginType, UserRole userRole, AccountStatus accountStatus, LocalDateTime createdAt, LocalDateTime modifiedAt, Address address) {
+    public Member(
+            Long id,
+            String email,
+            double rating,
+            String nickname,
+            String fileName,
+            LoginType loginType,
+            UserRole userRole,
+            AccountStatus accountStatus,
+            Address address) {
         this.id = id;
         this.email = email;
         this.rating = rating;
@@ -67,8 +71,6 @@ public class Member implements Persistable<Long> {
         this.loginType = loginType;
         this.userRole = userRole;
         this.accountStatus = accountStatus;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
         this.address = address;
     }
 
@@ -82,4 +84,3 @@ public class Member implements Persistable<Long> {
         return id == null;
     }
 }
-
