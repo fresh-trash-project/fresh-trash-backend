@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.repository.WasteRepository;
+import freshtrash.freshtrashbackend.service.FileServiceInterface;
 import freshtrash.freshtrashbackend.service.WasteServiceInterface;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,15 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class WasteService implements WasteServiceInterface {
     private final WasteRepository wasteRepository;
+    private final FileServiceInterface fileService;
 
     @Override
-    public WasteDto addWaste(MultipartFile modelFile, WasteRequest wasteRequest) {
+    public WasteDto addWaste(MultipartFile imgFile, WasteRequest wasteRequest) {
         // TODO: 유저 정보 추가
-        // TODO: 파일 저장 로직 추가
-        Waste waste = wasteRepository.save(
-                wasteRequest.toEntity(FileUtils.generateUniqueFileName(modelFile.getOriginalFilename())));
+        String savedFileName = FileUtils.generateUniqueFileName(imgFile.getOriginalFilename());
+        Waste waste = wasteRepository.save(wasteRequest.toEntity(savedFileName));
+        // 이미지 파일 저장
+        fileService.uploadFile(imgFile, savedFileName);
         return WasteDto.fromEntity(waste);
     }
 }
