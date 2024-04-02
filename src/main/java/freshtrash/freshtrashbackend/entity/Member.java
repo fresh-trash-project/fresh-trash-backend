@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode(of = "id")
 public class Member implements Persistable<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
