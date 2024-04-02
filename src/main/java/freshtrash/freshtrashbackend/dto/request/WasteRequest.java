@@ -18,6 +18,6 @@ public record WasteRequest(
         @NotNull Integer wastePrice,
         @NotNull Address address) {
     public Waste toEntity(String fileName) {
-        return Waste.of(title, content, wastePrice, fileName, wasteCategory, wasteStatus, sellStatus, address);
+        return Waste.of(title, content, wastePrice, fileName, wasteCategory, wasteStatus, sellStatus, address.allBlank() ? null : address);
     }
 }

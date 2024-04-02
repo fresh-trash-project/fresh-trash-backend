@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @NoArgsConstructor
@@ -22,5 +23,9 @@ public class Address {
 
     public static Address of(String zipcode, String state, String city, String district, String detail) {
         return new Address(zipcode, state, city, district, detail);
+    }
+
+    public boolean allBlank() {
+        return StringUtils.isAllBlank(this.zipcode, this.state, this.city, this.district, this.detail);
     }
 }
