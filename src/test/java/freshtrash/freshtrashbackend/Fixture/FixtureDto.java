@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 
 public class FixtureDto {
 
+    public static WasteRequest createWasteRequest(String title, String content, WasteCategory wasteCategory, WasteStatus wasteStatus, SellStatus sellStatus, Integer wastePrice, Address address) {
+        return new WasteRequest(title, content, wasteCategory, wasteStatus, sellStatus, wastePrice, address.allBlank() ? null : address);
+    }
+
     public static WasteRequest createWasteRequest() {
         return new WasteRequest(
                 "title",

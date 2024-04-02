@@ -5,9 +5,15 @@ import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.entity.Address;
+import freshtrash.freshtrashbackend.entity.constants.SellStatus;
+import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
+import freshtrash.freshtrashbackend.entity.constants.WasteStatus;
 import freshtrash.freshtrashbackend.service.impl.WasteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -51,7 +57,59 @@ class WasteApiTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("title"))
-                .andExpect(jsonPath("$.content").value("content"));
+                .andExpect(jsonPath("$.content").value("content"))
+                .andExpect(jsonPath("$.wastePrice").value(0))
+                .andExpect(jsonPath("$.likeCount").value(0))
+                .andExpect(jsonPath("$.viewCount").value(0))
+                .andExpect(jsonPath("$.fileName").value("test.png"))
+                .andExpect(jsonPath("$.wasteCategory").value("BEAUTY"))
+                .andExpect(jsonPath("$.wasteStatus").value("BEST"))
+                .andExpect(jsonPath("$.sellStatus").value("CLOSE"));
+        // then
+    }
+
+    @DisplayName("어느 하나라도 입력되지 않았을 경우 폐기물 등록 실패")
+    @ParameterizedTest
+    @CsvSource(
+            value = {
+                ", content, CLOTHING, BEST, CLOSE, 0, 12345, state, city, district, detail",
+                "title, , CLOTHING, BEST, CLOSE, 0, 12345, state, city, district, detail",
+                "title, content, , BEST, CLOSE, 0, 12345, state, city, district, detail",
+                "title, content, CLOTHING, , CLOSE, 0, 12345, state, city, district, detail",
+                "title, content, CLOTHING, BEST, , 0, 12345, state, city, district, detail",
+                "title, content, CLOTHING, BEST, CLOSE, , 12345, state, city, district, detail",
+                "title, content, CLOTHING, BEST, CLOSE, 0, , , , , ",
+            })
+    void addWaste_Failed(
+            String title,
+            String content,
+            WasteCategory wasteCategory,
+            WasteStatus wasteStatus,
+            SellStatus sellStatus,
+            Integer wastePrice,
+            String zipcode,
+            String state,
+            String city,
+            String district,
+            String detail)
+            throws Exception {
+        // given
+        MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
+        WasteRequest wasteRequest = FixtureDto.createWasteRequest(
+                title,
+                content,
+                wasteCategory,
+                wasteStatus,
+                sellStatus,
+                wastePrice,
+                Address.of(zipcode, state, city, district, detail));
+        // when
+        mvc.perform(multipart(HttpMethod.POST, "/api/v1/wastes")
+                        .file("imgFile", imgFile.getBytes())
+                        .file(new MockMultipartFile(
+                                "wasteRequest", "", "application/json", objectMapper.writeValueAsBytes(wasteRequest)))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
         // then
     }
 }
