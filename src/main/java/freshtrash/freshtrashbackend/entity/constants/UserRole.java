@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.entity.constants;
 
 public enum UserRole {
-    USER
+    USER,
+    ADMIN
 }
