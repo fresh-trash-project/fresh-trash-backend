@@ -21,28 +21,31 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String email;
 
-    @Column
+    @Column(nullable = false)
     private double rating;
 
-    @Column
+    @Column(nullable = false)
     private String nickname;
+
+    @Embedded
+    private Address address;
 
     @Column
     private String fileName;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private LoginType loginType;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private UserRole userRole;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private AccountStatus accountStatus;
 
     @CreatedDate
@@ -50,9 +53,6 @@ public class Member {
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
-
-    @Embedded
-    private Address address;
 
     public Member(Long id, String email, double rating, String nickname, String fileName, LoginType loginType, UserRole userRole, AccountStatus accountStatus, LocalDateTime createdAt, LocalDateTime modifiedAt, Address address) {
         this.id = id;
