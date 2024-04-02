@@ -3,9 +3,7 @@ package freshtrash.freshtrashbackend.entity;
 import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.entity.constants.LoginType;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -15,8 +13,9 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Table(name="members")
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -55,5 +54,19 @@ public class Member {
 
     @Embedded
     private Address address;
+
+    public Member(Long id, String email, double rating, String nickname, String fileName, LoginType loginType, UserRole userRole, AccountStatus accountStatus, LocalDateTime createdAt, LocalDateTime modifiedAt, Address address) {
+        this.id = id;
+        this.email = email;
+        this.rating = rating;
+        this.nickname = nickname;
+        this.fileName = fileName;
+        this.loginType = loginType;
+        this.userRole = userRole;
+        this.accountStatus = accountStatus;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+        this.address = address;
+    }
 }
 
