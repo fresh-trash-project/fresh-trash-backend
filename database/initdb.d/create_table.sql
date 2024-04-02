@@ -1,4 +1,4 @@
-﻿CREATE TABLE `waste`
+﻿CREATE TABLE `wastes`
 (
     `id`             bigint AUTO_INCREMENT NOT NULL,
     `title`          varchar(255)          NOT NULL,
