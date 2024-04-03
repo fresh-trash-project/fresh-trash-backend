@@ -1,0 +1,2 @@
+local-file:
+  absolute-path: ${LOCAL_FILE_ABS_PATH} # 파일 저장 경로

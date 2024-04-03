@@ -4,7 +4,9 @@ spring:
     group:
       local:
         - common
+        - file
       test:
+        - file
 
 ---
 
