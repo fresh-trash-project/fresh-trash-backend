@@ -40,6 +40,16 @@ public class WasteService implements WasteServiceInterface {
 
     @Override
     public void deleteWaste(Long wasteId) {
+        String fileName = findFileNameOfWaste(wasteId);
         wasteRepository.deleteById(wasteId);
+        // 파일 삭제
+        fileService.deleteFileIfExists(fileName);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public String findFileNameOfWaste(Long wasteId) {
+        return wasteRepository.findFileNameById(wasteId)
+                .orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 }
