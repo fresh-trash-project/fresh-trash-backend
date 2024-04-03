@@ -4,12 +4,17 @@ import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.service.WasteServiceInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
 @RequestMapping("/api/v1/wastes")
@@ -24,6 +29,16 @@ public class WasteApi {
     public ResponseEntity<WasteDto> getWaste(@PathVariable Long wasteId) {
         WasteDto wasteDto = wasteService.getWasteDto(wasteId);
         return ResponseEntity.ok(wasteDto);
+    }
+
+    /**
+     * 폐기물 목록 조회
+     */
+    @GetMapping
+    public ResponseEntity<Page<WasteDto>> getWastes(
+            @PageableDefault(size = 5, sort = "createdAt", direction = DESC) Pageable pageable) {
+        Page<WasteDto> wastes = wasteService.getWastes(pageable);
+        return ResponseEntity.ok(wastes);
     }
 
     /**

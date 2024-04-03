@@ -10,6 +10,8 @@ import freshtrash.freshtrashbackend.service.FileServiceInterface;
 import freshtrash.freshtrashbackend.service.WasteServiceInterface;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,14 +28,18 @@ public class WasteService implements WasteServiceInterface {
     @Transactional(readOnly = true)
     @Override
     public Waste getWasteEntity(Long wasteId) {
-        return wasteRepository.findById(wasteId)
-                .orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
+        return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 
     @Transactional(readOnly = true)
     @Override
     public WasteDto getWasteDto(Long wasteId) {
         return WasteDto.fromEntity(getWasteEntity(wasteId));
+    }
+
+    @Override
+    public Page<WasteDto> getWastes(Pageable pageable) {
+        return wasteRepository.findAll(pageable).map(WasteDto::fromEntity);
     }
 
     @Override
@@ -62,7 +68,8 @@ public class WasteService implements WasteServiceInterface {
     @Transactional(readOnly = true)
     @Override
     public String findFileNameOfWaste(Long wasteId) {
-        return wasteRepository.findFileNameById(wasteId)
+        return wasteRepository
+                .findFileNameById(wasteId)
                 .orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 }
