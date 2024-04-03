@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.config;
 
-import freshtrash.freshtrashbackend.dto.properties.RedisInfoProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -15,7 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @RequiredArgsConstructor
 public class RedisConfig {
-    private final RedisInfoProperties redisInfoProperties;
+    private final RedisProperties redisProperties;
 
     @Bean
     public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
@@ -33,7 +33,7 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(
-                new RedisStandaloneConfiguration(redisInfoProperties.host(), redisInfoProperties.port()));
+                new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort()));
     }
 
     @Bean
