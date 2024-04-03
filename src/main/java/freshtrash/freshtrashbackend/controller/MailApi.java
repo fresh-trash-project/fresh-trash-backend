@@ -3,7 +3,7 @@ package freshtrash.freshtrashbackend.controller;
 import freshtrash.freshtrashbackend.dto.request.EmailRequest;
 import freshtrash.freshtrashbackend.dto.response.EmailResponse;
 import freshtrash.freshtrashbackend.dto.response.MailApiResponse;
-import freshtrash.freshtrashbackend.service.MailServiceInterface;
+import freshtrash.freshtrashbackend.service.impl.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,11 @@ import java.util.UUID;
 @RequestMapping("/api/v1/mail")
 @RequiredArgsConstructor
 public class MailApi {
-    private final MailServiceInterface mailService;
+    private final MailService mailService;
 
+    /**
+     * 인증코드 메일 발송
+     */
     @PostMapping("/send-code")
     public ResponseEntity<EmailResponse> sendMailWithCode(@RequestBody @Valid EmailRequest request) {
         // TODO 중복된 이메일 체크
@@ -32,10 +35,13 @@ public class MailApi {
         return ResponseEntity.ok(EmailResponse.of(code));
     }
 
+    /**
+     * 이메일 인증코드 확인
+     */
     @PostMapping("/verify")
     public ResponseEntity<MailApiResponse> verifyEmail(@RequestBody @Valid EmailRequest request) {
         boolean result = mailService.verifyEmailCode(request.email(), request.code());
 
-        return ResponseEntity.ok(MailApiResponse.of("isVerifiedEmail: " + result));
+        return ResponseEntity.ok(MailApiResponse.of(result));
     }
 }

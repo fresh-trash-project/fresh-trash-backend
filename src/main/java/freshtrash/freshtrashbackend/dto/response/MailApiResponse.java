@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.dto.response;
 
-public record MailApiResponse(String data) {
-    public static MailApiResponse of(String data) {
-        return new MailApiResponse(data);
+public record MailApiResponse<T>(T data) {
+    public static <T> MailApiResponse<T> of(T data) {
+        return new MailApiResponse<>(data);
     }
 }
