@@ -2,7 +2,6 @@ package freshtrash.freshtrashbackend.service.impl;
 
 import freshtrash.freshtrashbackend.exception.MailException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.service.MailServiceInterface;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,14 +14,13 @@ import javax.mail.internet.MimeMessage;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MailService implements MailServiceInterface {
+public class MailService {
     private final JavaMailSender mailSender;
     private final RedisService redisService;
     private final int AUTH_CODE_DURATION_MIN = 10;
     private final int AUTH_SUCCESS_DURATION_MIN = 300;
-    public static final String AUTH_SUCCESS = "AuthSuccess";
+    private final String AUTH_SUCCESS = "AuthSuccess";
 
-    @Override
     public void sendMailWithCode(String email, String subject, String code) {
         String text = "fresh-trash 메일 인증 코드입니다. <br/>인증코드:" + code;
         sendMail(email, subject, text);
@@ -30,7 +28,6 @@ public class MailService implements MailServiceInterface {
         log.debug("--reids에 code 저장");
     }
 
-    @Override
     public boolean verifyEmailCode(String email, String code) {
         String authCode = redisService.getData(email);
         if (!StringUtils.hasText(code)) {
