@@ -10,5 +10,5 @@ import javax.validation.constraints.NotBlank;
  * @param port
  */
 @Validated
-@ConfigurationProperties(prefix = "data-redis")
-public record RedisInfoProperties(@NotBlank String host, int port) {}
+@ConfigurationProperties(prefix = "spring.data.redis")
+public record RedisInfoProperties(@NotBlank String host, Integer port) {}
