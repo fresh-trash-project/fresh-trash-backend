@@ -23,6 +23,19 @@ public class WasteService implements WasteServiceInterface {
     private final WasteRepository wasteRepository;
     private final FileServiceInterface fileService;
 
+    @Transactional(readOnly = true)
+    @Override
+    public Waste getWasteEntity(Long wasteId) {
+        return wasteRepository.findById(wasteId)
+                .orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public WasteDto getWasteDto(Long wasteId) {
+        return WasteDto.fromEntity(getWasteEntity(wasteId));
+    }
+
     @Override
     public WasteDto addWaste(MultipartFile imgFile, WasteRequest wasteRequest) {
         // TODO: 유저 정보 추가

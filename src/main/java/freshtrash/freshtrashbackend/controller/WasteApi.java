@@ -18,6 +18,15 @@ public class WasteApi {
     private final WasteServiceInterface wasteService;
 
     /**
+     * 폐기물 단일 조회
+     */
+    @GetMapping("{wasteId}")
+    public ResponseEntity<WasteDto> getWaste(@PathVariable Long wasteId) {
+        WasteDto wasteDto = wasteService.getWasteDto(wasteId);
+        return ResponseEntity.ok(wasteDto);
+    }
+
+    /**
      * 폐기물 등록
      */
     @PostMapping
