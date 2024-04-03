@@ -18,20 +18,22 @@ import javax.mail.internet.MimeMessage;
 public class MailService implements MailServiceInterface {
     private final JavaMailSender mailSender;
     private final RedisService redisService;
+    private final int AUTH_CODE_DURATION_MIN = 10;
+    private final int AUTH_SUCCESS_DURATION_MIN = 300;
     public static final String AUTH_SUCCESS = "AuthSuccess";
 
     @Override
     public void sendMailWithCode(String email, String subject, String code) {
         String text = "fresh-trash 메일 인증 코드입니다. <br/>인증코드:" + code;
         sendMail(email, subject, text);
-        redisService.saveEmailVerificationCode(email, code, 10);
+        redisService.saveEmailVerificationCode(email, code, AUTH_CODE_DURATION_MIN);
         log.debug("--reids에 code 저장");
     }
 
     @Override
     public boolean verifyEmailCode(String email, String code) {
         String authCode = redisService.getData(email);
-        if (StringUtils.hasText(code)) {
+        if (!StringUtils.hasText(code)) {
             throw new MailException(ErrorCode.EMPTY_AUTH_CODE);
         }
 
@@ -40,7 +42,7 @@ public class MailService implements MailServiceInterface {
         }
 
         // 인증완료 redis 저장
-        redisService.saveEmailVerificationCode(email, AUTH_SUCCESS, 300);
+        redisService.saveEmailVerificationCode(email, AUTH_SUCCESS, AUTH_SUCCESS_DURATION_MIN);
         return true;
     }
 
@@ -54,7 +56,7 @@ public class MailService implements MailServiceInterface {
             mimeMessageHelper.setText(text, true);
             mailSender.send(mimeMessage);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            throw new MailException(ErrorCode.MAIL_SEND_FAIL, e);
         }
     }
 }
