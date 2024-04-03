@@ -1,13 +1,16 @@
-package freshtrash.freshtrashbackend.service;
+package freshtrash.freshtrashbackend.service.impl;
 
 import freshtrash.freshtrashbackend.exception.MailException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-import javax.mail.internet.MimeMessage;
+import freshtrash.freshtrashbackend.service.MailServiceInterface;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import javax.mail.internet.MimeMessage;
 
 @Slf4j
 @Service
@@ -22,14 +25,14 @@ public class MailService implements MailServiceInterface {
         String text = "fresh-trash 메일 인증 코드입니다. <br/>인증코드:" + code;
         sendMail(email, subject, text);
         redisService.saveEmailVerificationCode(email, code, 10);
-        log.info("reids 에 code 저장 ");
+        log.debug("--reids에 code 저장");
     }
 
     @Override
     public boolean verifyEmailCode(String email, String code) {
         String authCode = redisService.getData(email);
-        if (code.length() == 0) {
-            throw new MailException(ErrorCode.AUTH_CODE_UNMATCHED);
+        if (StringUtils.hasText(code)) {
+            throw new MailException(ErrorCode.EMPTY_AUTH_CODE);
         }
 
         if (!authCode.equals(code)) {
