@@ -6,4 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface WasteServiceInterface {
     WasteDto addWaste(MultipartFile modelFile, WasteRequest wasteRequest);
+
+    void deleteWaste(Long wasteId);
+
+    String findFileNameOfWaste(Long wasteId);
 }

@@ -6,10 +6,7 @@ import freshtrash.freshtrashbackend.service.WasteServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -30,5 +27,15 @@ public class WasteApi {
         // TODO: WasteRequest Validation Error Exception Handling
         WasteDto wasteDto = wasteService.addWaste(imgFile, wasteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(wasteDto);
+    }
+
+    /**
+     * 폐기물 삭제
+     */
+    @DeleteMapping("/{wasteId}")
+    public ResponseEntity<Void> deleteWaste(@PathVariable Long wasteId) {
+        // TODO: 작성자와 관리자만 삭제할 수 있음
+        wasteService.deleteWaste(wasteId);
+        return ResponseEntity.ok(null);
     }
 }
