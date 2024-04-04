@@ -29,7 +29,6 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @Column(nullable = false)
     private String email;
 
-    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
