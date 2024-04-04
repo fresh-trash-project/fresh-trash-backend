@@ -2,7 +2,7 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.request.EmailRequest;
 import freshtrash.freshtrashbackend.dto.response.EmailResponse;
-import freshtrash.freshtrashbackend.dto.response.MailApiResponse;
+import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.service.impl.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +39,9 @@ public class MailApi {
      * 이메일 인증코드 확인
      */
     @PostMapping("/verify")
-    public ResponseEntity<MailApiResponse> verifyEmail(@RequestBody @Valid EmailRequest request) {
+    public ResponseEntity<ApiResponse<String>> verifyEmail(@RequestBody @Valid EmailRequest request) {
         boolean result = mailService.verifyEmailCode(request.email(), request.code());
 
-        return ResponseEntity.ok(MailApiResponse.of(result));
+        return ResponseEntity.ok(ApiResponse.of(String.valueOf(result)));
     }
 }
