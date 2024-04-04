@@ -5,6 +5,8 @@ spring:
       local:
         - common
         - file
+        - mail
+
       test:
         - file
 
@@ -34,3 +36,4 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
   sql.init.mode: always
+
