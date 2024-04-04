@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.Fixture;
 
 import freshtrash.freshtrashbackend.dto.WasteDto;
+import freshtrash.freshtrashbackend.dto.constants.SellType;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
@@ -11,8 +12,22 @@ import java.time.LocalDateTime;
 
 public class FixtureDto {
 
-    public static WasteRequest createWasteRequest(String title, String content, WasteCategory wasteCategory, WasteStatus wasteStatus, SellStatus sellStatus, Integer wastePrice, Address address) {
-        return new WasteRequest(title, content, wasteCategory, wasteStatus, sellStatus, wastePrice, address.allBlank() ? null : address);
+    public static WasteRequest createWasteRequest(
+            String title,
+            String content,
+            WasteCategory wasteCategory,
+            WasteStatus wasteStatus,
+            SellStatus sellStatus,
+            Integer wastePrice,
+            Address address) {
+        return new WasteRequest(
+                title,
+                content,
+                wasteCategory,
+                wasteStatus,
+                sellStatus,
+                wastePrice,
+                address.allBlank() ? null : address);
     }
 
     public static WasteRequest createWasteRequest() {
@@ -30,6 +45,7 @@ public class FixtureDto {
         return new WasteDto(
                 "title",
                 "content",
+                SellType.SHARE,
                 0,
                 0,
                 0,
