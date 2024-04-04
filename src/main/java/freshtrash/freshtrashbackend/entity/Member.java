@@ -71,6 +71,7 @@ public class Member extends AuditingAt implements Persistable<Long> {
             Address address) {
         this.id = id;
         this.email = email;
+        this.password = password;
         this.rating = rating;
         this.nickname = nickname;
         this.fileName = fileName;
