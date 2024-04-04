@@ -23,10 +23,12 @@ public class SecurityConfig {
                         .configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
                 )
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers("/public/**").permitAll()
-                        .anyRequest().authenticated()
+                        .antMatchers("/public/**").permitAll() // /public/** 경로는 인증 없이 접근 허용
+                        .antMatchers("/admin/**").hasRole("ADMIN") // /admin/** 경로는 ADMIN 역할을 가진 사용자만 접근 가능
+                        .antMatchers("/user/**").hasRole("USER") // /user/** 경로는 USER 역할을 가진 사용자만 접근 가능
+                        .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
-                .formLogin(withDefaults());
+                .formLogin(withDefaults()); // 폼 기반 인증 활성화
         return http.build();
     }
 
@@ -35,5 +37,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+
 
 
