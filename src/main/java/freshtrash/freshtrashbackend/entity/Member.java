@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.entity.constants.LoginType;
@@ -27,6 +28,10 @@ public class Member extends AuditingAt implements Persistable<Long> {
 
     @Column(nullable = false)
     private String email;
+
+    @JsonIgnore
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false)
     private double rating;
@@ -56,6 +61,7 @@ public class Member extends AuditingAt implements Persistable<Long> {
     public Member(
             Long id,
             String email,
+            String password,
             double rating,
             String nickname,
             String fileName,
