@@ -6,9 +6,9 @@ spring:
         - common
         - file
         - mail
-
       test:
         - file
+        - mail
 
 ---
 
