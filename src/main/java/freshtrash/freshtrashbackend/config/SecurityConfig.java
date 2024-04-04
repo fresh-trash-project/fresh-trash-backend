@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -17,6 +18,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf().disable() // CSRF 보호 비활성화
+                .cors(cors -> cors // CORS 설정 활성화
+                        .configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+                )
                 .authorizeRequests(authorize -> authorize
                         .antMatchers("/public/**").permitAll()
                         .anyRequest().authenticated()
@@ -30,4 +35,5 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+
 
