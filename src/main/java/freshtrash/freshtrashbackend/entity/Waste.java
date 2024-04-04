@@ -27,12 +27,15 @@ public class Waste extends AuditingAt implements Persistable<Long> {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Setter
     @Column(nullable = false)
     private String title;
 
+    @Setter
     @Column(nullable = false, columnDefinition = "text")
     private String content;
 
+    @Setter
     @Column(nullable = false)
     private int wastePrice;
 
@@ -42,21 +45,26 @@ public class Waste extends AuditingAt implements Persistable<Long> {
     @Column(nullable = false)
     private int viewCount;
 
+    @Setter
     @Column(nullable = false)
     private String fileName;
 
+    @Setter
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private WasteCategory wasteCategory;
 
+    @Setter
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private WasteStatus wasteStatus;
 
+    @Setter
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private SellStatus sellStatus;
 
+    @Setter
     @Type(type = "json")
     @Column(columnDefinition = "longtext")
     private Address address;

@@ -1,4 +1,4 @@
-package freshtrash.freshtrashbackend.service.impl;
+package freshtrash.freshtrashbackend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

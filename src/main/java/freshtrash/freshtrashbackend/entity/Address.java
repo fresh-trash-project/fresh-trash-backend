@@ -1,11 +1,13 @@
 package freshtrash.freshtrashbackend.entity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Address {
     private String zipcode;
     private String state;

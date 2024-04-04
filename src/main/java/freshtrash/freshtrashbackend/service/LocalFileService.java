@@ -1,9 +1,8 @@
-package freshtrash.freshtrashbackend.service.impl;
+package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.dto.properties.LocalFileProperties;
 import freshtrash.freshtrashbackend.exception.FileException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.service.FileServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +13,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class LocalFileService implements FileServiceInterface {
+public class LocalFileService implements FileService {
     private final LocalFileProperties localFileProperties;
 
     @Override

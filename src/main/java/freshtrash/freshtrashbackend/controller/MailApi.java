@@ -1,9 +1,9 @@
 package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.request.EmailRequest;
-import freshtrash.freshtrashbackend.dto.response.EmailResponse;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
-import freshtrash.freshtrashbackend.service.impl.MailService;
+import freshtrash.freshtrashbackend.dto.response.EmailResponse;
+import freshtrash.freshtrashbackend.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

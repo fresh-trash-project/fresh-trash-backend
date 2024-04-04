@@ -2,7 +2,7 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
-import freshtrash.freshtrashbackend.service.WasteServiceInterface;
+import freshtrash.freshtrashbackend.service.WasteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +20,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequestMapping("/api/v1/wastes")
 @RequiredArgsConstructor
 public class WasteApi {
-    private final WasteServiceInterface wasteService;
+    private final WasteService wasteService;
 
     /**
      * 폐기물 단일 조회
@@ -53,12 +53,22 @@ public class WasteApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(wasteDto);
     }
 
+    @PutMapping("{wasteId}")
+    public ResponseEntity<WasteDto> updateWaste(
+            @RequestPart MultipartFile imgFile,
+            @RequestPart @Valid WasteRequest wasteRequest,
+            @PathVariable Long wasteId) {
+        // TODO: 작성자 또는 관리자만 삭제할 수 있음
+        WasteDto wasteDto = wasteService.updateWaste(imgFile, wasteRequest, wasteId);
+        return ResponseEntity.ok(wasteDto);
+    }
+
     /**
      * 폐기물 삭제
      */
     @DeleteMapping("/{wasteId}")
     public ResponseEntity<Void> deleteWaste(@PathVariable Long wasteId) {
-        // TODO: 작성자와 관리자만 삭제할 수 있음
+        // TODO: 작성자 또는 관리자만 삭제할 수 있음
         wasteService.deleteWaste(wasteId);
         return ResponseEntity.ok(null);
     }

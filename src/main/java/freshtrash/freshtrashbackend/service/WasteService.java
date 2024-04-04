@@ -1,0 +1,115 @@
+package freshtrash.freshtrashbackend.service;
+
+import freshtrash.freshtrashbackend.dto.WasteDto;
+import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.entity.Waste;
+import freshtrash.freshtrashbackend.exception.WasteException;
+import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.repository.WasteRepository;
+import freshtrash.freshtrashbackend.utils.FileUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Objects;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class WasteService {
+    private final WasteRepository wasteRepository;
+    private final FileService fileService;
+
+    @Transactional(readOnly = true)
+    public Waste getWasteEntity(Long wasteId) {
+        return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
+    }
+
+    @Transactional(readOnly = true)
+    public WasteDto getWasteDto(Long wasteId) {
+        return WasteDto.fromEntity(getWasteEntity(wasteId));
+    }
+
+    public Page<WasteDto> getWastes(Pageable pageable) {
+        return wasteRepository.findAll(pageable).map(WasteDto::fromEntity);
+    }
+
+    public WasteDto addWaste(MultipartFile imgFile, WasteRequest wasteRequest) {
+        // TODO: 유저 정보 추가
+        // 주소가 입력되지 않았을 경우
+        if (Objects.isNull(wasteRequest.address())) throw new WasteException(ErrorCode.EMPTY_ADDRESS);
+        String savedFileName = FileUtils.generateUniqueFileName(imgFile);
+        Waste waste = wasteRequest.toEntity(savedFileName);
+
+        Waste savedWaste = wasteRepository.save(waste);
+        // 이미지 파일 저장
+        fileService.uploadFile(imgFile, savedFileName);
+        return WasteDto.fromEntity(savedWaste);
+    }
+
+    public WasteDto updateWaste(MultipartFile imgFile, WasteRequest wasteRequest, Long wasteId) {
+        Waste savedWaste = getWasteEntity(wasteId);
+
+        // "제목, 본문, 가격, 카테고리, 상품 상태, 판매 상태, 주소"를 수정할 수 있습니다
+        if (isUpdatedArticleData(savedWaste.getTitle(), wasteRequest.title())) {
+            savedWaste.setTitle(wasteRequest.title());
+        }
+        if (isUpdatedArticleData(savedWaste.getContent(), wasteRequest.content())) {
+            savedWaste.setContent(wasteRequest.content());
+        }
+        if (isUpdatedArticleData(savedWaste.getWastePrice(), wasteRequest.wastePrice())) {
+            savedWaste.setWastePrice(wasteRequest.wastePrice());
+        }
+        if (isUpdatedArticleData(savedWaste.getWasteCategory(), wasteRequest.wasteCategory())) {
+            savedWaste.setWasteCategory(wasteRequest.wasteCategory());
+        }
+        if (isUpdatedArticleData(savedWaste.getWasteStatus(), wasteRequest.wasteStatus())) {
+            savedWaste.setWasteStatus(wasteRequest.wasteStatus());
+        }
+        if (isUpdatedArticleData(savedWaste.getSellStatus(), wasteRequest.sellStatus())) {
+            savedWaste.setSellStatus(wasteRequest.sellStatus());
+        }
+        if (isUpdatedArticleData(savedWaste.getAddress(), wasteRequest.address())) {
+            savedWaste.setAddress(wasteRequest.address());
+        }
+
+        // 파일은 유효할 경우에만 수정합니다
+        if (FileUtils.isValid(imgFile)) {
+            String savedFileName = savedWaste.getFileName();
+            String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
+            // 파일 삭제/업로드 후 flush 에서 에러가 발생할 경우를 고려하여 파일명 수정 후 flush 합니다
+            savedWaste.setFileName(updatedFileName);
+            wasteRepository.flush();
+            // 저장된 파일 삭제
+            fileService.deleteFileIfExists(savedFileName);
+            // 수정된 파일 저장
+            fileService.uploadFile(imgFile, updatedFileName);
+        }
+
+        return WasteDto.fromEntity(savedWaste);
+    }
+
+    public void deleteWaste(Long wasteId) {
+        String fileName = findFileNameOfWaste(wasteId);
+        wasteRepository.deleteById(wasteId);
+        // 파일 삭제
+        fileService.deleteFileIfExists(fileName);
+    }
+
+    @Transactional(readOnly = true)
+    public String findFileNameOfWaste(Long wasteId) {
+        return wasteRepository
+                .findFileNameById(wasteId)
+                .orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
+    }
+
+    /**
+     * 데이터가 수정되었는지 확인
+     */
+    private <T> boolean isUpdatedArticleData(T savedData, T updatedData) {
+        return !Objects.equals(savedData, updatedData);
+    }
+}
