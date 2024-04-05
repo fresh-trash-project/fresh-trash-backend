@@ -12,7 +12,8 @@
     `account_status` varchar(255)          NOT NULL,
     `created_at`     datetime              NOT NULL,
     `modified_at`    datetime,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY unique_name (`email`, `nickname`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='멤버';
 
@@ -35,3 +36,15 @@ CREATE TABLE `wastes`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='폐기물';
+
+CREATE TABLE `waste_likes`
+(
+    `id`         bigint AUTO_INCREMENT NOT NULL,
+    `member_id`  bigint                NOT NULL,
+    `waste_id`   bigint                NOT NULL,
+    `created_at` datetime              NOT NULL,
+    PRIMARY KEY (`id`),
+    foreign key (`member_id`) references members (id) on delete cascade,
+    foreign key (`waste_id`) references wastes (id) on delete cascade
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='관심 폐기물';
