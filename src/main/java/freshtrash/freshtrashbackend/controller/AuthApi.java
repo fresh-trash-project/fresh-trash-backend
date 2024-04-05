@@ -2,7 +2,7 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.request.SignUpRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
-import freshtrash.freshtrashbackend.service.AuthService;
+import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +16,11 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthApi {
-    private final AuthService authService;
+    private final MemberService memberService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
-        authService.registerMember(signUpRequest.toEntity());
+        memberService.registerMember(signUpRequest.toEntity());
         return ResponseEntity.ok(ApiResponse.of("you're successfully sign up. you can be login."));
     }
 }
