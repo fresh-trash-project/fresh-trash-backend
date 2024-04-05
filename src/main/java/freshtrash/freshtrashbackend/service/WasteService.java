@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -37,20 +38,20 @@ public class WasteService {
         return wasteRepository.findAll(pageable).map(WasteDto::fromEntity);
     }
 
-    public WasteDto addWaste(MultipartFile imgFile, WasteRequest wasteRequest) {
-        // TODO: 유저 정보 추가
+    public WasteDto addWaste(MultipartFile imgFile, WasteRequest wasteRequest, MemberPrincipal memberPrincipal) {
         // 주소가 입력되지 않았을 경우
         if (Objects.isNull(wasteRequest.address())) throw new WasteException(ErrorCode.EMPTY_ADDRESS);
         String savedFileName = FileUtils.generateUniqueFileName(imgFile);
-        Waste waste = wasteRequest.toEntity(savedFileName);
+        Waste waste = wasteRequest.toEntity(savedFileName, memberPrincipal.id());
 
         Waste savedWaste = wasteRepository.save(waste);
         // 이미지 파일 저장
         fileService.uploadFile(imgFile, savedFileName);
-        return WasteDto.fromEntity(savedWaste);
+        return WasteDto.fromEntity(savedWaste, memberPrincipal);
     }
 
-    public WasteDto updateWaste(MultipartFile imgFile, WasteRequest wasteRequest, Long wasteId) {
+    public WasteDto updateWaste(MultipartFile imgFile, WasteRequest wasteRequest, Long wasteId, MemberPrincipal memberPrincipal) {
+        // TODO: 수정 로직 변경 -> wasteRequest.toEntity() 후 save
         Waste savedWaste = getWasteEntity(wasteId);
 
         // "제목, 본문, 가격, 카테고리, 상품 상태, 판매 상태, 주소"를 수정할 수 있습니다
@@ -89,7 +90,7 @@ public class WasteService {
             fileService.deleteFileIfExists(savedFileName);
         }
 
-        return WasteDto.fromEntity(savedWaste);
+        return WasteDto.fromEntity(savedWaste, memberPrincipal);
     }
 
     public void deleteWaste(Long wasteId) {
@@ -111,5 +112,12 @@ public class WasteService {
      */
     private <T> boolean isUpdatedArticleData(T savedData, T updatedData) {
         return !Objects.equals(savedData, updatedData);
+    }
+
+    /**
+     * 작성자인지 확인
+     */
+    public boolean isWriterOfArticle(Long wasteId, Long memberId) {
+        return wasteRepository.existsByIdAndMember_Id(wasteId, memberId);
     }
 }

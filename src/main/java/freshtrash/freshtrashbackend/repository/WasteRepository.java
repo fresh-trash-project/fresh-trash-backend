@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface WasteRepository extends JpaRepository<Waste, Long> {
     @Query("select w.fileName from Waste w where w.id = ?1")
     Optional<String> findFileNameById(Long wasteId);
+
+    boolean existsByIdAndMember_Id(Long wasteId, Long memberId);
 }
