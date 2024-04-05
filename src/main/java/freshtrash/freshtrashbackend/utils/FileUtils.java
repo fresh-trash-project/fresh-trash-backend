@@ -6,10 +6,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public class FileUtils {
     private static final String EXTENSION_SEPARATOR = ".";
+    private static final Set<String> IMAGE_EXTENSIONS = Set.of("jpeg", "jpg", "png");
 
     /**
      * 확장자 index 반환
@@ -37,10 +39,15 @@ public class FileUtils {
     }
 
     /**
-     * 비어있는 파일인지 호환가능한 파일 형식인지 판단 (비어있을 경우 true 반환)
+     * 비어있는 파일인지 호환가능한 파일 형식인지 판단
      */
     public static boolean isValid(MultipartFile file) {
-        return !isEmpty(file);
+        return !isEmpty(file) && isCompatibleExtension(file);
+    }
+
+    private static boolean isCompatibleExtension(MultipartFile file) {
+        String extension = getExtension(file.getOriginalFilename());
+        return IMAGE_EXTENSIONS.contains(extension.toLowerCase());
     }
 
     /**
