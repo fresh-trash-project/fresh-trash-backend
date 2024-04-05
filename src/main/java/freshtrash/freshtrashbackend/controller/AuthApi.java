@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class AuthApi {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
         authService.registerMember(signUpRequest.toEntity(signUpRequest));
         return ResponseEntity.ok(ApiResponse.of("you're successfully sign up. you can be login."));
     }
