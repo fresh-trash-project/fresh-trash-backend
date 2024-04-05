@@ -2,7 +2,7 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.request.SignUpRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
-import freshtrash.freshtrashbackend.service.impl.AuthService;
+import freshtrash.freshtrashbackend.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
