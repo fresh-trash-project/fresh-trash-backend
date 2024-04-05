@@ -59,7 +59,6 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @PrePersist
     private void prePersist() {
         this.rating = 0;
-        this.fileName = null;
     }
 
     public Member(
