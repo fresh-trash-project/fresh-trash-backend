@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.dto.security;
 
+import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,17 +11,46 @@ import java.util.Collection;
 import java.util.Set;
 
 public record MemberPrincipal(
-        Long id, String email, String password, Collection<? extends GrantedAuthority> authorities, String nickname)
+        Long id,
+        String email,
+        String password,
+        Collection<? extends GrantedAuthority> authorities,
+        String nickname,
+        double rating,
+        String fileName,
+        Address address)
         implements UserDetails {
 
-    public static MemberPrincipal of(Long id, String email, String password, String nickname, UserRole userRole) {
+    public static MemberPrincipal of(
+            Long id,
+            String email,
+            String password,
+            String nickname,
+            UserRole userRole,
+            double rating,
+            String fileName,
+            Address address) {
         return new MemberPrincipal(
-                id, email, password, Set.of(new SimpleGrantedAuthority(userRole.getName())), nickname);
+                id,
+                email,
+                password,
+                Set.of(new SimpleGrantedAuthority(userRole.getName())),
+                nickname,
+                rating,
+                fileName,
+                address);
     }
 
     public static MemberPrincipal fromEntity(Member member) {
         return MemberPrincipal.of(
-                member.getId(), member.getEmail(), member.getPassword(), member.getNickname(), member.getUserRole());
+                member.getId(),
+                member.getEmail(),
+                member.getPassword(),
+                member.getNickname(),
+                member.getUserRole(),
+                member.getRating(),
+                member.getFileName(),
+                member.getAddress());
     }
 
     public UserRole getUserRole() {
