@@ -23,7 +23,7 @@ public enum ErrorCode {
     EMPTY_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증코드가 입력되지 않았습니다."),
     MAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "메일전송에 실패했습니다"),
 
-    //Member
+    // Member
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "유저 정보가 존재하지 않습니다.");
 
     private final HttpStatus status;
