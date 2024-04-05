@@ -80,13 +80,13 @@ public class WasteService {
         if (FileUtils.isValid(imgFile)) {
             String savedFileName = savedWaste.getFileName();
             String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
-            // 파일 삭제/업로드 후 flush 에서 에러가 발생할 경우를 고려하여 파일명 수정 후 flush 합니다
+            // DB 업데이트
             savedWaste.setFileName(updatedFileName);
+            // 수정된 파일 저장
+            fileService.uploadFile(imgFile, updatedFileName);
             wasteRepository.flush();
             // 저장된 파일 삭제
             fileService.deleteFileIfExists(savedFileName);
-            // 수정된 파일 저장
-            fileService.uploadFile(imgFile, updatedFileName);
         }
 
         return WasteDto.fromEntity(savedWaste);
