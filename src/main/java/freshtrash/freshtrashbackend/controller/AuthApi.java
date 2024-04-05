@@ -20,7 +20,7 @@ public class AuthApi {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
-        authService.registerMember(signUpRequest.toEntity(signUpRequest));
+        authService.registerMember(signUpRequest.toEntity());
         return ResponseEntity.ok(ApiResponse.of("you're successfully sign up. you can be login."));
     }
 }

@@ -9,13 +9,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public record SignUpRequest(@NotBlank String nickname, @NotBlank @Email String email, @NotBlank String password) {
-    public Member toEntity(SignUpRequest request) {
-        return Member.signup(
-                request.email(),
-                request.password,
-                request.nickname,
-                LoginType.EMAIL,
-                UserRole.USER,
-                AccountStatus.ACTIVE);
+    public Member toEntity() {
+        return Member.signup(email, password, nickname, LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
     }
 }
