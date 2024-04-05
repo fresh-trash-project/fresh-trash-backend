@@ -10,6 +10,6 @@ import javax.validation.constraints.NotBlank;
 
 public record SignUpRequest(@NotBlank String nickname, @NotBlank @Email String email, @NotBlank String password) {
     public Member toEntity() {
-        return Member.signup(email, password, nickname, LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
+        return Member.of(email, password, nickname, LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
     }
 }

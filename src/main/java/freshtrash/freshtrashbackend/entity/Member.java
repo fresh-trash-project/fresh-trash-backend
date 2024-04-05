@@ -61,31 +61,29 @@ public class Member extends AuditingAt implements Persistable<Long> {
         this.rating = 0;
     }
 
-    public Member(
-            String email,
-            String password,
-            String nickname,
-            LoginType loginType,
-            UserRole userRole,
-            AccountStatus accountStatus,
-            Address address) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.loginType = loginType;
-        this.userRole = userRole;
-        this.accountStatus = accountStatus;
-        this.address = address;
-    }
-
-    public static Member signup(
+    private Member(
             String email,
             String password,
             String nickname,
             LoginType loginType,
             UserRole userRole,
             AccountStatus accountStatus) {
-        return new Member(email, password, nickname, loginType, userRole, accountStatus, null);
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.loginType = loginType;
+        this.userRole = userRole;
+        this.accountStatus = accountStatus;
+    }
+
+    public static Member of(
+            String email,
+            String password,
+            String nickname,
+            LoginType loginType,
+            UserRole userRole,
+            AccountStatus accountStatus) {
+        return new Member(email, password, nickname, loginType, userRole, accountStatus);
     }
 
     @Override
