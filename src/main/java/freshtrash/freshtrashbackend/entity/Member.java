@@ -57,7 +57,6 @@ public class Member extends AuditingAt implements Persistable<Long> {
     private AccountStatus accountStatus;
 
     public Member(
-            Long id,
             String email,
             String password,
             double rating,
@@ -67,7 +66,6 @@ public class Member extends AuditingAt implements Persistable<Long> {
             UserRole userRole,
             AccountStatus accountStatus,
             Address address) {
-        this.id = id;
         this.email = email;
         this.password = password;
         this.rating = rating;
@@ -77,6 +75,16 @@ public class Member extends AuditingAt implements Persistable<Long> {
         this.userRole = userRole;
         this.accountStatus = accountStatus;
         this.address = address;
+    }
+
+    public static Member signup(
+            String email,
+            String password,
+            String nickname,
+            LoginType loginType,
+            UserRole userRole,
+            AccountStatus accountStatus) {
+        return new Member(email, password, 0, nickname, null, loginType, userRole, accountStatus, null);
     }
 
     @Override
