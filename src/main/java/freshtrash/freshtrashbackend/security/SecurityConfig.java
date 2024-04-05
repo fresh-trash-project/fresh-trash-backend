@@ -23,7 +23,7 @@ public class SecurityConfig {
                         .permitAll()
                         .anyRequest()
                         .permitAll())
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form.usernameParameter("email"))
                 .build();
     }
 
