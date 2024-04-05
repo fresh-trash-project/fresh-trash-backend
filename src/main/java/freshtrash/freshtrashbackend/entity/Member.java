@@ -1,6 +1,5 @@
 package freshtrash.freshtrashbackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.entity.constants.LoginType;

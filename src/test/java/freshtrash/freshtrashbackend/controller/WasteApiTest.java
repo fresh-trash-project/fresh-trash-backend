@@ -3,6 +3,7 @@ package freshtrash.freshtrashbackend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
+import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.entity.Address;
@@ -17,6 +18,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(TestSecurityConfig.class)
 @WebMvcTest(WasteApi.class)
 class WasteApiTest {
     @Autowired
