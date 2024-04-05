@@ -1,4 +1,4 @@
-package freshtrash.freshtrashbackend.service.impl;
+package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.exception.MailException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;

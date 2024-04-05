@@ -9,7 +9,7 @@ import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
 import freshtrash.freshtrashbackend.entity.constants.WasteStatus;
-import freshtrash.freshtrashbackend.service.impl.WasteService;
+import freshtrash.freshtrashbackend.service.WasteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -110,6 +111,35 @@ class WasteApiTest {
                                 "wasteRequest", "", "application/json", objectMapper.writeValueAsBytes(wasteRequest)))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+        // then
+    }
+
+    @DisplayName("폐기물 수정")
+    @Test
+    void updateWaste() throws Exception {
+        // given
+        Long wasteId = 1L;
+        MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
+        WasteRequest wasteRequest = FixtureDto.createWasteRequest();
+        WasteDto wasteDto = FixtureDto.createWasteDto();
+        given(wasteService.updateWaste(any(MultipartFile.class), any(WasteRequest.class), anyLong()))
+                .willReturn(wasteDto);
+        // when
+        mvc.perform(multipart(HttpMethod.PUT, "/api/v1/wastes/" + wasteId)
+                        .file("imgFile", imgFile.getBytes())
+                        .file(new MockMultipartFile(
+                                "wasteRequest", "", "application/json", objectMapper.writeValueAsBytes(wasteRequest)))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("title"))
+                .andExpect(jsonPath("$.content").value("content"))
+                .andExpect(jsonPath("$.wastePrice").value(0))
+                .andExpect(jsonPath("$.likeCount").value(0))
+                .andExpect(jsonPath("$.viewCount").value(0))
+                .andExpect(jsonPath("$.fileName").value("test.png"))
+                .andExpect(jsonPath("$.wasteCategory").value("BEAUTY"))
+                .andExpect(jsonPath("$.wasteStatus").value("BEST"))
+                .andExpect(jsonPath("$.sellStatus").value("CLOSE"));
         // then
     }
 }
