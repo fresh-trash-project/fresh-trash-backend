@@ -27,7 +27,6 @@ public class AuthService {
     /**
      * 이메일 중복 체크
      */
-    @Transactional(readOnly = true)
     public boolean checkEmailDuplication(String email) {
         return memberRepository.existsByEmail(email);
     }
@@ -35,7 +34,6 @@ public class AuthService {
     /**
      * 닉네임 중복확인
      */
-    @Transactional(readOnly = true)
     public boolean checkNicknameDuplication(String nickname) {
         return memberRepository.existsByNickname(nickname);
     }
