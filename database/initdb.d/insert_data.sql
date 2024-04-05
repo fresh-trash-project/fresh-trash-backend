@@ -1,6 +1,6 @@
 insert into members(email, password, rating, nickname, address, file_name, login_type, user_role, account_status,
                     created_at, modified_at)
-values ('abc@never.com', 'abc!@#55', 10, 'abc',
+values ('abc@never.com', '$2a$10$4mbVj4n1KeBmNsQCeXZpZujVo.cmXMdPIoDUQ1c1jkR87LdBA4gJW', 10, 'abc',
         json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
         'test.png', 'GOOGLE', 'USER', 'ACTIVE', now(), null);
 

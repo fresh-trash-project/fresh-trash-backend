@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    @Transactional(readOnly = true)
     public Member getMemberEntityByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
