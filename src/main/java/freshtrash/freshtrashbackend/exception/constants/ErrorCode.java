@@ -27,7 +27,12 @@ public enum ErrorCode {
     // Member
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "유저 정보가 존재하지 않습니다."),
     ALREADY_EXISTS_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
-    ALREADY_EXISTS_NICKNAME(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다.");
+    ALREADY_EXISTS_NICKNAME(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다."),
+
+    // Auth
+    FAILED_AUTHENTICATE(HttpStatus.UNAUTHORIZED, "인증 실패"),
+    EXPIRED_TOKEN(HttpStatus.FORBIDDEN, "Token이 만료되었습니다."),
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
 
     private final HttpStatus status;
     private final String message;
