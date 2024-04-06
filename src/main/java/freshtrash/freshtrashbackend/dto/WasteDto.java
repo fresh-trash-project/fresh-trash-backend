@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.dto;
 
 import freshtrash.freshtrashbackend.dto.constants.SellType;
+import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
@@ -21,7 +22,8 @@ public record WasteDto(
         WasteStatus wasteStatus,
         SellStatus sellStatus,
         Address address,
-        LocalDateTime createdAt) {
+        LocalDateTime createdAt,
+        UserInfo userInfo) {
     public static WasteDto fromEntity(Waste waste) {
         return new WasteDto(
                 waste.getTitle(),
@@ -35,6 +37,24 @@ public record WasteDto(
                 waste.getWasteStatus(),
                 waste.getSellStatus(),
                 waste.getAddress(),
-                waste.getCreatedAt());
+                waste.getCreatedAt(),
+                UserInfo.fromEntity(waste.getMember()));
+    }
+
+    public static WasteDto fromEntity(Waste waste, MemberPrincipal memberPrincipal) {
+        return new WasteDto(
+                waste.getTitle(),
+                waste.getContent(),
+                waste.getWastePrice() == 0 ? SellType.SHARE : SellType.TRANSACTION,
+                waste.getWastePrice(),
+                waste.getLikeCount(),
+                waste.getViewCount(),
+                waste.getFileName(),
+                waste.getWasteCategory(),
+                waste.getWasteStatus(),
+                waste.getSellStatus(),
+                waste.getAddress(),
+                waste.getCreatedAt(),
+                UserInfo.fromPrincipal(memberPrincipal));
     }
 }

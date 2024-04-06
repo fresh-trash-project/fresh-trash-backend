@@ -17,7 +17,7 @@ public record WasteRequest(
         @NotNull SellStatus sellStatus,
         @NotNull Integer wastePrice,
         @NotNull Address address) {
-    public Waste toEntity(String fileName) {
+    public Waste toEntity(String fileName, Long memberId) {
         return Waste.of(
                 title,
                 content,
@@ -26,6 +26,7 @@ public record WasteRequest(
                 wasteCategory,
                 wasteStatus,
                 sellStatus,
-                address.allBlank() ? null : address);
+                address.allBlank() ? null : address,
+                memberId);
     }
 }

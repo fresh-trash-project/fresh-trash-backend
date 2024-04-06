@@ -21,6 +21,7 @@
 CREATE TABLE `wastes`
 (
     `id`             bigint AUTO_INCREMENT NOT NULL,
+    `member_id`      bigint                NOT NULL,
     `title`          varchar(255)          NOT NULL,
     `content`        text                  NOT NULL,
     `waste_price`    integer               NOT NULL,
@@ -34,7 +35,8 @@ CREATE TABLE `wastes`
     `created_at`     datetime              NOT NULL,
     `modified_at`    datetime,
     `transaction_at` datetime,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    foreign key (`member_id`) references members (id) on delete cascade
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='폐기물';
 

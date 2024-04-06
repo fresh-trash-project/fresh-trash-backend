@@ -2,6 +2,10 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.exception.WasteException;
+import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.service.WasteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,10 +51,10 @@ public class WasteApi {
      */
     @PostMapping
     public ResponseEntity<WasteDto> addWaste(
-            @RequestPart MultipartFile imgFile, @RequestPart @Valid WasteRequest wasteRequest) {
-        // TODO: 로그인 유저 정보 추가
-        // TODO: WasteRequest Validation Error Exception Handling
-        WasteDto wasteDto = wasteService.addWaste(imgFile, wasteRequest);
+            @RequestPart MultipartFile imgFile,
+            @RequestPart @Valid WasteRequest wasteRequest,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        WasteDto wasteDto = wasteService.addWaste(imgFile, wasteRequest, memberPrincipal);
         return ResponseEntity.status(HttpStatus.CREATED).body(wasteDto);
     }
 
@@ -57,9 +62,10 @@ public class WasteApi {
     public ResponseEntity<WasteDto> updateWaste(
             @RequestPart MultipartFile imgFile,
             @RequestPart @Valid WasteRequest wasteRequest,
-            @PathVariable Long wasteId) {
-        // TODO: 작성자 또는 관리자만 삭제할 수 있음
-        WasteDto wasteDto = wasteService.updateWaste(imgFile, wasteRequest, wasteId);
+            @PathVariable Long wasteId,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        checkIfWriterOrAdmin(memberPrincipal, wasteId);
+        WasteDto wasteDto = wasteService.updateWaste(imgFile, wasteRequest, wasteId, memberPrincipal);
         return ResponseEntity.ok(wasteDto);
     }
 
@@ -67,9 +73,19 @@ public class WasteApi {
      * 폐기물 삭제
      */
     @DeleteMapping("/{wasteId}")
-    public ResponseEntity<Void> deleteWaste(@PathVariable Long wasteId) {
-        // TODO: 작성자 또는 관리자만 삭제할 수 있음
+    public ResponseEntity<Void> deleteWaste(
+            @PathVariable Long wasteId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        checkIfWriterOrAdmin(memberPrincipal, wasteId);
         wasteService.deleteWaste(wasteId);
         return ResponseEntity.ok(null);
+    }
+
+    /**
+     * 작성자 또는 관리자가 맞는지 확인
+     */
+    private void checkIfWriterOrAdmin(MemberPrincipal memberPrincipal, Long wasteId) {
+        if (memberPrincipal.getUserRole() != UserRole.ADMIN
+                && !wasteService.isWriterOfArticle(wasteId, memberPrincipal.id()))
+            throw new WasteException(ErrorCode.FORBIDDEN_WASTE);
     }
 }
