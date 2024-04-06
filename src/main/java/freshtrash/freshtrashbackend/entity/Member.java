@@ -33,6 +33,7 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Setter
     @Column(nullable = false)
     private String password;
 

@@ -5,12 +5,14 @@ import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder encoder;
 
     public Member getMemberEntityByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
@@ -19,14 +21,15 @@ public class MemberService {
     /**
      * 회원 가입
      */
-    public void registerMember(Member entity) {
-        if (checkEmailDuplication(entity.getEmail())) {
+    public void registerMember(Member member) {
+        if (checkEmailDuplication(member.getEmail())) {
             throw new MemberException(ErrorCode.ALREADY_EXISTS_EMAIL);
         }
-        if (checkNicknameDuplication(entity.getNickname())) {
+        if (checkNicknameDuplication(member.getNickname())) {
             throw new MemberException(ErrorCode.ALREADY_EXISTS_NICKNAME);
         }
-        memberRepository.save(entity);
+        member.setPassword(encoder.encode(member.getPassword()));
+        memberRepository.save(member);
     }
 
     /**
