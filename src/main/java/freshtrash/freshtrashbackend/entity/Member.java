@@ -25,7 +25,7 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -34,7 +34,7 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @Column(nullable = false)
     private double rating;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     @Type(type = "json")
@@ -56,32 +56,34 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @Column(nullable = false)
     private AccountStatus accountStatus;
 
-    public Member(
-            Long id,
+    @PrePersist
+    private void prePersist() {
+        this.rating = 0;
+    }
+
+    private Member(
             String email,
             String password,
-            double rating,
             String nickname,
-            String fileName,
             LoginType loginType,
             UserRole userRole,
-            AccountStatus accountStatus,
-            Address address) {
-        this.id = id;
+            AccountStatus accountStatus) {
         this.email = email;
         this.password = password;
-        this.rating = rating;
         this.nickname = nickname;
-        this.fileName = fileName;
         this.loginType = loginType;
         this.userRole = userRole;
         this.accountStatus = accountStatus;
-        this.address = address;
     }
 
-    @Override
-    public Long getId() {
-        return id;
+    public static Member of(
+            String email,
+            String password,
+            String nickname,
+            LoginType loginType,
+            UserRole userRole,
+            AccountStatus accountStatus) {
+        return new Member(email, password, nickname, loginType, userRole, accountStatus);
     }
 
     @Override

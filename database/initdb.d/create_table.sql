@@ -12,7 +12,9 @@
     `account_status` varchar(255)          NOT NULL,
     `created_at`     datetime              NOT NULL,
     `modified_at`    datetime,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`email`),
+    UNIQUE KEY (`nickname`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='멤버';
 
@@ -35,3 +37,4 @@ CREATE TABLE `wastes`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='폐기물';
+
