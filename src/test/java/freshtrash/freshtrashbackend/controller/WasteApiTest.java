@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
@@ -22,12 +23,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,6 +47,7 @@ class WasteApiTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     @DisplayName("폐기물 등록")
     @Test
     void addWaste() throws Exception {
@@ -51,7 +55,7 @@ class WasteApiTest {
         MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         WasteDto wasteDto = FixtureDto.createWasteDto();
-        given(wasteService.addWaste(any(MultipartFile.class), any(WasteRequest.class)))
+        given(wasteService.addWaste(any(MultipartFile.class), any(WasteRequest.class), any(MemberPrincipal.class)))
                 .willReturn(wasteDto);
         // when
         mvc.perform(multipart(HttpMethod.POST, "/api/v1/wastes")
@@ -62,9 +66,9 @@ class WasteApiTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("title"))
                 .andExpect(jsonPath("$.content").value("content"))
-                .andExpect(jsonPath("$.wastePrice").value(0))
-                .andExpect(jsonPath("$.likeCount").value(0))
-                .andExpect(jsonPath("$.viewCount").value(0))
+                .andExpect(jsonPath("$.wastePrice").value(1000))
+                .andExpect(jsonPath("$.likeCount").value(2))
+                .andExpect(jsonPath("$.viewCount").value(3))
                 .andExpect(jsonPath("$.fileName").value("test.png"))
                 .andExpect(jsonPath("$.wasteCategory").value("BEAUTY"))
                 .andExpect(jsonPath("$.wasteStatus").value("BEST"))
@@ -72,6 +76,7 @@ class WasteApiTest {
         // then
     }
 
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     @DisplayName("어느 하나라도 입력되지 않았을 경우 폐기물 등록 실패")
     @ParameterizedTest
     @CsvSource(
@@ -117,15 +122,18 @@ class WasteApiTest {
         // then
     }
 
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     @DisplayName("폐기물 수정")
     @Test
     void updateWaste() throws Exception {
         // given
-        Long wasteId = 1L;
+        Long wasteId = 1L, memberId = 1L;
         MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         WasteDto wasteDto = FixtureDto.createWasteDto();
-        given(wasteService.updateWaste(any(MultipartFile.class), any(WasteRequest.class), anyLong()))
+        given(wasteService.isWriterOfArticle(wasteId, memberId)).willReturn(true);
+        given(wasteService.updateWaste(
+                        any(MultipartFile.class), any(WasteRequest.class), anyLong(), any(MemberPrincipal.class)))
                 .willReturn(wasteDto);
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/wastes/" + wasteId)
@@ -136,9 +144,9 @@ class WasteApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("title"))
                 .andExpect(jsonPath("$.content").value("content"))
-                .andExpect(jsonPath("$.wastePrice").value(0))
-                .andExpect(jsonPath("$.likeCount").value(0))
-                .andExpect(jsonPath("$.viewCount").value(0))
+                .andExpect(jsonPath("$.wastePrice").value(1000))
+                .andExpect(jsonPath("$.likeCount").value(2))
+                .andExpect(jsonPath("$.viewCount").value(3))
                 .andExpect(jsonPath("$.fileName").value("test.png"))
                 .andExpect(jsonPath("$.wasteCategory").value("BEAUTY"))
                 .andExpect(jsonPath("$.wasteStatus").value("BEST"))

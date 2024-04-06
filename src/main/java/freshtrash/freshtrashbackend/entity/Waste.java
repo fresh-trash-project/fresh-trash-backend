@@ -14,6 +14,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Getter
 @ToString(callSuper = true)
 @Table(name = "wastes")
@@ -72,16 +74,23 @@ public class Waste extends AuditingAt implements Persistable<Long> {
     @Setter
     private LocalDateTime transactionAt;
 
+    @ToString.Exclude
+    @ManyToOne(optional = false, fetch = LAZY)
+    @JoinColumn(name = "memberId", insertable = false, updatable = false)
+    private Member member;
+
+    @Column(nullable = false)
+    private Long memberId;
+
     // TODO: waste_reviews와 연관 관계 설정
     // TODO: chat_room과 연관 관계 설정
     // TODO: transaction_logs와 연관 관계 설정
     // TODO: waste_likes와 연관 관계 설정
-    // TODO: members와 연관 관계 설정
 
     @PrePersist
     private void prePersist() {
-        this.likeCount = Objects.isNull(this.likeCount) ? 0 : this.likeCount;
-        this.viewCount = Objects.isNull(this.viewCount) ? 0 : this.viewCount;
+        this.likeCount = 0;
+        this.viewCount = 0;
     }
 
     private Waste(
@@ -92,7 +101,8 @@ public class Waste extends AuditingAt implements Persistable<Long> {
             WasteCategory wasteCategory,
             WasteStatus wasteStatus,
             SellStatus sellStatus,
-            Address address) {
+            Address address,
+            Long memberId) {
         this.title = title;
         this.content = content;
         this.wastePrice = wastePrice;
@@ -101,6 +111,7 @@ public class Waste extends AuditingAt implements Persistable<Long> {
         this.wasteStatus = wasteStatus;
         this.sellStatus = sellStatus;
         this.address = address;
+        this.memberId = memberId;
     }
 
     public static Waste of(
@@ -111,8 +122,9 @@ public class Waste extends AuditingAt implements Persistable<Long> {
             WasteCategory wasteCategory,
             WasteStatus wasteStatus,
             SellStatus sellStatus,
-            Address address) {
-        return new Waste(title, content, wastePrice, fileName, wasteCategory, wasteStatus, sellStatus, address);
+            Address address,
+            Long memberId) {
+        return new Waste(title, content, wastePrice, fileName, wasteCategory, wasteStatus, sellStatus, address, memberId);
     }
 
     @Override

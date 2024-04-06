@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.Fixture;
 
+import freshtrash.freshtrashbackend.dto.UserInfo;
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.constants.SellType;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
@@ -38,7 +39,7 @@ public class FixtureDto {
                 WasteStatus.BEST,
                 SellStatus.CLOSE,
                 0,
-                Address.of("12345", "state", "city", "district", "detail"));
+                Fixture.createAddress());
     }
 
     public static WasteDto createWasteDto() {
@@ -46,14 +47,15 @@ public class FixtureDto {
                 "title",
                 "content",
                 SellType.SHARE,
-                0,
-                0,
-                0,
+                1000,
+                2,
+                3,
                 "test.png",
                 WasteCategory.BEAUTY,
                 WasteStatus.BEST,
                 SellStatus.CLOSE,
                 Address.of("12345", "state", "city", "district", "detail"),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                new UserInfo("test", 4, "test.png", Fixture.createAddress()));
     }
 }
