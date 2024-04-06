@@ -40,3 +40,14 @@ CREATE TABLE `wastes`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='폐기물';
 
+CREATE TABLE `waste_likes`
+(
+    `id`         bigint AUTO_INCREMENT NOT NULL,
+    `member_id`  bigint                NOT NULL,
+    `waste_id`   bigint                NOT NULL,
+    `created_at` datetime              NOT NULL,
+    PRIMARY KEY (`id`),
+    foreign key (`member_id`) references members (id) on delete cascade,
+    foreign key (`waste_id`) references wastes (id) on delete cascade
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='관심 폐기물';
