@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import freshtrash.freshtrashbackend.dto.properties.JwtProperties;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.AuthException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -28,6 +29,7 @@ public class TokenProvider {
     private static final String KEY_EMAIL = "email";
     private static final String KEY_NICKNAME = "nickname";
     private static final String KEY_SPEC = "spec";
+    private static final String SPEC_SEPARATOR = ":";
     private static final String KEY_RATING = "rating";
     private static final String KEY_FILENAME = "fileName";
     private static final String KEY_ADDRESS = "address";
@@ -76,13 +78,16 @@ public class TokenProvider {
 
     public TokenInfo parseSpecification(Claims claims) {
         try {
-            return TokenInfo.of(
-                    claims.get(TokenProvider.KEY_EMAIL, String.class),
-                    claims.get(TokenProvider.KEY_NICKNAME, String.class),
-                    claims.get(TokenProvider.KEY_SPEC, String.class),
-                    Double.parseDouble(claims.get(TokenProvider.KEY_RATING, String.class)),
-                    claims.get(TokenProvider.KEY_FILENAME, String.class),
-                    mapper.readValue(claims.get(TokenProvider.KEY_ADDRESS, String.class), Address.class));
+            String[] sepcs = claims.get(TokenProvider.KEY_SPEC, String.class).split(SPEC_SEPARATOR);
+            return TokenInfo.builder()
+                    .id(Long.parseLong(sepcs[0]))
+                    .email(claims.get(TokenProvider.KEY_EMAIL, String.class))
+                    .nickname(claims.get(TokenProvider.KEY_NICKNAME, String.class))
+                    .userRole(UserRole.valueOf(sepcs[1].substring(5)))
+                    .rating(Double.parseDouble(claims.get(TokenProvider.KEY_RATING, String.class)))
+                    .fileName(claims.get(TokenProvider.KEY_FILENAME, String.class))
+                    .address(mapper.readValue(claims.get(TokenProvider.KEY_ADDRESS, String.class), Address.class))
+                    .build();
         } catch (JsonProcessingException | RuntimeException e) {
             log.error("failed token parsing");
             return null;
