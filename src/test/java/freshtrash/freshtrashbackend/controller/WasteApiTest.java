@@ -27,8 +27,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -132,8 +131,9 @@ class WasteApiTest {
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         WasteDto wasteDto = FixtureDto.createWasteDto();
         given(wasteService.isWriterOfArticle(wasteId, memberId)).willReturn(true);
+        given(wasteService.findFileNameOfWaste(anyLong())).willReturn("test.png");
         given(wasteService.updateWaste(
-                        any(MultipartFile.class), any(WasteRequest.class), anyLong(), any(MemberPrincipal.class)))
+                        any(MultipartFile.class), any(WasteRequest.class), anyString(), any(MemberPrincipal.class)))
                 .willReturn(wasteDto);
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/wastes/" + wasteId)
