@@ -41,6 +41,20 @@ public record MemberPrincipal(
                 address);
     }
 
+    /**
+     * JWT 토큰 파싱 후 MemberPrincipal 생성 시 사용
+     */
+    public static MemberPrincipal of(
+            Long id,
+            String email,
+            String nickname,
+            UserRole userRole,
+            double rating,
+            String fileName,
+            Address address) {
+        return MemberPrincipal.of(id, email, null, nickname, userRole, rating, fileName, address);
+    }
+
     public static MemberPrincipal fromEntity(Member member) {
         return MemberPrincipal.of(
                 member.getId(),

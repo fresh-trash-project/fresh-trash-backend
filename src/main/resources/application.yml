@@ -6,9 +6,11 @@ spring:
         - common
         - file
         - mail
+        - security
       test:
         - file
         - mail
+        - security
 
 ---
 

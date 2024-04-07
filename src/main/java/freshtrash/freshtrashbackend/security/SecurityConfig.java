@@ -5,17 +5,19 @@ import freshtrash.freshtrashbackend.service.MemberService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.session.SessionManagementFilter;
 
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter, Http401UnauthorizedAuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         return http.csrf()
                 .disable()
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
@@ -23,8 +25,14 @@ public class SecurityConfig {
                         .permitAll()
                         .anyRequest()
                         .permitAll())
-                .formLogin(form -> form.usernameParameter("email"))
-                .build();
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                    .addFilterAfter(jwtTokenFilter, ExceptionTranslationFilter.class)
+                    .exceptionHandling()
+                    .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                    .build();
     }
 
     @Bean
