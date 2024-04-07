@@ -1,15 +1,15 @@
 package freshtrash.freshtrashbackend.exception;
 
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import lombok.Getter;
+import org.springframework.security.core.AuthenticationException;
 
 @Getter
-public class AuthException extends CustomException {
-    public AuthException(ErrorCode errorCode) {
-        super(errorCode);
+public class AuthException extends AuthenticationException {
+    public AuthException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 
-    public AuthException(ErrorCode errorCode, Exception causeException) {
-        super(errorCode, causeException);
+    public AuthException(String msg) {
+        super(msg);
     }
 }

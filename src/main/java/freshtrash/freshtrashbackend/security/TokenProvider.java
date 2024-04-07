@@ -1,10 +1,11 @@
 package freshtrash.freshtrashbackend.security;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import freshtrash.freshtrashbackend.dto.properties.JwtProperties;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.exception.AuthException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -30,6 +31,7 @@ public class TokenProvider {
     private static final String KEY_RATING = "rating";
     private static final String KEY_FILENAME = "fileName";
     private static final String KEY_ADDRESS = "address";
+    private final ObjectMapper mapper;
     private final JwtProperties jwtProperties;
 
     /**
@@ -37,20 +39,24 @@ public class TokenProvider {
      */
     public String generateAccessToken(
             String email, String nickname, String spec, double rating, String fileName, Address address) {
-        Map<String, String> claims = new HashMap<>();
-        claims.put(KEY_EMAIL, email);
-        claims.put(KEY_NICKNAME, nickname);
-        claims.put(KEY_SPEC, spec); // "id:role"
-        claims.put(KEY_RATING, String.valueOf(rating));
-        claims.put(KEY_FILENAME, fileName);
-        claims.put(KEY_ADDRESS, address.toString());
+        try {
+            Map<String, String> claims = new HashMap<>();
+            claims.put(KEY_EMAIL, email);
+            claims.put(KEY_NICKNAME, nickname);
+            claims.put(KEY_SPEC, spec); // "id:role"
+            claims.put(KEY_RATING, String.valueOf(rating));
+            claims.put(KEY_FILENAME, fileName);
+            claims.put(KEY_ADDRESS, mapper.writeValueAsString(address));
 
-        return Jwts.builder()
-                .claims(claims)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + jwtProperties.accessExpiredMs()))
-                .signWith(getKey(jwtProperties.secretKey()))
-                .compact();
+            return Jwts.builder()
+                    .claims(claims)
+                    .issuedAt(new Date(System.currentTimeMillis()))
+                    .expiration(new Date(System.currentTimeMillis() + jwtProperties.accessExpiredMs()))
+                    .signWith(getKey(jwtProperties.secretKey()))
+                    .compact();
+        } catch (JsonProcessingException e) {
+            throw new AuthException("Failed generate token", e);
+        }
     }
 
     /**
@@ -64,7 +70,7 @@ public class TokenProvider {
                     .parseSignedClaims(token)
                     .getPayload();
         } catch (ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_TOKEN, e);
+            throw new AuthException("Expired token", e);
         }
     }
 
@@ -74,10 +80,10 @@ public class TokenProvider {
                     claims.get(TokenProvider.KEY_EMAIL, String.class),
                     claims.get(TokenProvider.KEY_NICKNAME, String.class),
                     claims.get(TokenProvider.KEY_SPEC, String.class),
-                    claims.get(TokenProvider.KEY_RATING, Double.class),
+                    Double.parseDouble(claims.get(TokenProvider.KEY_RATING, String.class)),
                     claims.get(TokenProvider.KEY_FILENAME, String.class),
-                    claims.get(TokenProvider.KEY_ADDRESS, Address.class));
-        } catch (RuntimeException e) {
+                    mapper.readValue(claims.get(TokenProvider.KEY_ADDRESS, String.class), Address.class));
+        } catch (JsonProcessingException | RuntimeException e) {
             log.error("failed token parsing");
             return null;
         }

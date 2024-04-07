@@ -2,7 +2,6 @@ package freshtrash.freshtrashbackend.security;
 
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.exception.AuthException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             setAuthentication(request, tokenProvider.parseOrValidateClaims(accessToken), accessToken);
         } catch (Exception e) {
             log.error("Error occurs during authenticate, {}", e.getMessage());
-            throw new AuthException(ErrorCode.FAILED_AUTHENTICATE);
+            throw new AuthException("Failed authenticate");
         }
         filterChain.doFilter(request, response);
     }

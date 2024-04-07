@@ -34,7 +34,7 @@ public class SigInService {
      */
     private void checkPassword(String inputPassword, String existPassword) {
         if (!passwordEncoder.matches(inputPassword, existPassword)) {
-            throw new AuthException(ErrorCode.INVALID_PASSWORD);
+            throw new AuthException("not matched password");
         }
     }
 
