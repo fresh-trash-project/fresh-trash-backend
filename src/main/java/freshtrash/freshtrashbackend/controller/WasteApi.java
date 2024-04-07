@@ -32,7 +32,7 @@ public class WasteApi {
      */
     @GetMapping("{wasteId}")
     public ResponseEntity<WasteDto> getWaste(@PathVariable Long wasteId) {
-        WasteDto wasteDto = wasteService.getWasteDto(wasteId);
+        WasteDto wasteDto = WasteDto.fromEntity(wasteService.getWasteEntity(wasteId));
         return ResponseEntity.ok(wasteDto);
     }
 
@@ -65,7 +65,8 @@ public class WasteApi {
             @PathVariable Long wasteId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
-        WasteDto wasteDto = wasteService.updateWaste(imgFile, wasteRequest, wasteId, memberPrincipal);
+        WasteDto wasteDto = wasteService.updateWaste(
+                imgFile, wasteRequest, wasteService.findFileNameOfWaste(wasteId), memberPrincipal);
         return ResponseEntity.ok(wasteDto);
     }
 
@@ -76,7 +77,7 @@ public class WasteApi {
     public ResponseEntity<Void> deleteWaste(
             @PathVariable Long wasteId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
-        wasteService.deleteWaste(wasteId);
+        wasteService.deleteWaste(wasteId, wasteService.findFileNameOfWaste(wasteId));
         return ResponseEntity.ok(null);
     }
 
