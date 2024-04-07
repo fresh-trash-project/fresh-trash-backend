@@ -10,13 +10,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.session.SessionManagementFilter;
 
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter, Http401UnauthorizedAuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         return http.csrf()
                 .disable()
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
@@ -27,9 +28,11 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .formLogin(form -> form.usernameParameter("email"))
-                .addFilterAfter(jwtTokenFilter, SessionManagementFilter.class)
-                .build();
+                    .addFilterAfter(jwtTokenFilter, ExceptionTranslationFilter.class)
+                    .exceptionHandling()
+                    .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                    .build();
     }
 
     @Bean
