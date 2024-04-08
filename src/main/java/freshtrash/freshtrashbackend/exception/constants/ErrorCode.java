@@ -18,6 +18,8 @@ public enum ErrorCode {
     EMPTY_ADDRESS(HttpStatus.BAD_REQUEST, "주소가 입력되지 않았습니다."),
     NOT_FOUND_WASTE(HttpStatus.NOT_FOUND, "폐기물 정보가 존재하지 않습니다."),
     FORBIDDEN_WASTE(HttpStatus.FORBIDDEN, "폐기물에 대한 권한이 없습니다."),
+    OWNER_WASTE_CANT_LIKE(HttpStatus.BAD_REQUEST, "본인 폐기물에는 관심표시할 수 없습니다."),
+    UN_MATCHED_LIKE_STATUS(HttpStatus.BAD_REQUEST, "폐기물 관심 상태가 잘못되었습니다."),
 
     // Review
     ALREADY_EXISTS_REVIEW(HttpStatus.BAD_REQUEST, "이미 리뷰가 등록되었습니다."),

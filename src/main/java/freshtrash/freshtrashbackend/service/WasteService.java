@@ -5,10 +5,16 @@ import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
+<<<<<<< HEAD
 import freshtrash.freshtrashbackend.entity.WasteReview;
 import freshtrash.freshtrashbackend.exception.ReviewException;
+=======
+import freshtrash.freshtrashbackend.entity.WasteLike;
+import freshtrash.freshtrashbackend.entity.constants.LikeStatus;
+>>>>>>> 7d8bedc (feat: #30-관심폐기물 추가 또는 삭제 구현)
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
 import freshtrash.freshtrashbackend.repository.WasteRepository;
 import freshtrash.freshtrashbackend.repository.WasteReviewRepository;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
@@ -28,6 +34,7 @@ public class WasteService {
     private final WasteRepository wasteRepository;
     private final FileService fileService;
     private final WasteReviewRepository wasteReviewRepository;
+    private final WasteLikeRepository wasteLikeRepository;
 
     @Transactional(readOnly = true)
     public Waste getWasteEntity(Long wasteId) {
@@ -103,5 +110,36 @@ public class WasteService {
 
         WasteReview wasteReview = reviewRequest.toEntity(wasteId, memberId);
         return wasteReviewRepository.save(wasteReview);
+    }
+
+    /**
+     * 관심폐기물 표시 또는 제거
+     */
+    public int addOrDeleteWasteLike(LikeStatus likeStatus, Long memberId, Long wasteId) {
+        int updateCount = 0;
+
+        isPossibleLikeUpdate(likeStatus, memberId, wasteId);
+
+        if (likeStatus == LikeStatus.LIKE) {
+            wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
+            updateCount = -1;
+        } else if (likeStatus == LikeStatus.UNLIKE) {
+            wasteLikeRepository.save(WasteLike.of(memberId, wasteId));
+            updateCount = 1;
+        }
+
+        // update likeCount
+        return wasteRepository.updateLikeCount(wasteId, updateCount);
+    }
+
+    /**
+     * 관심추가 또는 삭제가 가능한지 체크
+     * (likeStatus가 LIKE -> 관심추가된 데이터가 없어야하고, UNLIKE -> 관심추가된 데이터가 있어야한다)
+     */
+    public void isPossibleLikeUpdate(LikeStatus likeStatus, Long memberId, Long wasteId) {
+        boolean existsLike = wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId);
+        if ((likeStatus == LikeStatus.LIKE && existsLike) || (likeStatus == LikeStatus.UNLIKE && !existsLike)) {
+            throw new WasteException(ErrorCode.UN_MATCHED_LIKE_STATUS);
+        }
     }
 }

@@ -4,7 +4,9 @@ import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.WasteReviewDto;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.entity.constants.LikeStatus;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -106,5 +108,32 @@ public class WasteApi {
         WasteReviewDto wasteReviewDto =
                 WasteReviewDto.fromEntity(wasteService.insertWasteReview(reviewRequest, wasteId, memberPrincipal.id()));
         return ResponseEntity.status(HttpStatus.CREATED).body(wasteReviewDto);
+    }
+
+    /**
+     * 폐기물 관심 추가 또는 삭제
+     */
+    @PostMapping("/{wasteId}/likes")
+    public ResponseEntity<ApiResponse<Integer>> addOrDeleteWasteLike(
+            @RequestParam LikeStatus likeStatus,
+            @PathVariable Long wasteId,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+
+        checkIfNotWriter(memberPrincipal, wasteId);
+
+        // TODO likeCount가 변경된 관심수를 반환하도록 변경 예정
+        // 관심 추가 또는 삭제
+        int likeCount = wasteService.addOrDeleteWasteLike(likeStatus, memberPrincipal.id(), wasteId);
+
+        return ResponseEntity.ok(ApiResponse.of(likeCount));
+    }
+
+    /**
+     * 작성자가 아닌지 확인 (작성자인 경우 관심 추가/삭제 할수 없음)
+     */
+    private void checkIfNotWriter(MemberPrincipal memberPrincipal, Long wasteId) {
+        if (wasteService.isWriterOfArticle(wasteId, memberPrincipal.id())) {
+            throw new WasteException(ErrorCode.OWNER_WASTE_CANT_LIKE);
+        }
     }
 }
