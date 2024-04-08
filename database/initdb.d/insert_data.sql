@@ -31,3 +31,6 @@ VALUES (1, 1, '첫 번째 메세지입니다.', now());
 
 insert into transaction_logs(price, waste_id, seller_id, buyer_id, created_at) values
 (1000, 1, 1, 2, now());
+
+insert into alarms(member_id, alarm_type, alarm_args, created_at, read_at)
+values (1, 'CHAT', json_object('fromMemberId', '2', 'targetId', '1'), now(), null);
