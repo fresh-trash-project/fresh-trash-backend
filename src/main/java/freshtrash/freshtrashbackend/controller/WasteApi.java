@@ -2,7 +2,9 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.entity.constants.LikeStatus;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -88,5 +90,29 @@ public class WasteApi {
         if (memberPrincipal.getUserRole() != UserRole.ADMIN
                 && !wasteService.isWriterOfArticle(wasteId, memberPrincipal.id()))
             throw new WasteException(ErrorCode.FORBIDDEN_WASTE);
+    }
+
+    /**
+     * 폐기물 관심 추가 또는 삭제
+     */
+    @PostMapping("/{wasteId}/likes")
+    public ResponseEntity<?> addOrDeleteWasteLike(
+            @RequestBody LikeStatus likeStatus,
+            @PathVariable Long wasteId,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        // 본인 글인지 확인
+        checkIfNotWriter(memberPrincipal, wasteId);
+        int likeCount = wasteService.addOrDeleteWasteLike(likeStatus, memberPrincipal.id(), wasteId);
+
+        return ResponseEntity.ok(ApiResponse.of(likeCount));
+    }
+
+    /**
+     * 작성자가 아닌지 확인
+     */
+    private void checkIfNotWriter(MemberPrincipal memberPrincipal, Long wasteId) {
+        if (wasteService.isWriterOfArticle(wasteId, memberPrincipal.id())) {
+            throw new WasteException(ErrorCode.OWNER_WASTE_CANT_LIKE);
+        }
     }
 }

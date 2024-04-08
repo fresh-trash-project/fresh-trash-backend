@@ -4,8 +4,11 @@ import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
+import freshtrash.freshtrashbackend.entity.WasteLike;
+import freshtrash.freshtrashbackend.entity.constants.LikeStatus;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
 import freshtrash.freshtrashbackend.repository.WasteRepository;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.utils.FileUtils;
@@ -23,6 +26,7 @@ import java.util.Objects;
 public class WasteService {
     private final WasteRepository wasteRepository;
     private final FileService fileService;
+    private final WasteLikeRepository wasteLikeRepository;
 
     @Transactional(readOnly = true)
     public Waste getWasteEntity(Long wasteId) {
@@ -84,5 +88,33 @@ public class WasteService {
      */
     public boolean isWriterOfArticle(Long wasteId, Long memberId) {
         return wasteRepository.existsByIdAndMember_Id(wasteId, memberId);
+    }
+
+    /**
+     * 관심폐기물 표시 또는 제거
+     */
+    public int addOrDeleteWasteLike(LikeStatus likeStatus, Long memberId, Long wasteId) {
+        int updateCount = 0;
+
+        // likeStatus와 데이터가 매치되는지 확인
+        isPossibleLikeUpdate(likeStatus, memberId, wasteId);
+
+        if (likeStatus == LikeStatus.LIKE) {
+            wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
+            updateCount = -1;
+        } else if (likeStatus == LikeStatus.UNLIKE) {
+            wasteLikeRepository.save(WasteLike.of(memberId, wasteId));
+            updateCount = 1;
+        }
+
+        // update likeCount
+        return wasteRepository.updateLikeCount(wasteId, updateCount);
+    }
+
+    public void isPossibleLikeUpdate(LikeStatus likeStatus, Long memberId, Long wasteId) {
+        boolean existsLike = wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId);
+        if (likeStatus == LikeStatus.UNLIKE && existsLike || likeStatus == LikeStatus.LIKE && !existsLike) {
+            throw new WasteException(ErrorCode.UN_MATCHED_LIKE_STATUS);
+        }
     }
 }
