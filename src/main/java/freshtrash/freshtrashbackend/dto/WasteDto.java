@@ -26,29 +26,26 @@ public record WasteDto(
         Address address,
         LocalDateTime createdAt,
         UserInfo userInfo) {
+    public static class WasteDtoBuilder {
+        public WasteDtoBuilder wastePrice(Integer wastePrice) {
+            this.wastePrice = wastePrice;
+            this.sellType = wastePrice == 0 ? SellType.SHARE : SellType.TRANSACTION;
+            return this;
+        }
+    }
+
     public static WasteDto fromEntity(Waste waste) {
-        return WasteDto.builder()
-                .title(waste.getTitle())
-                .content(waste.getContent())
-                .sellType(waste.getWastePrice() == 0 ? SellType.SHARE : SellType.TRANSACTION)
-                .wastePrice(waste.getWastePrice())
-                .likeCount(waste.getLikeCount())
-                .viewCount(waste.getViewCount())
-                .fileName(waste.getFileName())
-                .wasteCategory(waste.getWasteCategory())
-                .wasteStatus(waste.getWasteStatus())
-                .sellStatus(waste.getSellStatus())
-                .address(waste.getAddress())
-                .createdAt(waste.getCreatedAt())
-                .userInfo(UserInfo.fromEntity(waste.getMember()))
-                .build();
+        return WasteDto.of(waste, UserInfo.fromEntity(waste.getMember()));
     }
 
     public static WasteDto fromEntity(Waste waste, MemberPrincipal memberPrincipal) {
+        return WasteDto.of(waste, UserInfo.fromPrincipal(memberPrincipal));
+    }
+
+    private static WasteDto of(Waste waste, UserInfo userInfo) {
         return WasteDto.builder()
                 .title(waste.getTitle())
                 .content(waste.getContent())
-                .sellType(waste.getWastePrice() == 0 ? SellType.SHARE : SellType.TRANSACTION)
                 .wastePrice(waste.getWastePrice())
                 .likeCount(waste.getLikeCount())
                 .viewCount(waste.getViewCount())
@@ -58,7 +55,7 @@ public record WasteDto(
                 .sellStatus(waste.getSellStatus())
                 .address(waste.getAddress())
                 .createdAt(waste.getCreatedAt())
-                .userInfo(UserInfo.fromPrincipal(memberPrincipal))
+                .userInfo(userInfo)
                 .build();
     }
 }

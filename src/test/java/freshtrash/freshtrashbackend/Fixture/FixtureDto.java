@@ -54,7 +54,7 @@ public class FixtureDto {
                 WasteCategory.BEAUTY,
                 WasteStatus.BEST,
                 SellStatus.CLOSE,
-                Address.of("12345", "state", "city", "district", "detail"),
+                Fixture.createAddress(),
                 LocalDateTime.now(),
                 new UserInfo("test", 4, "test.png", Fixture.createAddress()));
     }

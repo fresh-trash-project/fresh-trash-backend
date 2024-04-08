@@ -23,6 +23,12 @@ public record MemberPrincipal(
         String fileName,
         Address address)
         implements UserDetails {
+    public static class MemberPrincipalBuilder {
+        public MemberPrincipalBuilder authorities(UserRole userRole) {
+            this.authorities = Set.of(new SimpleGrantedAuthority(userRole.getName()));
+            return this;
+        }
+    }
 
     public static MemberPrincipal fromEntity(Member member) {
         return MemberPrincipal.builder()
@@ -30,8 +36,7 @@ public record MemberPrincipal(
                 .email(member.getEmail())
                 .password(member.getPassword())
                 .nickname(member.getNickname())
-                .authorities(
-                        Set.of(new SimpleGrantedAuthority(member.getUserRole().getName())))
+                .authorities(member.getUserRole())
                 .rating(member.getRating())
                 .fileName(member.getFileName())
                 .address(member.getAddress())
@@ -43,8 +48,7 @@ public record MemberPrincipal(
                 .id(tokenInfo.id())
                 .email(tokenInfo.email())
                 .nickname(tokenInfo.fileName())
-                .authorities(
-                        Set.of(new SimpleGrantedAuthority(tokenInfo.userRole().getName())))
+                .authorities(tokenInfo.userRole())
                 .rating(tokenInfo.rating())
                 .fileName(tokenInfo.fileName())
                 .address(tokenInfo.address())

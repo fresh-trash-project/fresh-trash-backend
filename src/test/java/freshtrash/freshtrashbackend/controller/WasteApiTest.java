@@ -110,7 +110,13 @@ class WasteApiTest {
                 wasteStatus,
                 sellStatus,
                 wastePrice,
-                Address.of(zipcode, state, city, district, detail));
+                Address.builder()
+                        .zipcode(zipcode)
+                        .state(state)
+                        .city(city)
+                        .district(district)
+                        .detail(detail)
+                        .build());
         // when
         mvc.perform(multipart(HttpMethod.POST, "/api/v1/wastes")
                         .file("imgFile", imgFile.getBytes())
