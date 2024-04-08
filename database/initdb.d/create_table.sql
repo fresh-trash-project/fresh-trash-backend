@@ -71,7 +71,6 @@ CREATE TABLE `waste_likes`
 
 CREATE UNIQUE INDEX member_id_and_waste_id ON waste_likes (member_id, waste_id);
 
-
 CREATE TABLE `chat_rooms`
 (
     `id`            bigint AUTO_INCREMENT NOT NULL,
@@ -116,3 +115,16 @@ CREATE TABLE `transaction_logs`
     foreign key (`buyer_id`) references `members` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='거래내역';
+
+CREATE TABLE `alarms`
+(
+    `id`         bigint AUTO_INCREMENT NOT NULL,
+    `member_id`  bigint                NOT NULL,
+    `alarm_type` varchar(255)          NOT NULL,
+    `alarm_args` json                  NOT NULL,
+    `created_at` datetime              NOT NULL,
+    `read_at`    datetime,
+    PRIMARY KEY (`id`),
+    foreign key (`member_id`) references members (id) on delete cascade
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='알람';
