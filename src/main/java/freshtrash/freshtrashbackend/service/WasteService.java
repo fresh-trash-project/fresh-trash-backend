@@ -8,7 +8,7 @@ import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.WasteReview;
 import freshtrash.freshtrashbackend.exception.ReviewException;
 import freshtrash.freshtrashbackend.entity.WasteLike;
-import freshtrash.freshtrashbackend.entity.constants.LikeStatus;
+import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
