@@ -78,7 +78,7 @@ public class WasteApi {
             @PathVariable Long wasteId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
         wasteService.deleteWaste(wasteId, wasteService.findFileNameOfWaste(wasteId));
-        return ResponseEntity.ok(null);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     /**
