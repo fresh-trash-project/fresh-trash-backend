@@ -5,7 +5,7 @@ import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.WasteLike;
-import freshtrash.freshtrashbackend.entity.constants.LikeStatus;
+import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
