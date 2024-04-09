@@ -135,6 +135,7 @@ public class WasteService {
      */
     public void isPossibleLikeUpdate(LikeStatus likeStatus, Long memberId, Long wasteId) {
         boolean existsLike = wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId);
+
         if ((likeStatus == LikeStatus.LIKE && existsLike) || (likeStatus == LikeStatus.UNLIKE && !existsLike)) {
             throw new WasteException(ErrorCode.UN_MATCHED_LIKE_STATUS);
         }
