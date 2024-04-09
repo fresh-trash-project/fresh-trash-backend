@@ -96,12 +96,15 @@ public class WasteApi {
      * 폐기물 관심 추가 또는 삭제
      */
     @PostMapping("/{wasteId}/likes")
-    public ResponseEntity<?> addOrDeleteWasteLike(
-            @RequestBody LikeStatus likeStatus,
+    public ResponseEntity<ApiResponse<Integer>> addOrDeleteWasteLike(
+            @RequestParam LikeStatus likeStatus,
             @PathVariable Long wasteId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        // 본인 글인지 확인
+
+        // 작성자가 아닌지 확인
         checkIfNotWriter(memberPrincipal, wasteId);
+
+        // 관심 추가 또는 삭제
         int likeCount = wasteService.addOrDeleteWasteLike(likeStatus, memberPrincipal.id(), wasteId);
 
         return ResponseEntity.ok(ApiResponse.of(likeCount));
