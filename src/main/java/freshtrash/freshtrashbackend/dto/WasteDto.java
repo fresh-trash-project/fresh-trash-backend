@@ -7,9 +7,11 @@ import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
 import freshtrash.freshtrashbackend.entity.constants.WasteStatus;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 
+@Builder
 public record WasteDto(
         String title,
         String content,
@@ -24,37 +26,36 @@ public record WasteDto(
         Address address,
         LocalDateTime createdAt,
         UserInfo userInfo) {
+    public static class WasteDtoBuilder {
+        public WasteDtoBuilder wastePrice(Integer wastePrice) {
+            this.wastePrice = wastePrice;
+            this.sellType = wastePrice == 0 ? SellType.SHARE : SellType.TRANSACTION;
+            return this;
+        }
+    }
+
     public static WasteDto fromEntity(Waste waste) {
-        return new WasteDto(
-                waste.getTitle(),
-                waste.getContent(),
-                waste.getWastePrice() == 0 ? SellType.SHARE : SellType.TRANSACTION,
-                waste.getWastePrice(),
-                waste.getLikeCount(),
-                waste.getViewCount(),
-                waste.getFileName(),
-                waste.getWasteCategory(),
-                waste.getWasteStatus(),
-                waste.getSellStatus(),
-                waste.getAddress(),
-                waste.getCreatedAt(),
-                UserInfo.fromEntity(waste.getMember()));
+        return WasteDto.of(waste, UserInfo.fromEntity(waste.getMember()));
     }
 
     public static WasteDto fromEntity(Waste waste, MemberPrincipal memberPrincipal) {
-        return new WasteDto(
-                waste.getTitle(),
-                waste.getContent(),
-                waste.getWastePrice() == 0 ? SellType.SHARE : SellType.TRANSACTION,
-                waste.getWastePrice(),
-                waste.getLikeCount(),
-                waste.getViewCount(),
-                waste.getFileName(),
-                waste.getWasteCategory(),
-                waste.getWasteStatus(),
-                waste.getSellStatus(),
-                waste.getAddress(),
-                waste.getCreatedAt(),
-                UserInfo.fromPrincipal(memberPrincipal));
+        return WasteDto.of(waste, UserInfo.fromPrincipal(memberPrincipal));
+    }
+
+    private static WasteDto of(Waste waste, UserInfo userInfo) {
+        return WasteDto.builder()
+                .title(waste.getTitle())
+                .content(waste.getContent())
+                .wastePrice(waste.getWastePrice())
+                .likeCount(waste.getLikeCount())
+                .viewCount(waste.getViewCount())
+                .fileName(waste.getFileName())
+                .wasteCategory(waste.getWasteCategory())
+                .wasteStatus(waste.getWasteStatus())
+                .sellStatus(waste.getSellStatus())
+                .address(waste.getAddress())
+                .createdAt(waste.getCreatedAt())
+                .userInfo(userInfo)
+                .build();
     }
 }

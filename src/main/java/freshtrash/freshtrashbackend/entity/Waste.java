@@ -93,6 +93,7 @@ public class Waste extends AuditingAt implements Persistable<Long> {
         this.viewCount = 0;
     }
 
+    @Builder
     private Waste(
             String title,
             String content,
@@ -114,17 +115,11 @@ public class Waste extends AuditingAt implements Persistable<Long> {
         this.memberId = memberId;
     }
 
-    public static Waste of(
-            String title,
-            String content,
-            Integer wastePrice,
-            String fileName,
-            WasteCategory wasteCategory,
-            WasteStatus wasteStatus,
-            SellStatus sellStatus,
-            Address address,
-            Long memberId) {
-        return new Waste(title, content, wastePrice, fileName, wasteCategory, wasteStatus, sellStatus, address, memberId);
+    public static class WasteBuilder {
+        public WasteBuilder address(Address address) {
+            this.address = address.allBlank() ? null : address;
+            return this;
+        }
     }
 
     @Override

@@ -11,16 +11,17 @@ import java.nio.charset.StandardCharsets;
 
 public class Fixture {
     public static Waste createWaste() {
-        return Waste.of(
-                "title",
-                "content",
-                0,
-                "test.png",
-                WasteCategory.BEAUTY,
-                WasteStatus.BEST,
-                SellStatus.CLOSE,
-                createAddress(),
-                1L);
+        return Waste.builder()
+                .title("title")
+                .content("content")
+                .wastePrice(1000)
+                .fileName("test.png")
+                .wasteCategory(WasteCategory.BEAUTY)
+                .wasteStatus(WasteStatus.BEST)
+                .sellStatus(SellStatus.CLOSE)
+                .address(createAddress())
+                .memberId(1L)
+                .build();
     }
 
     public static MockMultipartFile createMultipartFile(String content) {
@@ -29,7 +30,13 @@ public class Fixture {
     }
 
     public static Address createAddress() {
-        return Address.of("12345", "state", "city", "district", "detail");
+        return Address.builder()
+                .zipcode("12345")
+                .state("state")
+                .city("city")
+                .district("district")
+                .detail("detail")
+                .build();
     }
 
     public static Member createMember(
