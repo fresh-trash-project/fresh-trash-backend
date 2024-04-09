@@ -1,8 +1,11 @@
 package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.WasteDto;
+import freshtrash.freshtrashbackend.dto.WasteReviewDto;
+import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.entity.WasteReview;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -88,5 +91,21 @@ public class WasteApi {
         if (memberPrincipal.getUserRole() != UserRole.ADMIN
                 && !wasteService.isWriterOfArticle(wasteId, memberPrincipal.id()))
             throw new WasteException(ErrorCode.FORBIDDEN_WASTE);
+    }
+
+    /**
+     * 폐기물 리뷰 작성
+     */
+    @PostMapping("/{wasteId}/reviews")
+    private ResponseEntity<WasteReviewDto> addWasteReview(
+            @RequestBody @Valid ReviewRequest reviewRequest,
+            @PathVariable Long wasteId,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+
+        // TODO : transaction 거래 확인
+
+        WasteReviewDto wasteReviewDto =
+                WasteReviewDto.fromEntity(wasteService.insertWasteReview(reviewRequest, wasteId, memberPrincipal.id()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(wasteReviewDto);
     }
 }

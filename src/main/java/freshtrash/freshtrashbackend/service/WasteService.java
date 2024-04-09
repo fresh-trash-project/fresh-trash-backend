@@ -1,12 +1,16 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.dto.WasteDto;
+import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
+import freshtrash.freshtrashbackend.entity.WasteReview;
+import freshtrash.freshtrashbackend.exception.ReviewException;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.WasteRepository;
+import freshtrash.freshtrashbackend.repository.WasteReviewRepository;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,7 @@ import java.util.Objects;
 public class WasteService {
     private final WasteRepository wasteRepository;
     private final FileService fileService;
+    private final WasteReviewRepository wasteReviewRepository;
 
     @Transactional(readOnly = true)
     public Waste getWasteEntity(Long wasteId) {
@@ -84,5 +89,24 @@ public class WasteService {
      */
     public boolean isWriterOfArticle(Long wasteId, Long memberId) {
         return wasteRepository.existsByIdAndMember_Id(wasteId, memberId);
+    }
+
+    /**
+     * 폐기물 리뷰 작성
+     */
+    public WasteReview insertWasteReview(ReviewRequest reviewRequest, Long wasteId, Long memberId) {
+        // 이미 리뷰가 등록되있는지 확인
+        boolean exists = wasteReviewRepository.existsByWasteIdAndMemberId(wasteId, memberId);
+        if (exists) {
+            throw new ReviewException(ErrorCode.ALREADY_EXISTS_REVIEW);
+        }
+
+        WasteReview wasteReview = WasteReview.builder()
+                .rating(reviewRequest.rate())
+                .memberId(memberId)
+                .wasteId(wasteId)
+                .review(reviewRequest.content())
+                .build();
+        return wasteReviewRepository.save(wasteReview);
     }
 }
