@@ -122,6 +122,7 @@ public class WasteApi {
         checkIfNotWriter(memberPrincipal, wasteId);
 
         // TODO likeCount가 변경된 관심수를 반환하도록 변경 예정
+
         // 관심 추가 또는 삭제
         int likeCount = wasteService.addOrDeleteWasteLike(likeStatus, memberPrincipal.id(), wasteId);
 

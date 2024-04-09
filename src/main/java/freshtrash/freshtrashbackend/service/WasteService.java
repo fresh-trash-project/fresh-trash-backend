@@ -5,13 +5,10 @@ import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
-<<<<<<< HEAD
 import freshtrash.freshtrashbackend.entity.WasteReview;
 import freshtrash.freshtrashbackend.exception.ReviewException;
-=======
 import freshtrash.freshtrashbackend.entity.WasteLike;
 import freshtrash.freshtrashbackend.entity.constants.LikeStatus;
->>>>>>> 7d8bedc (feat: #30-관심폐기물 추가 또는 삭제 구현)
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
