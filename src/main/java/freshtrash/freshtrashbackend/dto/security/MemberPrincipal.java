@@ -8,8 +8,10 @@ import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 @Builder
@@ -21,8 +23,10 @@ public record MemberPrincipal(
         String nickname,
         double rating,
         String fileName,
-        Address address)
-        implements UserDetails {
+        Address address,
+        Map<String, Object> oAuth2Attributes)
+        implements UserDetails, OAuth2User {
+
     public static class MemberPrincipalBuilder {
         public MemberPrincipalBuilder authorities(UserRole userRole) {
             this.authorities = Set.of(new SimpleGrantedAuthority(userRole.getName()));
@@ -60,6 +64,16 @@ public record MemberPrincipal(
                 .map(r -> UserRole.valueOf(r.getAuthority().substring(5)))
                 .findFirst()
                 .orElse(UserRole.ANONYMOUS);
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return oAuth2Attributes;
+    }
+
+    @Override
+    public String getName() {
+        return email;
     }
 
     @Override
