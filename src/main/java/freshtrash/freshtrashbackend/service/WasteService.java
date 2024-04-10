@@ -100,11 +100,11 @@ public class WasteService {
         isPossibleLikeUpdate(likeStatus, memberId, wasteId);
 
         if (likeStatus == LikeStatus.LIKE) {
-            wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
-            updateCount = -1;
-        } else if (likeStatus == LikeStatus.UNLIKE) {
             wasteLikeRepository.save(WasteLike.of(memberId, wasteId));
             updateCount = 1;
+        } else if (likeStatus == LikeStatus.UNLIKE) {
+            wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
+            updateCount = -1;
         }
 
         // update likeCount
@@ -112,11 +112,12 @@ public class WasteService {
     }
 
     /**
-     * 관심추가 또는 삭제가 가능한지 체크(likeStatus 상태와 wasteLike 테이블 데이터 일치하는지 확인)
+     * 관심추가 또는 삭제가 가능한지 체크
+     * (likeStatus가 LIKE -> 관심추가된 데이터가 없어야하고, UNLIKE -> 관심추가된 데이터가 있어야한다)
      */
     public void isPossibleLikeUpdate(LikeStatus likeStatus, Long memberId, Long wasteId) {
         boolean existsLike = wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId);
-        if ((likeStatus == LikeStatus.UNLIKE && existsLike) || (likeStatus == LikeStatus.LIKE && !existsLike)) {
+        if ((likeStatus == LikeStatus.LIKE && existsLike) || (likeStatus == LikeStatus.UNLIKE && !existsLike)) {
             throw new WasteException(ErrorCode.UN_MATCHED_LIKE_STATUS);
         }
     }
