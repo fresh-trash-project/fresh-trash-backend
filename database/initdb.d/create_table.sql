@@ -40,3 +40,15 @@ CREATE TABLE `wastes`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='폐기물';
 
+CREATE TABLE `alarms`
+(
+    `id`         bigint AUTO_INCREMENT NOT NULL,
+    `member_id`  bigint                NOT NULL,
+    `alarm_type` varchar(255)          NOT NULL,
+    `alarm_args` json                  NOT NULL,
+    `created_at` datetime              NOT NULL,
+    `read_at`    datetime,
+    PRIMARY KEY (`id`),
+    foreign key (`member_id`) references members (id) on delete cascade
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='알람';
