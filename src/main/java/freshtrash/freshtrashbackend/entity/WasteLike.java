@@ -12,7 +12,9 @@ import java.util.Objects;
 
 @Getter
 @ToString
-@Table(name = "waste_likes")
+@Table(
+        name = "waste_likes",
+        indexes = @Index(name = "member_id_and_waste_id", columnList = "memberId, wasteId", unique = true))
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
