@@ -51,3 +51,5 @@ CREATE TABLE `waste_likes`
     foreign key (`waste_id`) references wastes (id) on delete cascade
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='관심 폐기물';
+
+CREATE UNIQUE INDEX member_id_and_waste_id ON waste_likes (member_id, waste_id);
