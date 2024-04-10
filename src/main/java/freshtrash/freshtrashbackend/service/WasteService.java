@@ -96,17 +96,12 @@ public class WasteService {
      */
     public WasteReview insertWasteReview(ReviewRequest reviewRequest, Long wasteId, Long memberId) {
         // 이미 리뷰가 등록되있는지 확인
-        boolean exists = wasteReviewRepository.existsByWasteIdAndMemberId(wasteId, memberId);
+        boolean exists = wasteReviewRepository.existsByWasteId(wasteId);
         if (exists) {
             throw new ReviewException(ErrorCode.ALREADY_EXISTS_REVIEW);
         }
 
-        WasteReview wasteReview = WasteReview.builder()
-                .rating(reviewRequest.rate())
-                .memberId(memberId)
-                .wasteId(wasteId)
-                .review(reviewRequest.content())
-                .build();
+        WasteReview wasteReview = reviewRequest.toEntity(wasteId, memberId);
         return wasteReviewRepository.save(wasteReview);
     }
 }
