@@ -1,11 +1,14 @@
 package freshtrash.freshtrashbackend.service;
 
+import freshtrash.freshtrashbackend.dto.AlarmDto;
 import freshtrash.freshtrashbackend.exception.AlarmException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.AlarmRepository;
 import freshtrash.freshtrashbackend.repository.EmitterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -20,6 +23,17 @@ public class AlarmService {
     private final EmitterRepository emitterRepository;
     private final AlarmRepository alarmRepository;
 
+    /**
+     * 전체 알람 조회
+     * - 읽지 않은 알람(readAt == null)만 조회
+     */
+    public Page<AlarmDto> getAlarms(Long memberId, Pageable pageable) {
+        return alarmRepository.findAllByMember_IdAndReadAtIsNull(memberId, pageable).map(AlarmDto::fromEntity);
+    }
+
+    /**
+     * SSE 연결 요청
+     */
     public SseEmitter connectAlarm(Long memberId) {
         SseEmitter sseEmitter = new SseEmitter(SSE_TIMEOUT);
         emitterRepository.save(memberId, sseEmitter);
