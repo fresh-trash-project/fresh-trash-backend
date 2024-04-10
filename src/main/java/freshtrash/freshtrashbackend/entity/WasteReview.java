@@ -44,19 +44,16 @@ public class WasteReview implements Persistable<Long> {
     @Column(nullable = false)
     private int rating;
 
-    private String review;
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
     @Column(nullable = false, updatable = false)
     protected LocalDateTime createdAt;
 
     @Builder
-    private WasteReview(Long memberId, Long wasteId, int rating, String review) {
+    private WasteReview(Long memberId, Long wasteId, int rating) {
         this.memberId = memberId;
         this.wasteId = wasteId;
         this.rating = rating;
-        this.review = review;
     }
 
     @Override

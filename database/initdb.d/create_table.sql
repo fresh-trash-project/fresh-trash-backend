@@ -46,7 +46,6 @@ CREATE TABLE `waste_reviews`
     `member_id`  bigint                NOT NULL,
     `waste_id`   bigint                NOT NULL,
     `rating`     integer               NOT NULL,
-    `review`     varchar(255),
     `created_at` datetime              NOT NULL,
     PRIMARY KEY (`id`),
     foreign key (`member_id`) references members (id) on delete cascade,
