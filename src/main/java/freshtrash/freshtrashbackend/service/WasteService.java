@@ -93,10 +93,10 @@ public class WasteService {
     /**
      * 관심폐기물 표시 또는 제거
      */
+    @Transactional
     public int addOrDeleteWasteLike(LikeStatus likeStatus, Long memberId, Long wasteId) {
         int updateCount = 0;
 
-        // likeStatus와 데이터가 매치되는지 확인
         isPossibleLikeUpdate(likeStatus, memberId, wasteId);
 
         if (likeStatus == LikeStatus.LIKE) {
@@ -111,6 +111,9 @@ public class WasteService {
         return wasteRepository.updateLikeCount(wasteId, updateCount);
     }
 
+    /**
+     * 관심추가 또는 삭제가 가능한지 체크(likeStatus 상태와 wasteLike 테이블 데이터 일치하는지 확인)
+     */
     public void isPossibleLikeUpdate(LikeStatus likeStatus, Long memberId, Long wasteId) {
         boolean existsLike = wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId);
         if ((likeStatus == LikeStatus.UNLIKE && existsLike) || (likeStatus == LikeStatus.LIKE && !existsLike)) {
