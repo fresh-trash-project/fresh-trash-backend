@@ -112,6 +112,7 @@ public class WasteService {
     /**
      * 관심폐기물 표시 또는 제거
      */
+    @Transactional
     public int addOrDeleteWasteLike(LikeStatus likeStatus, Long memberId, Long wasteId) {
         int updateCount = 0;
 
