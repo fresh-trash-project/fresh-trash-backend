@@ -11,8 +11,11 @@ values ('abc@never.com', '$2a$10$4mbVj4n1KeBmNsQCeXZpZujVo.cmXMdPIoDUQ1c1jkR87Ld
 insert into wastes(member_id, title, content, waste_price, like_count, view_count, file_name, waste_category,
                    waste_status,
                    sell_status, address, created_at, modified_at, transaction_at)
-values (1, 'title', 'content', 0, 0, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING',
+values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING',
         json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
+        now(), null, null),
+       (2, '보물단지1', '폐기물 설명 내용', 0, 0, 0, '보물단지이미지.png', 'HEALTH', 'GOOD', 'ONGOING',
+        json_object('zipcode', '16255', 'state', '경기도', 'city', '수원시', 'district', '팔달구', 'detail', '창룡대로'),
         now(), null, null);
 
 
