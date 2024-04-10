@@ -119,11 +119,11 @@ public class WasteService {
         isPossibleLikeUpdate(likeStatus, memberId, wasteId);
 
         if (likeStatus == LikeStatus.LIKE) {
-            wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
-            updateCount = -1;
-        } else if (likeStatus == LikeStatus.UNLIKE) {
             wasteLikeRepository.save(WasteLike.of(memberId, wasteId));
             updateCount = 1;
+        } else if (likeStatus == LikeStatus.UNLIKE) {
+            wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
+            updateCount = -1;
         }
 
         // update likeCount
