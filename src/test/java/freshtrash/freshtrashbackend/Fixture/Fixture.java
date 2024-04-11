@@ -46,10 +46,19 @@ public class Fixture {
             LoginType loginType,
             UserRole userRole,
             AccountStatus accountStatus) {
-        Member member = Member.of(email, password, nickname, loginType, userRole, accountStatus);
+        Member member = Member.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .loginType(loginType)
+                .userRole(userRole)
+                .accountStatus(accountStatus)
+                .build();
+
         ReflectionTestUtils.setField(member, "id", 1L);
         ReflectionTestUtils.setField(member, "fileName", "test.png");
         ReflectionTestUtils.setField(member, "address", Fixture.createAddress());
+
         return member;
     }
 }
