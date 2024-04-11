@@ -84,4 +84,11 @@ public class MemberService {
                 member.getFileName(),
                 member.getAddress());
     }
+
+    /**
+     * member 정보 조회
+     */
+    public Member getMemberEntity(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+    }
 }
