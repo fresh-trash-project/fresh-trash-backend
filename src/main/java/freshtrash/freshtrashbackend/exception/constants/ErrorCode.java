@@ -19,6 +19,9 @@ public enum ErrorCode {
     NOT_FOUND_WASTE(HttpStatus.NOT_FOUND, "폐기물 정보가 존재하지 않습니다."),
     FORBIDDEN_WASTE(HttpStatus.FORBIDDEN, "폐기물에 대한 권한이 없습니다."),
 
+    // Review
+    ALREADY_EXISTS_REVIEW(HttpStatus.BAD_REQUEST, "이미 리뷰가 등록되었습니다."),
+
     // Mail
     AUTH_CODE_UNMATCHED(HttpStatus.BAD_REQUEST, "잘못된 인증코드입니다."),
     EMPTY_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증코드가 입력되지 않았습니다."),
