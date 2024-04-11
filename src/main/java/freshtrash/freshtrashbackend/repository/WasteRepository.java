@@ -1,24 +1,30 @@
 package freshtrash.freshtrashbackend.repository;
 
+import com.querydsl.core.types.dsl.StringPath;
+import freshtrash.freshtrashbackend.entity.QWaste;
 import freshtrash.freshtrashbackend.entity.Waste;
-
+import freshtrash.freshtrashbackend.repository.custom.CustomWasteRepository;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
+import org.springframework.data.querydsl.binding.QuerydslBindings;
 
 import java.util.Optional;
 
-public interface WasteRepository extends JpaRepository<Waste, Long> {
+public interface WasteRepository
+        extends JpaRepository<Waste, Long>, CustomWasteRepository, QuerydslBinderCustomizer<QWaste> {
+    @Override
+    default void customize(QuerydslBindings bindings, QWaste root) {
+        bindings.excludeUnlistedProperties(true);
+        bindings.including(root.title);
+        bindings.bind(String.class).first((StringPath path, String value) -> path.containsIgnoreCase(value));
+    }
 
     @EntityGraph(attributePaths = "member")
     Optional<Waste> findById(Long wasteId);
-
-    @EntityGraph(attributePaths = "member")
-    Page<Waste> findAll(Pageable pageable);
 
     Optional<FileNameSummary> findFileNameById(Long wasteId);
 

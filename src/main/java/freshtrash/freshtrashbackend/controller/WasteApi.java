@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.controller;
 
+import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.WasteReviewDto;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
@@ -7,6 +8,7 @@ import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
+import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -14,6 +16,7 @@ import freshtrash.freshtrashbackend.service.WasteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,11 +45,15 @@ public class WasteApi {
 
     /**
      * 폐기물 목록 조회
+     * @param district 읍면동
+     * @param predicate 제목 검색 (e.g. ?title={검색 키워드})
      */
     @GetMapping
     public ResponseEntity<Page<WasteDto>> getWastes(
+            @RequestParam(required = false) String district,
+            @QuerydslPredicate(root = Waste.class) Predicate predicate,
             @PageableDefault(size = 5, sort = "createdAt", direction = DESC) Pageable pageable) {
-        Page<WasteDto> wastes = wasteService.getWastes(pageable);
+        Page<WasteDto> wastes = wasteService.getWastes(district, predicate, pageable);
         return ResponseEntity.ok(wastes);
     }
 
@@ -70,7 +77,7 @@ public class WasteApi {
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
         WasteDto wasteDto = wasteService.updateWaste(
-                imgFile, wasteRequest, wasteService.findFileNameOfWaste(wasteId), memberPrincipal);
+                imgFile, wasteRequest, wasteService.findFileNameOfWaste(wasteId).fileName(), memberPrincipal);
         return ResponseEntity.ok(wasteDto);
     }
 
@@ -81,7 +88,7 @@ public class WasteApi {
     public ResponseEntity<Void> deleteWaste(
             @PathVariable Long wasteId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
-        wasteService.deleteWaste(wasteId, wasteService.findFileNameOfWaste(wasteId));
+        wasteService.deleteWaste(wasteId, wasteService.findFileNameOfWaste(wasteId).fileName());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 

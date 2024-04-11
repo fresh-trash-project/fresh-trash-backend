@@ -11,6 +11,7 @@ import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
 import freshtrash.freshtrashbackend.entity.constants.WasteStatus;
+import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.service.WasteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -138,7 +139,7 @@ class WasteApiTest {
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         WasteDto wasteDto = FixtureDto.createWasteDto();
         given(wasteService.isWriterOfArticle(wasteId, memberId)).willReturn(true);
-        given(wasteService.findFileNameOfWaste(anyLong())).willReturn("test.png");
+        given(wasteService.findFileNameOfWaste(anyLong())).willReturn(new FileNameSummary("test.png"));
         given(wasteService.updateWaste(
                         any(MultipartFile.class), any(WasteRequest.class), anyString(), any(MemberPrincipal.class)))
                 .willReturn(wasteDto);
