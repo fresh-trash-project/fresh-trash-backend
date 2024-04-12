@@ -14,6 +14,9 @@ import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Table(name = "members")
 @Getter
@@ -60,14 +63,14 @@ public class Member extends AuditingAt implements Persistable<Long> {
     private AccountStatus accountStatus;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member", cascade = ALL, fetch = LAZY)
     private Set<Waste> wastes = new LinkedHashSet<>();
 
     @PrePersist
     private void prePersist() {
         this.rating = 0;
     }
-    
+
     @Builder // 빌더 패턴 적용
     public Member(String email, String password, String nickname, Address address, String fileName, LoginType loginType, UserRole userRole, AccountStatus accountStatus) {
         this.email = email;
