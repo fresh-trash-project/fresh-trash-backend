@@ -63,6 +63,11 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Waste> wastes = new LinkedHashSet<>();
 
+    @PrePersist
+    private void prePersist() {
+        this.rating = 0;
+    }
+    
     @Builder // 빌더 패턴 적용
     public Member(String email, String password, String nickname, Address address, String fileName, LoginType loginType, UserRole userRole, AccountStatus accountStatus) {
         this.email = email;
@@ -73,7 +78,6 @@ public class Member extends AuditingAt implements Persistable<Long> {
         this.loginType = loginType;
         this.userRole = userRole;
         this.accountStatus = accountStatus;
-        this.rating = 0;
     }
 
     @Override
