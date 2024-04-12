@@ -5,6 +5,7 @@ import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.entity.constants.LoginType;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.security.CustomOAuth2SuccessHandler;
 import freshtrash.freshtrashbackend.security.Http401UnauthorizedAuthenticationEntryPoint;
 import freshtrash.freshtrashbackend.security.SecurityConfig;
 import freshtrash.freshtrashbackend.security.TokenProvider;
@@ -26,6 +27,10 @@ public class TestSecurityConfig {
 
     @MockBean
     private Http401UnauthorizedAuthenticationEntryPoint http401UnauthorizedAuthenticationEntryPoint;
+
+    @MockBean
+    private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+
 
     @BeforeTestMethod
     void securitySetUp() {
