@@ -18,10 +18,10 @@ import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "members")
 @Getter
 @ToString(callSuper = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Member extends AuditingAt implements Persistable<Long> {
@@ -66,34 +66,16 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @OneToMany(mappedBy = "member", cascade = ALL, fetch = LAZY)
     private Set<Waste> wastes = new LinkedHashSet<>();
 
-    @PrePersist
-    private void prePersist() {
-        this.rating = 0;
-    }
-
-    private Member(
-            String email,
-            String password,
-            String nickname,
-            LoginType loginType,
-            UserRole userRole,
-            AccountStatus accountStatus) {
+    @Builder // 빌더 패턴 적용
+    public Member(String email, String password, String nickname, Address address, String fileName, LoginType loginType, UserRole userRole, AccountStatus accountStatus) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.address = address;
+        this.fileName = fileName;
         this.loginType = loginType;
         this.userRole = userRole;
         this.accountStatus = accountStatus;
-    }
-
-    public static Member of(
-            String email,
-            String password,
-            String nickname,
-            LoginType loginType,
-            UserRole userRole,
-            AccountStatus accountStatus) {
-        return new Member(email, password, nickname, loginType, userRole, accountStatus);
     }
 
     @Override
