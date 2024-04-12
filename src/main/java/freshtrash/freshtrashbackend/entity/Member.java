@@ -40,13 +40,16 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @Column(nullable = false)
     private double rating;
 
+    @Setter
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Setter
     @Type(type = "json")
     @Column(columnDefinition = "longtext")
     private Address address;
 
+    @Setter
     @Column
     private String fileName;
 
@@ -67,7 +70,15 @@ public class Member extends AuditingAt implements Persistable<Long> {
     private Set<Waste> wastes = new LinkedHashSet<>();
 
     @Builder // 빌더 패턴 적용
-    public Member(String email, String password, String nickname, Address address, String fileName, LoginType loginType, UserRole userRole, AccountStatus accountStatus) {
+    public Member(
+            String email,
+            String password,
+            String nickname,
+            Address address,
+            String fileName,
+            LoginType loginType,
+            UserRole userRole,
+            AccountStatus accountStatus) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;

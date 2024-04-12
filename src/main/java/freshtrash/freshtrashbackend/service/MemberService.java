@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
+import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.exception.AuthException;
@@ -7,9 +8,13 @@ import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
 import freshtrash.freshtrashbackend.security.TokenProvider;
+import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +22,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
+    private final FileService fileService;
 
     public Member getMemberEntityByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
@@ -90,5 +96,32 @@ public class MemberService {
      */
     public Member getMemberEntity(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+    }
+
+    public Member updateMember(Long memberId, MemberRequest memberRequest, MultipartFile imgFile) {
+        String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
+        Member member =
+                memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+
+        if (checkNicknameDuplication(memberRequest.nickname())) {
+            throw new MemberException(ErrorCode.ALREADY_EXISTS_NICKNAME);
+        }
+
+        // 파일은 유효할 경우에만 수정
+        if (FileUtils.isValid(imgFile)) {
+            String savedFileName = member.getFileName();
+            member.setFileName(updatedFileName);
+            // 수정된 파일 저장
+            fileService.uploadFile(imgFile, updatedFileName);
+
+            if (!Objects.isNull(savedFileName) && !savedFileName.isBlank()) {
+                // 이전 파일 삭제
+                fileService.deleteFileIfExists(savedFileName);
+            }
+        }
+
+        member.setNickname(memberRequest.nickname());
+        member.setAddress(memberRequest.address());
+        return memberRepository.save(member);
     }
 }
