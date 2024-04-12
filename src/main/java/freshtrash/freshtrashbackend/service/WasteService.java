@@ -34,12 +34,10 @@ public class WasteService {
     private final WasteReviewRepository wasteReviewRepository;
     private final WasteLikeRepository wasteLikeRepository;
 
-    @Transactional(readOnly = true)
     public Waste getWasteEntity(Long wasteId) {
         return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 
-    @Transactional(readOnly = true)
     public Page<WasteDto> getWastes(String district, Predicate predicate, Pageable pageable) {
         return wasteRepository.findAll(district, predicate, pageable).map(WasteDto::fromEntity);
     }
@@ -81,7 +79,6 @@ public class WasteService {
         fileService.deleteFileIfExists(savedFileName);
     }
 
-    @Transactional(readOnly = true)
     public FileNameSummary findFileNameOfWaste(Long wasteId) {
         return wasteRepository
                 .findFileNameById(wasteId)
