@@ -18,7 +18,7 @@ public class MemberApi {
     /**
      * 유저 정보 조회
      */
-    @GetMapping("{memberId}")
+    @GetMapping("/{memberId}")
     public ResponseEntity<UserInfo> getMember(@PathVariable Long memberId) {
         UserInfo userInfo = UserInfo.fromEntity(memberService.getMemberEntity(memberId));
         return ResponseEntity.ok(userInfo);
