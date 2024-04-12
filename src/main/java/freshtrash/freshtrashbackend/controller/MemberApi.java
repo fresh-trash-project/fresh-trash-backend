@@ -1,8 +1,6 @@
 package freshtrash.freshtrashbackend.controller;
 
-import freshtrash.freshtrashbackend.dto.UserInfo;
 import freshtrash.freshtrashbackend.dto.response.MemberResponse;
-import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
