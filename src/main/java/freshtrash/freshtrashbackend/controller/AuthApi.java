@@ -24,7 +24,7 @@ public class AuthApi {
      * 회원가입
      */
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
+    public ResponseEntity<ApiResponse<String>> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
         memberService.registerMember(signUpRequest.toEntity());
         return ResponseEntity.ok(ApiResponse.of("you're successfully sign up. you can be login."));
     }
