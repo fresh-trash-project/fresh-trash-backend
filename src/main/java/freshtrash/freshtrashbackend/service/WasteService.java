@@ -1,14 +1,15 @@
 package freshtrash.freshtrashbackend.service;
 
+import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.dto.WasteDto;
+import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
+import freshtrash.freshtrashbackend.entity.WasteLike;
 import freshtrash.freshtrashbackend.entity.WasteReview;
 import freshtrash.freshtrashbackend.exception.ReviewException;
-import freshtrash.freshtrashbackend.entity.WasteLike;
-import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
@@ -33,14 +34,12 @@ public class WasteService {
     private final WasteReviewRepository wasteReviewRepository;
     private final WasteLikeRepository wasteLikeRepository;
 
-    @Transactional(readOnly = true)
     public Waste getWasteEntity(Long wasteId) {
         return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 
-    @Transactional(readOnly = true)
-    public Page<WasteDto> getWastes(Pageable pageable) {
-        return wasteRepository.findAll(pageable).map(WasteDto::fromEntity);
+    public Page<WasteDto> getWastes(String district, Predicate predicate, Pageable pageable) {
+        return wasteRepository.findAll(district, predicate, pageable).map(WasteDto::fromEntity);
     }
 
     public WasteDto addWaste(MultipartFile imgFile, WasteRequest wasteRequest, MemberPrincipal memberPrincipal) {
@@ -80,11 +79,9 @@ public class WasteService {
         fileService.deleteFileIfExists(savedFileName);
     }
 
-    @Transactional(readOnly = true)
-    public String findFileNameOfWaste(Long wasteId) {
+    public FileNameSummary findFileNameOfWaste(Long wasteId) {
         return wasteRepository
                 .findFileNameById(wasteId)
-                .map(FileNameSummary::fileName)
                 .orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 

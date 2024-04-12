@@ -11,3 +11,4 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        metadata_builder_contributor: freshtrash.freshtrashbackend.config.JSONMetadataBuilderContributor

@@ -87,12 +87,6 @@ public class Waste extends AuditingAt implements Persistable<Long> {
     // TODO: transaction_logs와 연관 관계 설정
     // TODO: waste_likes와 연관 관계 설정
 
-    @PrePersist
-    private void prePersist() {
-        this.likeCount = 0;
-        this.viewCount = 0;
-    }
-
     @Builder
     private Waste(
             String title,
