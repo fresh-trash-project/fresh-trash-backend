@@ -2,9 +2,12 @@ package freshtrash.freshtrashbackend.entity;
 
 import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.Persistable;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chat_message")
@@ -12,14 +15,14 @@ import javax.persistence.*;
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ChatMessage extends AuditingAt implements Persistable<Long> {
+public class ChatMessage implements Persistable<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_id", nullable = false)
+    @JoinColumn(name = "chatRoomId", insertable = false, updatable = false)
     private ChatRoom chatRoom;
 
     @Column(nullable = false)
@@ -35,6 +38,11 @@ public class ChatMessage extends AuditingAt implements Persistable<Long> {
 
     @Column(name = "message", nullable = false, columnDefinition = "TEXT")
     private String message;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Builder
     public ChatMessage(Long chatRoomId, Long memberId, String message) {

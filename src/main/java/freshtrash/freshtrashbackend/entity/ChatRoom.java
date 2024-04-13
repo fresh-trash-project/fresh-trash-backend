@@ -2,9 +2,12 @@ package freshtrash.freshtrashbackend.entity;
 
 import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.Persistable;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chat_room")
@@ -12,14 +15,14 @@ import javax.persistence.*;
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ChatRoom extends AuditingAt implements Persistable<Long> {
+public class ChatRoom implements Persistable<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "waste_id", nullable = false)
+    @JoinColumn(name = "wasteId", insertable = false, updatable = false)
     private Waste waste;
 
     @Column(nullable = false)
@@ -34,6 +37,11 @@ public class ChatRoom extends AuditingAt implements Persistable<Long> {
     @Column(name = "open_or_close", nullable = false)
     private boolean openOrClose;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @Builder
     public ChatRoom(Long wasteId, Long sellerId, Long buyerId, boolean openOrClose) {
         this.wasteId = wasteId;
@@ -47,4 +55,3 @@ public class ChatRoom extends AuditingAt implements Persistable<Long> {
         return id == null;
     }
 }
-
