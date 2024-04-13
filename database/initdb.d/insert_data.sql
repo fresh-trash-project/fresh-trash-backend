@@ -7,7 +7,6 @@ values ('abc@never.com', '$2a$10$4mbVj4n1KeBmNsQCeXZpZujVo.cmXMdPIoDUQ1c1jkR87Ld
         null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null);
 
 
-
 insert into wastes(member_id, title, content, waste_price, like_count, view_count, file_name, waste_category,
                    waste_status,
                    sell_status, address, created_at, modified_at, transaction_at)
@@ -22,5 +21,10 @@ values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING
 insert into waste_likes(member_id, waste_id, created_at)
 values (2, 1, now());
 
+
 INSERT INTO `chat_room`(`waste_id`, `seller_id`, `buyer_id`, `open_or_close`, created_at)
 VALUES (1, 1, 2, 1, now());
+
+
+INSERT INTO `chat_message`(`chat_room_id`, `member_id`, `message`, `created_at`)
+VALUES (1, 1, '첫 번째 메세지입니다.', now());
