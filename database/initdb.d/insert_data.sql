@@ -21,3 +21,6 @@ values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING
 
 insert into waste_likes(member_id, waste_id, created_at)
 values (2, 1, now());
+
+INSERT INTO `chat_room`(`waste_id`, `seller_id`, `buyer_id`, `open_or_close`, created_at)
+VALUES (1, 1, 2, 1, now());
