@@ -1,6 +1,5 @@
 package freshtrash.freshtrashbackend.entity;
 
-import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.Persistable;
