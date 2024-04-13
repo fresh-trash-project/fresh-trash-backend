@@ -2,19 +2,18 @@ package freshtrash.freshtrashbackend.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.domain.Persistable;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chat_message")
+@Table(name = "chat_messages")
 @Getter
-@ToString(callSuper = true)
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ChatMessage implements Persistable<Long> {
+public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -35,7 +34,7 @@ public class ChatMessage implements Persistable<Long> {
     @Column(nullable = false)
     private Long memberId;
 
-    @Column(name = "message", nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -43,15 +42,13 @@ public class ChatMessage implements Persistable<Long> {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Builder
     public ChatMessage(Long chatRoomId, Long memberId, String message) {
         this.chatRoomId = chatRoomId;
         this.memberId = memberId;
         this.message = message;
     }
 
-    @Override
-    public boolean isNew() {
-        return id == null;
+    public static ChatMessage of(Long chatRoomId, Long memberId, String message) {
+        return new ChatMessage(chatRoomId, memberId, message);
     }
 }
