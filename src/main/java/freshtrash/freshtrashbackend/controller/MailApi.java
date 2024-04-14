@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.dto.request.EmailRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.response.EmailResponse;
 import freshtrash.freshtrashbackend.service.MailService;
+import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MailApi {
     private final MailService mailService;
+    private final MemberService memberService;
 
     /**
      * 인증코드 메일 발송
      */
     @PostMapping("/send-code")
     public ResponseEntity<EmailResponse> sendMailWithCode(@RequestBody @Valid EmailRequest request) {
-        // TODO 중복된 이메일 체크
+        memberService.checkEmailDuplication(request.email());
+
         String code = UUID.randomUUID().toString().substring(0, 8);
         String subject = "fresh-trash 메일 인증";
         mailService.sendMailWithCode(request.email(), subject, code);
