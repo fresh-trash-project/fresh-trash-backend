@@ -40,8 +40,8 @@ public class AuthApi {
     /**
      * 닉네임 중복확인
      */
-    @GetMapping("/check-nickname/{nickname}")
-    public ResponseEntity<ApiResponse<String>> checkNickname(@PathVariable String nickname) {
+    @GetMapping("/check-nickname")
+    public ResponseEntity<ApiResponse<String>> checkNickname(@RequestParam String nickname) {
         memberService.checkNicknameDuplication(nickname);
         return ResponseEntity.ok(ApiResponse.of("사용가능한 닉네임입니다."));
     }
