@@ -100,3 +100,18 @@ CREATE TABLE `chat_messages`
     foreign key (`member_id`) references `members` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='채팅 메세지';
+
+CREATE TABLE `transaction_logs`
+(
+    `id`         bigint AUTO_INCREMENT NOT NULL,
+    `price`      int                   NOT NULL,
+    `waste_id`   bigint                NOT NULL,
+    `seller_id`  bigint                NOT NULL,
+    `buyer_id`   bigint                NOT NULL,
+    `created_at` datetime              NOT NULL,
+    PRIMARY KEY (`id`),
+    foreign key (`waste_id`) references `wastes` (`id`) on delete cascade,
+    foreign key (`seller_id`) references `members` (`id`),
+    foreign key (`buyer_id`) references `members` (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='거래내역';
