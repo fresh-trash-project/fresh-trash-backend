@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TransactionLogs {
+public class TransactionLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -29,6 +29,7 @@ public class TransactionLogs {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @ToString.Exclude
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "wasteId", insertable = false, updatable = false)
     private Waste waste;
@@ -53,7 +54,7 @@ public class TransactionLogs {
     private Long buyerId;
 
     @Builder
-    private TransactionLogs(int price, Long wasteId, Long sellerId, Long buyerId) {
+    private TransactionLog(int price, Long wasteId, Long sellerId, Long buyerId) {
         this.price = price;
         this.wasteId = wasteId;
         this.sellerId = sellerId;
