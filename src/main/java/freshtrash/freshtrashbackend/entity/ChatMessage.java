@@ -22,7 +22,7 @@ public class ChatMessage {
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "chatRoomId", insertable = false, updatable = false)
     private ChatRoom chatRoom;
 
