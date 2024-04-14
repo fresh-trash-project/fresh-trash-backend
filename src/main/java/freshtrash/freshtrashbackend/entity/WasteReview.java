@@ -2,13 +2,10 @@ package freshtrash.freshtrashbackend.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -19,7 +16,7 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(AuditingEntityListener.class)
-public class WasteReview implements Persistable<Long> {
+public class WasteReview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -54,10 +51,5 @@ public class WasteReview implements Persistable<Long> {
         this.memberId = memberId;
         this.wasteId = wasteId;
         this.rating = rating;
-    }
-
-    @Override
-    public boolean isNew() {
-        return Objects.isNull(this.id);
     }
 }
