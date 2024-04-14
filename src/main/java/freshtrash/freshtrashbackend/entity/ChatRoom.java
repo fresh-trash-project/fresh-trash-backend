@@ -29,6 +29,7 @@ public class ChatRoom {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wasteId", insertable = false, updatable = false)
     private Waste waste;

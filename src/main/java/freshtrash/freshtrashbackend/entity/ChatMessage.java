@@ -21,6 +21,7 @@ public class ChatMessage {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chatRoomId", insertable = false, updatable = false)
     private ChatRoom chatRoom;
