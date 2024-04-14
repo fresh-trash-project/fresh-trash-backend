@@ -6,11 +6,9 @@ import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -26,7 +24,8 @@ public class AuthApi {
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<String>> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
         memberService.registerMember(signUpRequest.toEntity());
-        return ResponseEntity.ok(ApiResponse.of("you're successfully sign up. you can be login."));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.of("you're successfully sign up. you can be login."));
     }
 
     /**
@@ -36,5 +35,14 @@ public class AuthApi {
     public ResponseEntity<LoginResponse> signIn(@RequestBody @Valid LoginRequest loginRequest) {
         LoginResponse loginResponse = memberService.signIn(loginRequest.email(), loginRequest.password());
         return ResponseEntity.ok(loginResponse);
+    }
+
+    /**
+     * 닉네임 중복확인
+     */
+    @GetMapping("/check-nickname/{nickname}")
+    public ResponseEntity<ApiResponse<String>> checkNickname(@PathVariable String nickname) {
+        memberService.checkNicknameDuplication(nickname);
+        return ResponseEntity.ok(ApiResponse.of("사용가능한 닉네임입니다."));
     }
 }
