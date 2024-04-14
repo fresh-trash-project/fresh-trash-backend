@@ -32,12 +32,8 @@ public class MemberService {
      * 회원 가입
      */
     public void registerMember(Member member) {
-        if (checkEmailDuplication(member.getEmail())) {
-            throw new MemberException(ErrorCode.ALREADY_EXISTS_EMAIL);
-        }
-        if (checkNicknameDuplication(member.getNickname())) {
-            throw new MemberException(ErrorCode.ALREADY_EXISTS_NICKNAME);
-        }
+        checkEmailDuplication(member.getEmail());
+        checkNicknameDuplication(member.getNickname());
         member.setPassword(encoder.encode(member.getPassword()));
         memberRepository.save(member);
     }
@@ -56,15 +52,19 @@ public class MemberService {
     /**
      * 이메일 중복 체크
      */
-    public boolean checkEmailDuplication(String email) {
-        return memberRepository.existsByEmail(email);
+    public void checkEmailDuplication(String email) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new MemberException(ErrorCode.ALREADY_EXISTS_EMAIL);
+        }
     }
 
     /**
-     * 닉네임 중복확인
+     * 닉네임 중복 체크
      */
-    public boolean checkNicknameDuplication(String nickname) {
-        return memberRepository.existsByNickname(nickname);
+    public void checkNicknameDuplication(String nickname) {
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new MemberException(ErrorCode.ALREADY_EXISTS_NICKNAME);
+        }
     }
 
     /**
@@ -99,13 +99,11 @@ public class MemberService {
     }
 
     public Member updateMember(Long memberId, MemberRequest memberRequest, MultipartFile imgFile) {
+        checkNicknameDuplication(memberRequest.nickname());
+
         String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
         Member member =
                 memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
-
-        if (checkNicknameDuplication(memberRequest.nickname())) {
-            throw new MemberException(ErrorCode.ALREADY_EXISTS_NICKNAME);
-        }
 
         // 파일은 유효할 경우에만 수정
         if (FileUtils.isValid(imgFile)) {
