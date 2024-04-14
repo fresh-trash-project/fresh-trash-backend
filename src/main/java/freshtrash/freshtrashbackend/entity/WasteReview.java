@@ -44,7 +44,7 @@ public class WasteReview {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    protected LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Builder
     private WasteReview(Long memberId, Long wasteId, int rating) {
