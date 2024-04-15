@@ -93,7 +93,7 @@ public class MemberService {
     /**
      * member 정보 조회
      */
-    public Member getMemberEntity(Long memberId) {
+    public Member getMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
@@ -113,8 +113,7 @@ public class MemberService {
             member.setFileName(updatedFileName);
             // 수정된 파일 저장
             fileService.uploadFile(imgFile, updatedFileName);
-            memberRepository.save(member);
-            memberRepository.flush();
+            memberRepository.saveAndFlush(member);
 
             if (StringUtils.hasText(savedFileName)) {
                 // 이전 파일 삭제

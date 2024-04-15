@@ -24,7 +24,7 @@ public class MemberApi {
      */
     @GetMapping
     public ResponseEntity<MemberResponse> getMember(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        MemberResponse memberResponse = MemberResponse.fromEntity(memberService.getMemberEntity(memberPrincipal.id()));
+        MemberResponse memberResponse = MemberResponse.fromEntity(memberService.getMember(memberPrincipal.id()));
         return ResponseEntity.ok(memberResponse);
     }
 
