@@ -1,8 +1,6 @@
 package freshtrash.freshtrashbackend.Fixture;
 
-import freshtrash.freshtrashbackend.entity.Address;
-import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.entity.Waste;
+import freshtrash.freshtrashbackend.entity.*;
 import freshtrash.freshtrashbackend.entity.constants.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -60,5 +58,34 @@ public class Fixture {
         ReflectionTestUtils.setField(member, "address", Fixture.createAddress());
 
         return member;
+    }
+
+    public static ChatRoom createChatRoom(
+            Long wasteId, Long sellerId, Long buyerId, boolean openOrClose, SellStatus sellStatus) {
+        return ChatRoom.builder()
+                .buyerId(buyerId)
+                .sellerId(sellerId)
+                .wasteId(wasteId)
+                .openOrClose(openOrClose)
+                .sellStatus(sellStatus)
+                .build();
+    }
+
+    public static ChatRoom createChatRoom() {
+        return ChatRoom.builder()
+                .buyerId(1L)
+                .sellerId(2L)
+                .wasteId(1L)
+                .openOrClose(true)
+                .sellStatus(SellStatus.ONGOING)
+                .build();
+    }
+
+    public static Alarm createAlarm() {
+        return Alarm.builder()
+                .memberId(1L)
+                .alarmArgs(AlarmArgs.of(3L, 2L))
+                .alarmType(AlarmType.TRANSACTION)
+                .build();
     }
 }

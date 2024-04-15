@@ -9,7 +9,6 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +41,7 @@ public class TransactionApi {
             else sendWasteTransactionMessage(COMPLETED_SELL_MESSAGE, wasteId, chatRoom.getBuyerId());
         });
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        return ResponseEntity.ok(null);
     }
 
     private Message buildMessage(String message, Long wasteId, Long memberId) {
