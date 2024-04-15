@@ -8,12 +8,13 @@ import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
@@ -23,7 +24,7 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @TypeDef(name = "json", typeClass = JsonType.class)
-public class Waste extends AuditingAt implements Persistable<Long> {
+public class Waste extends AuditingAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -82,9 +83,12 @@ public class Waste extends AuditingAt implements Persistable<Long> {
     @Column(nullable = false)
     private Long memberId;
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "waste", cascade = ALL, fetch = LAZY)
+    private Set<TransactionLog> transactionLogs = new LinkedHashSet<>();
+
     // TODO: waste_reviews와 연관 관계 설정
     // TODO: chat_room과 연관 관계 설정
-    // TODO: transaction_logs와 연관 관계 설정
     // TODO: waste_likes와 연관 관계 설정
 
     @Builder
@@ -114,10 +118,5 @@ public class Waste extends AuditingAt implements Persistable<Long> {
             this.address = address.allBlank() ? null : address;
             return this;
         }
-    }
-
-    @Override
-    public boolean isNew() {
-        return Objects.isNull(this.id);
     }
 }

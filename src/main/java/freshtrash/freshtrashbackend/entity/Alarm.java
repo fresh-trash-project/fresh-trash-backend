@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
@@ -38,6 +39,9 @@ public class Alarm implements Persistable<Long> {
     @Type(type = "json")
     private AlarmArgs alarmArgs;
 
+    @Column(nullable = false)
+    private String message;
+
     @Setter
     private LocalDateTime readAt;
 
@@ -55,14 +59,19 @@ public class Alarm implements Persistable<Long> {
     private Long memberId;
 
     @Builder
-    public Alarm(AlarmType alarmType, AlarmArgs alarmArgs, Long memberId) {
+    public Alarm(AlarmType alarmType, AlarmArgs alarmArgs, String message, Long memberId) {
         this.alarmType = alarmType;
         this.alarmArgs = alarmArgs;
+        this.message = message;
         this.memberId = memberId;
     }
 
     @Override
     public boolean isNew() {
         return Objects.isNull(this.id);
+    }
+
+    public AlarmResponse toResponse() {
+        return AlarmResponse.of(this.id, this.alarmType, this.alarmArgs, this.message);
     }
 }

@@ -1,6 +1,6 @@
 package freshtrash.freshtrashbackend.controller;
 
-import freshtrash.freshtrashbackend.dto.AlarmDto;
+import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.service.AlarmService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class AlarmApi {
      */
     // TODO: 이후 프론트와 협의를 통해 페이징 처리가 아닌 리스트로 반환되도록 수정될 수 있습니다
     @GetMapping
-    public ResponseEntity<Page<AlarmDto>> getAlarms(
+    public ResponseEntity<Page<AlarmResponse>> getAlarms(
             @PageableDefault Pageable pageable, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         return ResponseEntity.ok(alarmService.getAlarms(memberPrincipal.id(), pageable));
     }
