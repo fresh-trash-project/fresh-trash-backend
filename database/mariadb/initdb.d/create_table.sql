@@ -104,7 +104,6 @@ CREATE TABLE `chat_messages`
 CREATE TABLE `transaction_logs`
 (
     `id`         bigint AUTO_INCREMENT NOT NULL,
-    `price`      int                   NOT NULL,
     `waste_id`   bigint                NOT NULL,
     `seller_id`  bigint                NOT NULL,
     `buyer_id`   bigint                NOT NULL,
@@ -122,6 +121,7 @@ CREATE TABLE `alarms`
     `member_id`  bigint                NOT NULL,
     `alarm_type` varchar(255)          NOT NULL,
     `alarm_args` json                  NOT NULL,
+    `message`    varchar(255)          NOT NULL,
     `created_at` datetime              NOT NULL,
     `read_at`    datetime,
     PRIMARY KEY (`id`),

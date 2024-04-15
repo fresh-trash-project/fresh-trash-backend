@@ -4,7 +4,7 @@ services:
     container_name: fresh-trash-database
     build:
       dockerfile: Dockerfile
-      context: ./database
+      context: ./mariadb
     image: mariadb:10
     environment:
       - MARIADB_DATABASE=fresh_trash
@@ -12,15 +12,15 @@ services:
       - MARIADB_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - MARIADB_ROOT_PASSWORD=${SPRING_DATASOURCE_ROOT_PASSWORD}
     volumes:
-      - ./database/conf.d:/etc/mysql/conf.d
-      - ./database/initdb.d:/docker-entrypoint-initdb.d
+      - ./mariadb/conf.d:/etc/mysql/conf.d
+      - ./mariadb/initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "3307:3307"
   fresh-trash-redis:
     container_name: fresh-trash-redis
     build:
       dockerfile: Dockerfile
-      context: ./database/redis
+      context: ./redis
     image: redis:latest
     ports:
       - "6379:6379"
