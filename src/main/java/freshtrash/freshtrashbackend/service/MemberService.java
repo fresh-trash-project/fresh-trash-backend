@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
+import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.exception.AuthException;
@@ -7,9 +8,12 @@ import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
 import freshtrash.freshtrashbackend.security.TokenProvider;
+import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +21,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
+    private final FileService fileService;
 
     public Member getMemberEntityByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
@@ -26,12 +31,8 @@ public class MemberService {
      * 회원 가입
      */
     public void registerMember(Member member) {
-        if (checkEmailDuplication(member.getEmail())) {
-            throw new MemberException(ErrorCode.ALREADY_EXISTS_EMAIL);
-        }
-        if (checkNicknameDuplication(member.getNickname())) {
-            throw new MemberException(ErrorCode.ALREADY_EXISTS_NICKNAME);
-        }
+        checkEmailDuplication(member.getEmail());
+        checkNicknameDuplication(member.getNickname());
         member.setPassword(encoder.encode(member.getPassword()));
         memberRepository.save(member);
     }
@@ -50,15 +51,19 @@ public class MemberService {
     /**
      * 이메일 중복 체크
      */
-    public boolean checkEmailDuplication(String email) {
-        return memberRepository.existsByEmail(email);
+    public void checkEmailDuplication(String email) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new MemberException(ErrorCode.ALREADY_EXISTS_EMAIL);
+        }
     }
 
     /**
-     * 닉네임 중복확인
+     * 닉네임 중복 체크
      */
-    public boolean checkNicknameDuplication(String nickname) {
-        return memberRepository.existsByNickname(nickname);
+    public void checkNicknameDuplication(String nickname) {
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new MemberException(ErrorCode.ALREADY_EXISTS_NICKNAME);
+        }
     }
 
     /**
@@ -88,7 +93,36 @@ public class MemberService {
     /**
      * member 정보 조회
      */
-    public Member getMemberEntity(Long memberId) {
+    public Member getMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+    }
+
+    public Member updateMember(Long memberId, MemberRequest memberRequest, MultipartFile imgFile) {
+        checkNicknameDuplication(memberRequest.nickname());
+
+        Member member =
+                memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+        member.setNickname(memberRequest.nickname());
+        member.setAddress(memberRequest.address());
+
+        String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
+
+        // 파일은 유효할 경우에만 수정
+        if (FileUtils.isValid(imgFile)) {
+            String savedFileName = member.getFileName(); // 기존 저장된 파일
+            member.setFileName(updatedFileName);
+            // 수정된 파일 저장
+            fileService.uploadFile(imgFile, updatedFileName);
+            memberRepository.saveAndFlush(member);
+
+            if (StringUtils.hasText(savedFileName)) {
+                // 이전 파일 삭제
+                fileService.deleteFileIfExists(savedFileName);
+            }
+        } else {
+            memberRepository.save(member);
+        }
+
+        return member;
     }
 }
