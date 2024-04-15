@@ -12,9 +12,8 @@ import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -101,25 +100,30 @@ public class MemberService {
     public Member updateMember(Long memberId, MemberRequest memberRequest, MultipartFile imgFile) {
         checkNicknameDuplication(memberRequest.nickname());
 
-        String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
         Member member =
                 memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+        member.setNickname(memberRequest.nickname());
+        member.setAddress(memberRequest.address());
+
+        String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
 
         // 파일은 유효할 경우에만 수정
         if (FileUtils.isValid(imgFile)) {
-            String savedFileName = member.getFileName();
+            String savedFileName = member.getFileName(); // 기존 저장된 파일
             member.setFileName(updatedFileName);
             // 수정된 파일 저장
             fileService.uploadFile(imgFile, updatedFileName);
+            memberRepository.save(member);
+            memberRepository.flush();
 
-            if (!Objects.isNull(savedFileName) && !savedFileName.isBlank()) {
+            if (StringUtils.hasText(savedFileName)) {
                 // 이전 파일 삭제
                 fileService.deleteFileIfExists(savedFileName);
             }
+        } else {
+            memberRepository.save(member);
         }
 
-        member.setNickname(memberRequest.nickname());
-        member.setAddress(memberRequest.address());
-        return memberRepository.save(member);
+        return member;
     }
 }
