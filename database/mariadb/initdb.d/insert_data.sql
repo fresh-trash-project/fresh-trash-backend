@@ -4,6 +4,10 @@ values ('abc@never.com', '$2a$10$4mbVj4n1KeBmNsQCeXZpZujVo.cmXMdPIoDUQ1c1jkR87Ld
         json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
         'test.png', 'GOOGLE', 'USER', 'ACTIVE', now(), null),
        ('def@never.com', '$2a$10$GdkQ8WABeKqQOXkMaildcePPAINn3IBs2V/As1c/S8Q9W1K7SfWsG', 0, 'def',
+        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null),
+       ('user123@never.com', '$2a$10$4mbVj4n1KeBmNsQCeXZpZujVo.cmXMdPIoDUQ1c1jkR87LdBA4gJW', 0, 'user123',
+        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null),
+       ('user456@never.com', '$2a$10$4mbVj4n1KeBmNsQCeXZpZujVo.cmXMdPIoDUQ1c1jkR87LdBA4gJW', 0, 'user456',
         null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null);
 
 
@@ -21,16 +25,17 @@ values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING
 insert into waste_likes(member_id, waste_id, created_at)
 values (2, 1, now());
 
-
 INSERT INTO chat_rooms(waste_id, seller_id, buyer_id, sell_status, open_or_close, created_at)
-VALUES (1, 1, 2, 'ONGOING', 1, now());
+VALUES (1, 1, 2, 'ONGOING', 1, now()),
+       (1, 1, 3, 'CLOSE', 1, now()),
+       (1, 1, 4, 'ONGOING', 1, now());
 
 
 INSERT INTO chat_messages(chat_room_id, member_id, message, created_at)
 VALUES (1, 1, '첫 번째 메세지입니다.', now());
 
-insert into transaction_logs(price, waste_id, seller_id, buyer_id, created_at) values
-(1000, 1, 1, 2, now());
+insert into transaction_logs(waste_id, seller_id, buyer_id, created_at)
+values (1, 1, 2, now());
 
-insert into alarms(member_id, alarm_type, alarm_args, created_at, read_at)
-values (1, 'CHAT', json_object('fromMemberId', '2', 'targetId', '1'), now(), null);
+insert into alarms(member_id, alarm_type, alarm_args, message, created_at, read_at)
+values (1, 'CHAT', json_object('fromMemberId', '2', 'targetId', '1'), '거래 완료되었습니다.', now(), null);
