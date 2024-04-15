@@ -25,7 +25,7 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @TypeDef(name = "json", typeClass = JsonType.class)
-public class Alarm implements Persistable<Long> {
+public class Alarm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -48,7 +48,7 @@ public class Alarm implements Persistable<Long> {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    protected LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @ToString.Exclude
     @ManyToOne(optional = false, fetch = LAZY)
@@ -59,16 +59,11 @@ public class Alarm implements Persistable<Long> {
     private Long memberId;
 
     @Builder
-    public Alarm(AlarmType alarmType, AlarmArgs alarmArgs, String message, Long memberId) {
+    private Alarm(AlarmType alarmType, AlarmArgs alarmArgs, String message, Long memberId) {
         this.alarmType = alarmType;
         this.alarmArgs = alarmArgs;
         this.message = message;
         this.memberId = memberId;
-    }
-
-    @Override
-    public boolean isNew() {
-        return Objects.isNull(this.id);
     }
 
     public AlarmResponse toResponse() {

@@ -11,10 +11,7 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
-import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
@@ -82,14 +79,6 @@ public class Waste extends AuditingAt {
 
     @Column(nullable = false)
     private Long memberId;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "waste", cascade = ALL, fetch = LAZY)
-    private Set<TransactionLog> transactionLogs = new LinkedHashSet<>();
-
-    // TODO: waste_reviews와 연관 관계 설정
-    // TODO: chat_room과 연관 관계 설정
-    // TODO: waste_likes와 연관 관계 설정
 
     @Builder
     private Waste(
