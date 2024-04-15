@@ -73,6 +73,14 @@ public class Member extends AuditingAt implements Persistable<Long> {
     @OneToMany(mappedBy = "member", cascade = ALL, fetch = LAZY)
     private Set<Alarm> alarms = new LinkedHashSet<>();
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "seller", cascade = ALL, fetch = LAZY)
+    private Set<TransactionLog> sellerTransactionLogs = new LinkedHashSet<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "buyer", cascade = ALL, fetch = LAZY)
+    private Set<TransactionLog> buyerTransactionLogs = new LinkedHashSet<>();
+
     @PrePersist
     private void prePersist() {
         this.rating = 0;

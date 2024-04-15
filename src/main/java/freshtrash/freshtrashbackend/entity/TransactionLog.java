@@ -21,9 +21,6 @@ public class TransactionLog {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false)
-    private int price;
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -54,8 +51,7 @@ public class TransactionLog {
     private Long buyerId;
 
     @Builder
-    private TransactionLog(int price, Long wasteId, Long sellerId, Long buyerId) {
-        this.price = price;
+    private TransactionLog(Long wasteId, Long sellerId, Long buyerId) {
         this.wasteId = wasteId;
         this.sellerId = sellerId;
         this.buyerId = buyerId;
