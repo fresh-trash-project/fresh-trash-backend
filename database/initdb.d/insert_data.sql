@@ -22,8 +22,8 @@ insert into waste_likes(member_id, waste_id, created_at)
 values (2, 1, now());
 
 
-INSERT INTO chat_rooms(waste_id, seller_id, buyer_id, open_or_close, created_at)
-VALUES (1, 1, 2, 1, now());
+INSERT INTO chat_rooms(waste_id, seller_id, buyer_id, sell_status, open_or_close, created_at)
+VALUES (1, 1, 2, 'ONGOING', 1, now());
 
 
 INSERT INTO chat_messages(chat_room_id, member_id, message, created_at)

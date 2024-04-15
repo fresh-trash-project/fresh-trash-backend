@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -20,6 +21,10 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private SellStatus sellStatus;
 
     @Column(nullable = false)
     private boolean openOrClose;
@@ -54,10 +59,11 @@ public class ChatRoom {
     private Long buyerId;
 
     @Builder
-    public ChatRoom(Long wasteId, Long sellerId, Long buyerId, boolean openOrClose) {
+    public ChatRoom(Long wasteId, Long sellerId, Long buyerId, SellStatus sellStatus, boolean openOrClose) {
         this.wasteId = wasteId;
         this.sellerId = sellerId;
         this.buyerId = buyerId;
+        this.sellStatus = sellStatus;
         this.openOrClose = openOrClose;
     }
 }

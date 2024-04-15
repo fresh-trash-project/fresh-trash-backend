@@ -78,6 +78,7 @@ CREATE TABLE `chat_rooms`
     `waste_id`      bigint                NOT NULL,
     `seller_id`     bigint                NOT NULL,
     `buyer_id`      bigint                NOT NULL,
+    `sell_status`    varchar(255)          NOT NULL,
     `open_or_close` tinyint(1)            NOT NULL,
     `created_at`    datetime              NOT NULL,
     PRIMARY KEY (`id`),
