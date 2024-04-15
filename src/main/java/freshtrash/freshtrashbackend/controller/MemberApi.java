@@ -22,7 +22,7 @@ public class MemberApi {
     /**
      * 유저 정보 조회
      */
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<MemberResponse> getMember(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         MemberResponse memberResponse = MemberResponse.fromEntity(memberService.getMemberEntity(memberPrincipal.id()));
         return ResponseEntity.ok(memberResponse);
@@ -31,7 +31,7 @@ public class MemberApi {
     /**
      * 유저 정보 수정
      */
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<MemberResponse> updateMember(
             @AuthenticationPrincipal MemberPrincipal memberPrincipal,
             @RequestPart MemberRequest memberRequest,
