@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 public class Fixture {
     public static Waste createWaste() {
-        return Waste.builder()
+        Waste waste = Waste.builder()
                 .title("title")
                 .content("content")
                 .wastePrice(1000)
@@ -22,6 +22,10 @@ public class Fixture {
                 .address(createAddress())
                 .memberId(1L)
                 .build();
+        ReflectionTestUtils.setField(waste, "member", Fixture.createMember());
+        ReflectionTestUtils.setField(waste, "likeCount", 3);
+        ReflectionTestUtils.setField(waste, "viewCount", 2);
+        return waste;
     }
 
     public static MockMultipartFile createMultipartFile(String content) {
@@ -60,5 +64,9 @@ public class Fixture {
         ReflectionTestUtils.setField(member, "address", Fixture.createAddress());
 
         return member;
+    }
+
+    public static Member createMember() {
+        return createMember("test@gmail.com", "pw", "test", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
     }
 }

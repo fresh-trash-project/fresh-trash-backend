@@ -34,7 +34,7 @@ public class WasteService {
     private final WasteReviewRepository wasteReviewRepository;
     private final WasteLikeRepository wasteLikeRepository;
 
-    public Waste getWasteEntity(Long wasteId) {
+    public Waste getWaste(Long wasteId) {
         return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 
