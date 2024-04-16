@@ -82,14 +82,14 @@ public class MailService {
             String result = response.body();
             JsonObject jsonObject = JsonParser.parseString(result).getAsJsonObject();
             String deliverable = jsonObject.get("deliverability").getAsString();
-            System.out.println(deliverable);
+
             boolean isFree = jsonObject
                     .get("is_free_email")
                     .getAsJsonObject()
                     .get("value")
                     .getAsBoolean();
 
-            if (deliverable.equals("UNDELIVERABLE") || !isFree) {
+            if (!deliverable.equals("DELIVERABLE") || !isFree) {
                 throw new MailException(ErrorCode.MAIL_NOT_VALID);
             }
 
