@@ -43,7 +43,7 @@ class TransactionApiTest {
 
     @DisplayName("거래 완료 후 알람 전송 + 거래 내역 저장")
     @Test
-    void completeTransaction() throws Exception {
+    void given_wasteId_when_getChatRooms_then_sendAlarmsToSellerAndBuyerAndNotBuyers() throws Exception {
         // given
         Long wasteId = 1L;
         Long sellerId = 1L;

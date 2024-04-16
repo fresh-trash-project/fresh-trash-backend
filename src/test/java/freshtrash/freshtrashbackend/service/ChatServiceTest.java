@@ -24,9 +24,9 @@ class ChatServiceTest {
     @Mock
     private ChatRoomRepository chatRoomRepository;
 
-    @DisplayName("Waste id로 채팅반 목록 조회")
+    @DisplayName("Waste id로 채팅방 목록 조회")
     @Test
-    void getChatRoomsByWasteId() {
+    void given_wasteId_when_then_getChatRoomList() {
         // given
         Long wasteId = 1L;
         int expectedSize = 1;
