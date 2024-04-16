@@ -2,12 +2,14 @@ package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
+import freshtrash.freshtrashbackend.entity.Alarm;
 import freshtrash.freshtrashbackend.repository.AlarmRepository;
 import freshtrash.freshtrashbackend.repository.EmitterRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,9 +20,12 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AlarmServiceTest {
@@ -45,6 +50,18 @@ class AlarmServiceTest {
         // when
         Page<AlarmResponse> alarms = alarmService.getAlarms(memberId, pageable);
         // then
-        Assertions.assertThat(alarms.getSize()).isEqualTo(expectedSize);
+        assertThat(alarms.getSize()).isEqualTo(expectedSize);
+    }
+
+    @DisplayName("알람 읽음 처리")
+    @Test
+    void given_alarmId_when_readAlarm_then_updateReadAtToNow() {
+        // given
+        Long alarmId = 1L;
+        willDoNothing().given(alarmRepository).updateReadAtById(anyLong());
+        // when
+        alarmService.readAlarm(alarmId);
+        // then
+        then(alarmRepository).should(times(1)).updateReadAtById(anyLong());
     }
 }

@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -59,5 +60,19 @@ class AlarmApiTest {
         // when
         mvc.perform(get("/api/v1/notis/subscribe")).andExpect(status().isOk());
         // then
+    }
+
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
+    @DisplayName("알람 읽음 처리 요청")
+    @Test
+    void given_alarmIdAndLoginUser_when_loginUserIsOwnerOfAlarm_then_readAlarm() throws Exception {
+        //given
+        Long alarmId = 1L;
+        given(alarmService.isOwnerOfAlarm(anyLong(), anyLong())).willReturn(true);
+        willDoNothing().given(alarmService).readAlarm(anyLong());
+        //when
+        mvc.perform(get("/api/v1/notis/" + alarmId))
+                .andExpect(status().isOk());
+        //then
     }
 }
