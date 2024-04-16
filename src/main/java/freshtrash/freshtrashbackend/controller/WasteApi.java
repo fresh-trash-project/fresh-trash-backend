@@ -39,7 +39,7 @@ public class WasteApi {
      */
     @GetMapping("{wasteId}")
     public ResponseEntity<WasteDto> getWaste(@PathVariable Long wasteId) {
-        WasteDto wasteDto = WasteDto.fromEntity(wasteService.getWasteEntity(wasteId));
+        WasteDto wasteDto = WasteDto.fromEntity(wasteService.getWaste(wasteId));
         return ResponseEntity.ok(wasteDto);
     }
 
