@@ -25,7 +25,7 @@ class TransactionServiceTest {
 
     @DisplayName("거래 내역 저장")
     @Test
-    void saveTransactionLog() {
+    void given_wasteIdAndSellerIdAndBuyerId_when_then_saveTransactionLog() {
         // given
         Long wasteId = 1L;
         Long sellerId = 1L;

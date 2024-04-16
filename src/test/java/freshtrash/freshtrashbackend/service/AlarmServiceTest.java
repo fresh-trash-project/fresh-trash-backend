@@ -35,7 +35,7 @@ class AlarmServiceTest {
 
     @DisplayName("전체 알람 조회")
     @Test
-    void getAlarms() {
+    void given_memberIdAndPageable_when_then_getPagingAlarms() {
         // given
         Long memberId = 1L;
         int expectedSize = 1;

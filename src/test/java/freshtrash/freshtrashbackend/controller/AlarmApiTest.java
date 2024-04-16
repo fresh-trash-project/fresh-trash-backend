@@ -38,7 +38,7 @@ class AlarmApiTest {
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     @DisplayName("알람 목록 조회")
     @Test
-    void getAlarms() throws Exception {
+    void given_loginUserAndPageable_when_then_getPagingNotis() throws Exception {
         // given
         given(alarmService.getAlarms(anyLong(), any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createAlarm().toResponse())));
@@ -52,7 +52,7 @@ class AlarmApiTest {
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     @DisplayName("알람 SSE 연결 요청")
     @Test
-    void subscribe() throws Exception {
+    void given_loginUser_when_connectSse_then_returnSseEmitter() throws Exception {
         // given
         SseEmitter sseEmitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
         given(alarmService.connectAlarm(anyLong())).willReturn(sseEmitter);
