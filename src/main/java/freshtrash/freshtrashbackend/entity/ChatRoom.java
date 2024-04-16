@@ -59,7 +59,7 @@ public class ChatRoom {
     private Long buyerId;
 
     @Builder
-    public ChatRoom(Long wasteId, Long sellerId, Long buyerId, SellStatus sellStatus, boolean openOrClose) {
+    private ChatRoom(Long wasteId, Long sellerId, Long buyerId, SellStatus sellStatus, boolean openOrClose) {
         this.wasteId = wasteId;
         this.sellerId = sellerId;
         this.buyerId = buyerId;

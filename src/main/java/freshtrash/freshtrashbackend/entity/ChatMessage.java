@@ -45,7 +45,7 @@ public class ChatMessage {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public ChatMessage(Long chatRoomId, Long memberId, String message) {
+    private ChatMessage(Long chatRoomId, Long memberId, String message) {
         this.chatRoomId = chatRoomId;
         this.memberId = memberId;
         this.message = message;
