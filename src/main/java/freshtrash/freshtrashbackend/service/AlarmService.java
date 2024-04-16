@@ -116,4 +116,12 @@ public class AlarmService {
 
         return sseEmitter;
     }
+
+    public void readAlarm(Long alarmId) {
+        alarmRepository.updateReadAtById(alarmId);
+    }
+
+    public boolean isOwnerOfAlarm(Long alarmId, Long memberId) {
+        return alarmRepository.existsByIdAndMember_Id(alarmId, memberId);
+    }
 }
