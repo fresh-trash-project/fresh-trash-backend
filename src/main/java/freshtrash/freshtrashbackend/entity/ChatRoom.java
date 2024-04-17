@@ -8,6 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "chat_rooms")
@@ -57,6 +59,10 @@ public class ChatRoom {
 
     @Column(nullable = false)
     private Long buyerId;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
+    private Set<ChatMessage> chatMessages = new LinkedHashSet<>();
 
     @Builder
     private ChatRoom(Long wasteId, Long sellerId, Long buyerId, SellStatus sellStatus, boolean openOrClose) {
