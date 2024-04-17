@@ -29,11 +29,8 @@ public class ChatRoom extends CreatedAt {
 
     @ToString.Exclude
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "wasteId", insertable = false, updatable = false)
+    @JoinColumn(name = "wasteId")
     private Waste waste;
-
-    @Column(nullable = false)
-    private Long wasteId;
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
@@ -56,8 +53,8 @@ public class ChatRoom extends CreatedAt {
     private Set<ChatMessage> chatMessages = new LinkedHashSet<>();
 
     @Builder
-    private ChatRoom(Long wasteId, Long sellerId, Long buyerId, SellStatus sellStatus, boolean openOrClose) {
-        this.wasteId = wasteId;
+    private ChatRoom(Waste waste, Long sellerId, Long buyerId, SellStatus sellStatus, boolean openOrClose) {
+        this.waste = waste;
         this.sellerId = sellerId;
         this.buyerId = buyerId;
         this.sellStatus = sellStatus;
