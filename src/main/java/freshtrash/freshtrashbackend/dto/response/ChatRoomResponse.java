@@ -8,7 +8,12 @@ import java.time.LocalDateTime;
 
 @Builder
 public record ChatRoomResponse(
-        Long id, SellStatus sellStatus, boolean openOrClose, LocalDateTime createdAt, String sellerNickname, String buyerNickname) {
+        Long id,
+        SellStatus sellStatus,
+        boolean openOrClose,
+        LocalDateTime createdAt,
+        String sellerNickname,
+        String buyerNickname) {
 
     public static ChatRoomResponse fromEntity(ChatRoom chatRoom) {
         return ChatRoomResponse.builder()
