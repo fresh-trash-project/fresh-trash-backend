@@ -30,6 +30,7 @@ public class MailApi {
     @PostMapping("/send-code")
     public ResponseEntity<EmailResponse> sendMailWithCode(@RequestBody @Valid EmailRequest request) {
         memberService.checkEmailDuplication(request.email());
+        mailService.isValidMail(request.email());
 
         String code = UUID.randomUUID().toString().substring(0, 8);
         String subject = "fresh-trash 메일 인증";
