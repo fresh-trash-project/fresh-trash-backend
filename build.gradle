@@ -36,6 +36,7 @@ dependencies {
     implementation 'io.hypersistence:hypersistence-utils-hibernate-55:3.7.3'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'com.google.code.gson:gson:2.10.1'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -49,13 +50,7 @@ dependencies {
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
 
-    //queryDSL
-    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
-    
-    //gson
-    implementation 'com.google.code.gson:gson:2.10.1'
-
+    //queryDsl
     implementation("com.querydsl:querydsl-jpa")
     annotationProcessor("com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa")
     annotationProcessor('jakarta.annotation:jakarta.annotation-api')
