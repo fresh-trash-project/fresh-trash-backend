@@ -28,6 +28,8 @@ public enum ErrorCode {
     AUTH_CODE_UNMATCHED(HttpStatus.BAD_REQUEST, "잘못된 인증코드입니다."),
     EMPTY_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증코드가 입력되지 않았습니다."),
     MAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "메일전송에 실패했습니다"),
+    MAIL_VALIDATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "메일검증에 실패했습니다."),
+    MAIL_NOT_VALID(HttpStatus.BAD_REQUEST, "유효하지 않은 메일입니다."),
 
     // Member
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "유저 정보가 존재하지 않습니다."),
