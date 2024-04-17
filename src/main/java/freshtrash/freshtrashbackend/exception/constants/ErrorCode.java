@@ -45,7 +45,8 @@ public enum ErrorCode {
 
     // Chat
     NOT_FOUND_CHAT_ROOM(HttpStatus.NOT_FOUND, "채팅방이 존재하지 않습니다."),
-    FORBIDDEN_CHAT_ROOM(HttpStatus.FORBIDDEN, "채팅방에 대한 권한이 없습니다.");
+    FORBIDDEN_CHAT_ROOM(HttpStatus.FORBIDDEN, "채팅방에 대한 권한이 없습니다."),
+    BUYER_NOT_FOUND(HttpStatus.NOT_FOUND, "구매자 정보를 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;
