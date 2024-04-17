@@ -17,11 +17,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import freshtrash.freshtrashbackend.dto.request.ChatRoomRequest;
+import freshtrash.freshtrashbackend.dto.response.ChatRoomResponse;
+import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.entity.ChatRoom;
+import freshtrash.freshtrashbackend.service.ChatRoomService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/wastes/{wasteId}/chats")
 @RequiredArgsConstructor
 public class ChatApi {
     private final ChatService chatService;
+    private final ChatRoomService chatRoomService;
 
     @GetMapping
     public ResponseEntity<Page<ChatRoomResponse>> getChatRooms(
@@ -43,5 +57,19 @@ public class ChatApi {
     private void checkIfSellerOrBuyerOfChatRoom(Long chatRoomId, Long memberId) {
         if (!chatService.isSellerOrBuyerOfChatRoom(chatRoomId, memberId))
             throw new ChatException(ErrorCode.FORBIDDEN_CHAT_ROOM);
+    }
+
+    /**
+     * 채팅 요청
+     */
+    @PostMapping
+    public ResponseEntity<ChatRoomResponse> createChatRoom(
+            @PathVariable Long wasteId,
+            @Valid @RequestBody ChatRoomRequest request,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        ChatRoom chatRoom = chatRoomService.createChatRoom(wasteId, memberPrincipal.id());
+        ChatRoomResponse response =
+                ChatRoomResponse.of(chatRoom.getId(), chatRoom.getWaste().getTitle(), chatRoom.getCreatedAt());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
