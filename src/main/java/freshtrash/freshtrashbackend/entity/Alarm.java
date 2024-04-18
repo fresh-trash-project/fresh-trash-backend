@@ -1,19 +1,15 @@
 package freshtrash.freshtrashbackend.entity;
 
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
+import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
 import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -21,11 +17,10 @@ import static javax.persistence.FetchType.LAZY;
 @ToString
 @Table(name = "alarms")
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @TypeDef(name = "json", typeClass = JsonType.class)
-public class Alarm {
+public class Alarm extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -44,11 +39,6 @@ public class Alarm {
 
     @Setter
     private LocalDateTime readAt;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 
     @ToString.Exclude
     @ManyToOne(optional = false, fetch = LAZY)
