@@ -1,6 +1,6 @@
 package freshtrash.freshtrashbackend.Fixture;
 
-import freshtrash.freshtrashbackend.dto.UserInfo;
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.constants.SellType;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;

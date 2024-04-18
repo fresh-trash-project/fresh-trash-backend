@@ -105,6 +105,7 @@ class WasteServiceTest {
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
         // when
         WasteResponse wasteResponse = wasteService.updateWaste(wasteId, multipartFile, wasteRequest, memberPrincipal);
+
         // then
         assertThat(wasteResponse.title()).isEqualTo(wasteRequest.title());
         assertThat(wasteResponse.content()).isEqualTo(wasteRequest.content());
