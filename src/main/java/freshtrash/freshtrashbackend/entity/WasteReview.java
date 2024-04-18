@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
 import lombok.*;
 
@@ -43,5 +44,13 @@ public class WasteReview extends CreatedAt {
         this.memberId = memberId;
         this.wasteId = wasteId;
         this.rating = rating;
+    }
+
+    public static WasteReview fromRequest(ReviewRequest reviewRequest, Long wasteId, Long memberId) {
+        return WasteReview.builder()
+                .rating(reviewRequest.rate())
+                .memberId(memberId)
+                .wasteId(wasteId)
+                .build();
     }
 }

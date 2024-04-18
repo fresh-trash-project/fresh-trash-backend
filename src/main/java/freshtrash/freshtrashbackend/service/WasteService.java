@@ -102,7 +102,7 @@ public class WasteService {
             throw new ReviewException(ErrorCode.ALREADY_EXISTS_REVIEW);
         }
 
-        WasteReview wasteReview = reviewRequest.toEntity(wasteId, memberId);
+        WasteReview wasteReview = WasteReview.fromRequest(reviewRequest, wasteId, memberId);
         return wasteReviewRepository.save(wasteReview);
     }
 
