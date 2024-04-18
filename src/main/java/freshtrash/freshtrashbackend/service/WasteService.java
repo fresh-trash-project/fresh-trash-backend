@@ -1,14 +1,15 @@
 package freshtrash.freshtrashbackend.service;
 
 import com.querydsl.core.types.Predicate;
-import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.WasteLike;
 import freshtrash.freshtrashbackend.entity.WasteReview;
+import freshtrash.freshtrashbackend.exception.FileException;
 import freshtrash.freshtrashbackend.exception.ReviewException;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -38,41 +39,50 @@ public class WasteService {
         return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 
-    public Page<WasteDto> getWastes(String district, Predicate predicate, Pageable pageable) {
-        return wasteRepository.findAll(district, predicate, pageable).map(WasteDto::fromEntity);
+    public Page<WasteResponse> getWastes(String district, Predicate predicate, Pageable pageable) {
+        return wasteRepository.findAll(district, predicate, pageable).map(WasteResponse::fromEntity);
     }
 
-    public WasteDto addWaste(MultipartFile imgFile, WasteRequest wasteRequest, MemberPrincipal memberPrincipal) {
+    @Transactional
+    public WasteResponse addWaste(MultipartFile imgFile, WasteRequest wasteRequest, MemberPrincipal memberPrincipal) {
         // 주소가 입력되지 않았을 경우
         if (Objects.isNull(wasteRequest.address())) throw new WasteException(ErrorCode.EMPTY_ADDRESS);
         String savedFileName = FileUtils.generateUniqueFileName(imgFile);
-        Waste waste = wasteRequest.toEntity(savedFileName, memberPrincipal.id());
+        Waste waste = Waste.fromRequest(wasteRequest, savedFileName, memberPrincipal.id());
 
         Waste savedWaste = wasteRepository.save(waste);
         // 이미지 파일 저장
         fileService.uploadFile(imgFile, savedFileName);
-        return WasteDto.fromEntity(savedWaste, memberPrincipal);
+        return WasteResponse.fromEntity(savedWaste, memberPrincipal);
     }
 
-    public WasteDto updateWaste(
-            MultipartFile imgFile, WasteRequest wasteRequest, String savedFileName, MemberPrincipal memberPrincipal) {
-        String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
-        Waste updatedWaste = wasteRequest.toEntity(updatedFileName, memberPrincipal.id());
+    @Transactional
+    public WasteResponse updateWaste(
+            Long wasteId,
+            MultipartFile imgFile,
+            WasteRequest wasteRequest,
+            String savedFileName,
+            MemberPrincipal memberPrincipal) {
 
-        // 파일은 유효할 경우에만 수정합니다
-        if (FileUtils.isValid(imgFile)) {
-            // DB 업데이트
-            wasteRepository.save(updatedWaste);
-            // 수정된 파일 저장
-            fileService.uploadFile(imgFile, updatedFileName);
-            wasteRepository.flush();
-            // 저장된 파일 삭제
-            fileService.deleteFileIfExists(savedFileName);
+        if (!FileUtils.isValid(imgFile)) {
+            throw new FileException(ErrorCode.INVALID_FIlE);
         }
 
-        return WasteDto.fromEntity(updatedWaste, memberPrincipal);
+        // DB 업데이트
+        String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
+        Waste updatedWaste = Waste.fromRequest(wasteRequest, updatedFileName, memberPrincipal.id());
+        updatedWaste.setId(wasteId);
+        wasteRepository.save(updatedWaste);
+        // 수정된 파일 저장
+        fileService.uploadFile(imgFile, updatedFileName);
+        wasteRepository.flush();
+        // 저장된 파일 삭제
+        fileService.deleteFileIfExists(savedFileName);
+
+        return WasteResponse.fromEntity(updatedWaste, memberPrincipal);
     }
 
+    @Transactional
     public void deleteWaste(Long wasteId, String savedFileName) {
         wasteRepository.deleteById(wasteId);
         // 파일 삭제

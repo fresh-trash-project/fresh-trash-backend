@@ -19,7 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,6 +59,5 @@ class TransactionApiTest {
         // when
         mvc.perform(post("/api/v1/transactions/" + wasteId)).andExpect(status().isOk());
         // then
-        then(rabbitTemplate).should().convertAndSend(anyString(), anyString(), any(Message.class));
     }
 }

@@ -5,8 +5,8 @@ import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.WasteDto;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.Waste;
@@ -84,7 +84,7 @@ class WasteApiTest {
     void given_predicateAndPageable_when_getWastes_then_returnPagingWasteData() throws Exception {
         // given
         given(wasteService.getWastes(eq(null), any(Predicate.class), any(Pageable.class)))
-                .willReturn(new PageImpl<>(List.of(WasteDto.fromEntity(Fixture.createWaste()))));
+                .willReturn(new PageImpl<>(List.of(WasteResponse.fromEntity(Fixture.createWaste()))));
         // when
         mvc.perform(get("/api/v1/wastes"))
                 .andExpect(status().isOk())
@@ -101,11 +101,11 @@ class WasteApiTest {
         // given
         MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
-        Waste waste = wasteRequest.toEntity(imgFile.getOriginalFilename(), memberId);
+        Waste waste = Waste.fromRequest(wasteRequest, imgFile.getOriginalFilename(), memberId);
         ReflectionTestUtils.setField(waste, "member", Fixture.createMember());
-        WasteDto wasteDto = WasteDto.fromEntity(waste);
+        WasteResponse wasteResponse = WasteResponse.fromEntity(waste);
         given(wasteService.addWaste(any(MultipartFile.class), any(WasteRequest.class), any(MemberPrincipal.class)))
-                .willReturn(wasteDto);
+                .willReturn(wasteResponse);
         // when
         mvc.perform(multipart(HttpMethod.POST, "/api/v1/wastes")
                         .file("imgFile", imgFile.getBytes())
@@ -187,14 +187,18 @@ class WasteApiTest {
         Long wasteId = 1L, memberId = 1L;
         MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
-        Waste waste = wasteRequest.toEntity(imgFile.getOriginalFilename(), memberId);
+        Waste waste = Waste.fromRequest(wasteRequest, imgFile.getOriginalFilename(), memberId);
         ReflectionTestUtils.setField(waste, "member", Fixture.createMember());
-        WasteDto wasteDto = WasteDto.fromEntity(waste);
+        WasteResponse wasteResponse = WasteResponse.fromEntity(waste);
         given(wasteService.isWriterOfArticle(anyLong(), anyLong())).willReturn(true);
         given(wasteService.findFileNameOfWaste(anyLong())).willReturn(new FileNameSummary("test.png"));
         given(wasteService.updateWaste(
-                        any(MultipartFile.class), any(WasteRequest.class), anyString(), any(MemberPrincipal.class)))
-                .willReturn(wasteDto);
+                        anyLong(),
+                        any(MultipartFile.class),
+                        any(WasteRequest.class),
+                        anyString(),
+                        any(MemberPrincipal.class)))
+                .willReturn(wasteResponse);
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/wastes/" + wasteId)
                         .file("imgFile", imgFile.getBytes())

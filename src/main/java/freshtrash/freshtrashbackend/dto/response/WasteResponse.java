@@ -1,5 +1,6 @@
-package freshtrash.freshtrashbackend.dto;
+package freshtrash.freshtrashbackend.dto.response;
 
+import freshtrash.freshtrashbackend.dto.UserInfo;
 import freshtrash.freshtrashbackend.dto.constants.SellType;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
@@ -12,7 +13,8 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record WasteDto(
+public record WasteResponse(
+        Long id,
         String title,
         String content,
         SellType sellType,
@@ -26,24 +28,25 @@ public record WasteDto(
         Address address,
         LocalDateTime createdAt,
         UserInfo userInfo) {
-    public static class WasteDtoBuilder {
-        public WasteDtoBuilder wastePrice(Integer wastePrice) {
+    public static class WasteResponseBuilder {
+        public WasteResponseBuilder wastePrice(Integer wastePrice) {
             this.wastePrice = wastePrice;
             this.sellType = wastePrice == 0 ? SellType.SHARE : SellType.TRANSACTION;
             return this;
         }
     }
 
-    public static WasteDto fromEntity(Waste waste) {
-        return WasteDto.of(waste, UserInfo.fromEntity(waste.getMember()));
+    public static WasteResponse fromEntity(Waste waste) {
+        return WasteResponse.of(waste, UserInfo.fromEntity(waste.getMember()));
     }
 
-    public static WasteDto fromEntity(Waste waste, MemberPrincipal memberPrincipal) {
-        return WasteDto.of(waste, UserInfo.fromPrincipal(memberPrincipal));
+    public static WasteResponse fromEntity(Waste waste, MemberPrincipal memberPrincipal) {
+        return WasteResponse.of(waste, UserInfo.fromPrincipal(memberPrincipal));
     }
 
-    private static WasteDto of(Waste waste, UserInfo userInfo) {
-        return WasteDto.builder()
+    private static WasteResponse of(Waste waste, UserInfo userInfo) {
+        return WasteResponse.builder()
+                .id(waste.getId())
                 .title(waste.getTitle())
                 .content(waste.getContent())
                 .wastePrice(waste.getWastePrice())

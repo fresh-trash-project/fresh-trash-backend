@@ -40,6 +40,10 @@ public class LocalFileService implements FileService {
     }
 
     private File createFileInstance(String fileName) {
-        return new File(localFileProperties.absolutePath(), fileName);
+        try {
+            return new File(localFileProperties.absolutePath(), fileName);
+        } catch (NullPointerException e) {
+            throw new FileException(ErrorCode.FILE_NOT_FOUND, e);
+        }
     }
 }

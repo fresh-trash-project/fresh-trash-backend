@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
@@ -23,6 +24,7 @@ import static javax.persistence.FetchType.LAZY;
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Waste extends AuditingAt {
     @Id
+    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
@@ -49,22 +51,18 @@ public class Waste extends AuditingAt {
     @Column(nullable = false)
     private String fileName;
 
-    @Setter
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private WasteCategory wasteCategory;
 
-    @Setter
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private WasteStatus wasteStatus;
 
-    @Setter
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private SellStatus sellStatus;
 
-    @Setter
     @Type(type = "json")
     @Column(columnDefinition = "longtext")
     private Address address;
@@ -107,5 +105,19 @@ public class Waste extends AuditingAt {
             this.address = address.allBlank() ? null : address;
             return this;
         }
+    }
+
+    public static Waste fromRequest(WasteRequest wasteRequest, String fileName, Long memberId) {
+        return Waste.builder()
+                .title(wasteRequest.title())
+                .content(wasteRequest.content())
+                .wastePrice(wasteRequest.wastePrice())
+                .fileName(fileName)
+                .wasteCategory(wasteRequest.wasteCategory())
+                .wasteStatus(wasteRequest.wasteStatus())
+                .sellStatus(wasteRequest.sellStatus())
+                .address(wasteRequest.address())
+                .memberId(memberId)
+                .build();
     }
 }

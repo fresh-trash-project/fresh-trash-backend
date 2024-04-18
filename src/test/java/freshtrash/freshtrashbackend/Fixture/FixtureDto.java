@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.Fixture;
 
 import freshtrash.freshtrashbackend.dto.UserInfo;
-import freshtrash.freshtrashbackend.dto.WasteDto;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.constants.SellType;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
@@ -44,8 +44,8 @@ public class FixtureDto {
                 Fixture.createAddress());
     }
 
-    public static WasteDto createWasteDto() {
-        return new WasteDto(
+    public static WasteResponse createWasteDto() {
+        return new WasteResponse(
                 "title",
                 "content",
                 SellType.SHARE,
