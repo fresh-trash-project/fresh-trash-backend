@@ -52,7 +52,7 @@ public class WasteApi {
     public ResponseEntity<Page<WasteDto>> getWastes(
             @RequestParam(required = false) String district,
             @QuerydslPredicate(root = Waste.class) Predicate predicate,
-            @PageableDefault(size = 5, sort = "createdAt", direction = DESC) Pageable pageable) {
+            @PageableDefault(size = 6, sort = "createdAt", direction = DESC) Pageable pageable) {
         Page<WasteDto> wastes = wasteService.getWastes(district, predicate, pageable);
         return ResponseEntity.ok(wastes);
     }
