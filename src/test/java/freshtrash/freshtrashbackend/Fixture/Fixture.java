@@ -6,6 +6,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 public class Fixture {
     public static Waste createWaste() {
@@ -79,21 +80,35 @@ public class Fixture {
                 .build();
     }
 
-    public static ChatRoom createChatRoom() {
-        return ChatRoom.builder()
-                .buyerId(1L)
-                .sellerId(2L)
-                .wasteId(1L)
-                .openOrClose(true)
-                .sellStatus(SellStatus.ONGOING)
-                .build();
-    }
-
     public static Alarm createAlarm() {
         return Alarm.builder()
                 .memberId(1L)
                 .alarmArgs(AlarmArgs.of(3L, 2L))
                 .alarmType(AlarmType.TRANSACTION)
                 .build();
+    }
+
+    public static ChatRoom createChatRoom() {
+        ChatRoom chatRoom = ChatRoom.builder()
+                .sellStatus(SellStatus.ONGOING)
+                .openOrClose(true)
+                .wasteId(1L)
+                .buyerId(2L)
+                .sellerId(3L)
+                .build();
+        ReflectionTestUtils.setField(
+                chatRoom,
+                "seller",
+                createMember("seller@gmail.com", "pw", "seller", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE));
+        ReflectionTestUtils.setField(
+                chatRoom,
+                "buyer",
+                createMember("buyer@gmail.com", "pw", "buyer", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE));
+        ReflectionTestUtils.setField(chatRoom, "chatMessages", Set.of(createChatMessage()));
+        return chatRoom;
+    }
+
+    public static ChatMessage createChatMessage() {
+        return ChatMessage.of(1L, 2L, "message");
     }
 }
