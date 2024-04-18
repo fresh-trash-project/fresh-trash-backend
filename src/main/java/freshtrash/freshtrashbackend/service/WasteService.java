@@ -3,7 +3,6 @@ package freshtrash.freshtrashbackend.service;
 import com.querydsl.core.types.Predicate;
 
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
-import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
@@ -107,36 +106,23 @@ public class WasteService {
         return wasteReviewRepository.save(wasteReview);
     }
 
-    /**
-     * 관심폐기물 표시 또는 제거
-     */
     @Transactional
-    public int addOrDeleteWasteLike(LikeStatus likeStatus, Long memberId, Long wasteId) {
-        int updateCount = 0;
-
-        isPossibleLikeUpdate(likeStatus, memberId, wasteId);
-
-        if (likeStatus == LikeStatus.LIKE) {
-            wasteLikeRepository.save(WasteLike.of(memberId, wasteId));
-            updateCount = 1;
-        } else if (likeStatus == LikeStatus.UNLIKE) {
-            wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
-            updateCount = -1;
+    public void addWasteLike(Long memberId, Long wasteId) {
+        if (wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId)) {
+            throw new WasteException(ErrorCode.ALREADY_EXISTS_LIKE);
         }
 
-        // update likeCount
-        return wasteRepository.updateLikeCount(wasteId, updateCount);
+        wasteLikeRepository.save(WasteLike.of(memberId, wasteId));
+        wasteRepository.updateLikeCount(wasteId, 1);
     }
 
-    /**
-     * 관심추가 또는 삭제가 가능한지 체크
-     * (likeStatus가 LIKE -> 관심추가된 데이터가 없어야하고, UNLIKE -> 관심추가된 데이터가 있어야한다)
-     */
-    public void isPossibleLikeUpdate(LikeStatus likeStatus, Long memberId, Long wasteId) {
-        boolean existsLike = wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId);
-
-        if ((likeStatus == LikeStatus.LIKE && existsLike) || (likeStatus == LikeStatus.UNLIKE && !existsLike)) {
-            throw new WasteException(ErrorCode.UN_MATCHED_LIKE_STATUS);
+    @Transactional
+    public void deleteWasteLike(Long memberId, Long wasteId) {
+        if (!wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId)) {
+            throw new WasteException(ErrorCode.NOT_EXISTS_LIKE);
         }
+
+        wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
+        wasteRepository.updateLikeCount(wasteId, -1);
     }
 }

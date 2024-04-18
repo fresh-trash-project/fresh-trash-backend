@@ -129,23 +129,23 @@ public class WasteApi {
      * 폐기물 관심 추가 또는 삭제
      */
     @PostMapping("/{wasteId}/likes")
-    public ResponseEntity<ApiResponse<Integer>> addOrDeleteWasteLike(
+    public ResponseEntity<ApiResponse<Boolean>> addOrDeleteWasteLike(
             @RequestParam LikeStatus likeStatus,
             @PathVariable Long wasteId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-
         checkIfNotWriter(memberPrincipal, wasteId);
 
-        // TODO likeCount가 변경된 관심수를 반환하도록 변경 예정
+        if (likeStatus == LikeStatus.LIKE) {
+            wasteService.addWasteLike(memberPrincipal.id(), wasteId);
+        } else if (likeStatus == LikeStatus.UNLIKE) {
+            wasteService.deleteWasteLike(memberPrincipal.id(), wasteId);
+        }
 
-        // 관심 추가 또는 삭제
-        int likeCount = wasteService.addOrDeleteWasteLike(likeStatus, memberPrincipal.id(), wasteId);
-
-        return ResponseEntity.ok(ApiResponse.of(likeCount));
+        return ResponseEntity.ok(ApiResponse.of(true));
     }
 
     /**
-     * 작성자가 아닌지 확인 (작성자인 경우 관심 추가/삭제 할수 없음)
+     * 작성자인지 확인 (작성자인 경우 관심 추가/삭제 할수 없음)
      */
     private void checkIfNotWriter(MemberPrincipal memberPrincipal, Long wasteId) {
         if (wasteService.isWriterOfArticle(wasteId, memberPrincipal.id())) {

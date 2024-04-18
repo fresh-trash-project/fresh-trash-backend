@@ -35,5 +35,5 @@ public interface WasteRepository
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Waste w set w.likeCount = w.likeCount + ?2 where w.id = ?1")
-    int updateLikeCount(Long wasteId, int updateCount);
+    void updateLikeCount(Long wasteId, int updateCount);
 }
