@@ -1,12 +1,12 @@
 package freshtrash.freshtrashbackend.controller;
 
 import com.querydsl.core.types.Predicate;
-import freshtrash.freshtrashbackend.dto.WasteReviewDto;
 import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
+import freshtrash.freshtrashbackend.dto.response.ReviewResponse;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
-import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
@@ -96,6 +96,7 @@ public class WasteApi {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
         wasteService.deleteWaste(wasteId);
         fileService.deleteFileIfExists(wasteService.findFileNameOfWaste(wasteId).fileName());
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
@@ -112,16 +113,16 @@ public class WasteApi {
      * 폐기물 리뷰 작성
      */
     @PostMapping("/{wasteId}/reviews")
-    private ResponseEntity<WasteReviewDto> addWasteReview(
+    private ResponseEntity<ReviewResponse> addWasteReview(
             @RequestBody @Valid ReviewRequest reviewRequest,
             @PathVariable Long wasteId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 
         // TODO : transaction 거래 확인
 
-        WasteReviewDto wasteReviewDto =
-                WasteReviewDto.fromEntity(wasteService.insertWasteReview(reviewRequest, wasteId, memberPrincipal.id()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(wasteReviewDto);
+        ReviewResponse reviewResponse =
+                ReviewResponse.fromEntity(wasteService.insertWasteReview(reviewRequest, wasteId, memberPrincipal.id()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(reviewResponse);
     }
 
     /**

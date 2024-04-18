@@ -1,12 +1,12 @@
-package freshtrash.freshtrashbackend.dto;
+package freshtrash.freshtrashbackend.dto.response;
 
 import freshtrash.freshtrashbackend.entity.WasteReview;
 import lombok.Builder;
 
 @Builder
-public record WasteReviewDto(Long memberId, Long wasteId, Integer rating) {
-    public static WasteReviewDto fromEntity(WasteReview wasteReview) {
-        return WasteReviewDto.builder()
+public record ReviewResponse(Long memberId, Long wasteId, Integer rating) {
+    public static ReviewResponse fromEntity(WasteReview wasteReview) {
+        return ReviewResponse.builder()
                 .memberId(wasteReview.getMemberId())
                 .wasteId(wasteReview.getWasteId())
                 .rating(wasteReview.getRating())
