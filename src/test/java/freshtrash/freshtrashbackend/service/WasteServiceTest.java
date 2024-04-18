@@ -3,7 +3,7 @@ package freshtrash.freshtrashbackend.service;
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.WasteDto;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.QWaste;
@@ -63,7 +63,7 @@ class WasteServiceTest {
         given(wasteRepository.findAll(anyString(), any(Predicate.class), any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createWaste())));
         // when
-        Page<WasteDto> wastes = wasteService.getWastes("", predicate, pageable);
+        Page<WasteResponse> wastes = wasteService.getWastes("", predicate, pageable);
         // then
         assertThat(wastes.getSize()).isEqualTo(expectedSize);
     }
@@ -74,44 +74,44 @@ class WasteServiceTest {
         // given
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         MemberPrincipal memberPrincipal = FixtureDto.createMemberPrincipal();
-        Waste waste = wasteRequest.toEntity("test.png", memberPrincipal.id());
+        Waste waste = Waste.fromRequest(wasteRequest, "test.png", memberPrincipal.id());
         given(wasteRepository.save(any(Waste.class))).willReturn(waste);
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
         // when
-        WasteDto wasteDto = wasteService.addWaste(Fixture.createMultipartFile("image"), wasteRequest, memberPrincipal);
+        WasteResponse wasteResponse = wasteService.addWaste(Fixture.createMultipartFile("image"), wasteRequest, memberPrincipal);
         // then
-        assertThat(wasteDto.title()).isEqualTo(wasteRequest.title());
-        assertThat(wasteDto.content()).isEqualTo(wasteRequest.content());
-        assertThat(wasteDto.wasteCategory()).isEqualTo(wasteRequest.wasteCategory());
-        assertThat(wasteDto.wasteStatus()).isEqualTo(wasteRequest.wasteStatus());
-        assertThat(wasteDto.sellStatus()).isEqualTo(wasteRequest.sellStatus());
-        assertThat(wasteDto.wastePrice()).isEqualTo(wasteRequest.wastePrice());
-        assertThat(wasteDto.address()).isEqualTo(wasteRequest.address());
+        assertThat(wasteResponse.title()).isEqualTo(wasteRequest.title());
+        assertThat(wasteResponse.content()).isEqualTo(wasteRequest.content());
+        assertThat(wasteResponse.wasteCategory()).isEqualTo(wasteRequest.wasteCategory());
+        assertThat(wasteResponse.wasteStatus()).isEqualTo(wasteRequest.wasteStatus());
+        assertThat(wasteResponse.sellStatus()).isEqualTo(wasteRequest.sellStatus());
+        assertThat(wasteResponse.wastePrice()).isEqualTo(wasteRequest.wastePrice());
+        assertThat(wasteResponse.address()).isEqualTo(wasteRequest.address());
     }
 
-    @DisplayName("Waste 수정")
+    @DisplayName("Waste 수정_파일이 유효한 경우_저장된 파일명은 이전에 저장한 파일명과 상이")
     @Test
     void given_imgFileAndWasteRequest_when_updateWaste_then_wasteRequestValuesEqualsToUpdatedWasteValues() {
         // given
+        Long wasteId = 1L;
         MockMultipartFile multipartFile = Fixture.createMultipartFile("test content");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         String savedFileName = "saved.png";
         MemberPrincipal memberPrincipal = FixtureDto.createMemberPrincipal();
-        given(wasteRepository.save(any(Waste.class)))
-                .willReturn(wasteRequest.toEntity("test.png", memberPrincipal.id()));
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
         willDoNothing().given(wasteRepository).flush();
         willDoNothing().given(fileService).deleteFileIfExists(anyString());
         // when
-        WasteDto wasteDto = wasteService.updateWaste(multipartFile, wasteRequest, savedFileName, memberPrincipal);
+        WasteResponse wasteResponse = wasteService.updateWaste(wasteId, multipartFile, wasteRequest, savedFileName, memberPrincipal);
         // then
-        assertThat(wasteDto.title()).isEqualTo(wasteRequest.title());
-        assertThat(wasteDto.content()).isEqualTo(wasteRequest.content());
-        assertThat(wasteDto.wasteCategory()).isEqualTo(wasteRequest.wasteCategory());
-        assertThat(wasteDto.wasteStatus()).isEqualTo(wasteRequest.wasteStatus());
-        assertThat(wasteDto.sellStatus()).isEqualTo(wasteRequest.sellStatus());
-        assertThat(wasteDto.wastePrice()).isEqualTo(wasteRequest.wastePrice());
-        assertThat(wasteDto.address()).isEqualTo(wasteRequest.address());
+        assertThat(wasteResponse.title()).isEqualTo(wasteRequest.title());
+        assertThat(wasteResponse.content()).isEqualTo(wasteRequest.content());
+        assertThat(wasteResponse.wasteCategory()).isEqualTo(wasteRequest.wasteCategory());
+        assertThat(wasteResponse.wasteStatus()).isEqualTo(wasteRequest.wasteStatus());
+        assertThat(wasteResponse.sellStatus()).isEqualTo(wasteRequest.sellStatus());
+        assertThat(wasteResponse.wastePrice()).isEqualTo(wasteRequest.wastePrice());
+        assertThat(wasteResponse.address()).isEqualTo(wasteRequest.address());
+        assertThat(wasteResponse.fileName()).isNotEqualTo(savedFileName);
     }
 
     @DisplayName("Waste 삭제")
