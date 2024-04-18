@@ -1,10 +1,10 @@
 package freshtrash.freshtrashbackend.service;
 
 import com.querydsl.core.types.Predicate;
-import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.WasteLike;
@@ -48,7 +48,7 @@ public class WasteService {
         // 주소가 입력되지 않았을 경우
         if (Objects.isNull(wasteRequest.address())) throw new WasteException(ErrorCode.EMPTY_ADDRESS);
         String savedFileName = FileUtils.generateUniqueFileName(imgFile);
-        Waste waste = wasteRequest.toEntity(savedFileName, memberPrincipal.id());
+        Waste waste = Waste.fromRequest(wasteRequest, savedFileName, memberPrincipal.id());
 
         Waste savedWaste = wasteRepository.save(waste);
         // 이미지 파일 저장
@@ -58,7 +58,11 @@ public class WasteService {
 
     @Transactional
     public WasteResponse updateWaste(
-            Long wasteId, MultipartFile imgFile, WasteRequest wasteRequest, String savedFileName, MemberPrincipal memberPrincipal) {
+            Long wasteId,
+            MultipartFile imgFile,
+            WasteRequest wasteRequest,
+            String savedFileName,
+            MemberPrincipal memberPrincipal) {
 
         if (!FileUtils.isValid(imgFile)) {
             throw new FileException(ErrorCode.INVALID_FIlE);
@@ -66,7 +70,7 @@ public class WasteService {
 
         // DB 업데이트
         String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
-        Waste updatedWaste = wasteRequest.toEntity(updatedFileName, memberPrincipal.id());
+        Waste updatedWaste = Waste.fromRequest(wasteRequest, updatedFileName, memberPrincipal.id());
         updatedWaste.setId(wasteId);
         wasteRepository.save(updatedWaste);
         // 수정된 파일 저장

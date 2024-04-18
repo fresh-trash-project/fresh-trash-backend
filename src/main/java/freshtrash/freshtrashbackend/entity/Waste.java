@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
@@ -104,5 +105,19 @@ public class Waste extends AuditingAt {
             this.address = address.allBlank() ? null : address;
             return this;
         }
+    }
+
+    public static Waste fromRequest(WasteRequest wasteRequest, String fileName, Long memberId) {
+        return Waste.builder()
+                .title(wasteRequest.title())
+                .content(wasteRequest.content())
+                .wastePrice(wasteRequest.wastePrice())
+                .fileName(fileName)
+                .wasteCategory(wasteRequest.wasteCategory())
+                .wasteStatus(wasteRequest.wasteStatus())
+                .sellStatus(wasteRequest.sellStatus())
+                .address(wasteRequest.address())
+                .memberId(memberId)
+                .build();
     }
 }
