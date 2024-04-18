@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.service;
 
 import com.querydsl.core.types.Predicate;
-import freshtrash.freshtrashbackend.dto.WasteDto;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
@@ -39,12 +39,12 @@ public class WasteService {
         return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 
-    public Page<WasteDto> getWastes(String district, Predicate predicate, Pageable pageable) {
-        return wasteRepository.findAll(district, predicate, pageable).map(WasteDto::fromEntity);
+    public Page<WasteResponse> getWastes(String district, Predicate predicate, Pageable pageable) {
+        return wasteRepository.findAll(district, predicate, pageable).map(WasteResponse::fromEntity);
     }
 
     @Transactional
-    public WasteDto addWaste(MultipartFile imgFile, WasteRequest wasteRequest, MemberPrincipal memberPrincipal) {
+    public WasteResponse addWaste(MultipartFile imgFile, WasteRequest wasteRequest, MemberPrincipal memberPrincipal) {
         // 주소가 입력되지 않았을 경우
         if (Objects.isNull(wasteRequest.address())) throw new WasteException(ErrorCode.EMPTY_ADDRESS);
         String savedFileName = FileUtils.generateUniqueFileName(imgFile);
@@ -53,11 +53,11 @@ public class WasteService {
         Waste savedWaste = wasteRepository.save(waste);
         // 이미지 파일 저장
         fileService.uploadFile(imgFile, savedFileName);
-        return WasteDto.fromEntity(savedWaste, memberPrincipal);
+        return WasteResponse.fromEntity(savedWaste, memberPrincipal);
     }
 
     @Transactional
-    public WasteDto updateWaste(
+    public WasteResponse updateWaste(
             Long wasteId, MultipartFile imgFile, WasteRequest wasteRequest, String savedFileName, MemberPrincipal memberPrincipal) {
 
         if (!FileUtils.isValid(imgFile)) {
@@ -75,7 +75,7 @@ public class WasteService {
         // 저장된 파일 삭제
         fileService.deleteFileIfExists(savedFileName);
 
-        return WasteDto.fromEntity(updatedWaste, memberPrincipal);
+        return WasteResponse.fromEntity(updatedWaste, memberPrincipal);
     }
 
     @Transactional

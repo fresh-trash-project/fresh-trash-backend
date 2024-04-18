@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.controller;
 
 import com.querydsl.core.types.Predicate;
-import freshtrash.freshtrashbackend.dto.WasteDto;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.WasteReviewDto;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
@@ -38,9 +38,9 @@ public class WasteApi {
      * 폐기물 단일 조회
      */
     @GetMapping("{wasteId}")
-    public ResponseEntity<WasteDto> getWaste(@PathVariable Long wasteId) {
-        WasteDto wasteDto = WasteDto.fromEntity(wasteService.getWaste(wasteId));
-        return ResponseEntity.ok(wasteDto);
+    public ResponseEntity<WasteResponse> getWaste(@PathVariable Long wasteId) {
+        WasteResponse wasteResponse = WasteResponse.fromEntity(wasteService.getWaste(wasteId));
+        return ResponseEntity.ok(wasteResponse);
     }
 
     /**
@@ -49,11 +49,11 @@ public class WasteApi {
      * @param predicate 제목 검색 (e.g. ?title={검색 키워드})
      */
     @GetMapping
-    public ResponseEntity<Page<WasteDto>> getWastes(
+    public ResponseEntity<Page<WasteResponse>> getWastes(
             @RequestParam(required = false) String district,
             @QuerydslPredicate(root = Waste.class) Predicate predicate,
             @PageableDefault(size = 6, sort = "createdAt", direction = DESC) Pageable pageable) {
-        Page<WasteDto> wastes = wasteService.getWastes(district, predicate, pageable);
+        Page<WasteResponse> wastes = wasteService.getWastes(district, predicate, pageable);
         return ResponseEntity.ok(wastes);
     }
 
@@ -61,24 +61,24 @@ public class WasteApi {
      * 폐기물 등록
      */
     @PostMapping
-    public ResponseEntity<WasteDto> addWaste(
+    public ResponseEntity<WasteResponse> addWaste(
             @RequestPart MultipartFile imgFile,
             @RequestPart @Valid WasteRequest wasteRequest,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        WasteDto wasteDto = wasteService.addWaste(imgFile, wasteRequest, memberPrincipal);
-        return ResponseEntity.status(HttpStatus.CREATED).body(wasteDto);
+        WasteResponse wasteResponse = wasteService.addWaste(imgFile, wasteRequest, memberPrincipal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(wasteResponse);
     }
 
     @PutMapping("{wasteId}")
-    public ResponseEntity<WasteDto> updateWaste(
+    public ResponseEntity<WasteResponse> updateWaste(
             @RequestPart MultipartFile imgFile,
             @RequestPart @Valid WasteRequest wasteRequest,
             @PathVariable Long wasteId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
-        WasteDto wasteDto = wasteService.updateWaste(
+        WasteResponse wasteResponse = wasteService.updateWaste(
                 wasteId, imgFile, wasteRequest, wasteService.findFileNameOfWaste(wasteId).fileName(), memberPrincipal);
-        return ResponseEntity.ok(wasteDto);
+        return ResponseEntity.ok(wasteResponse);
     }
 
     /**
