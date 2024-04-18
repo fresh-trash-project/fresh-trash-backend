@@ -23,6 +23,7 @@ import static javax.persistence.FetchType.LAZY;
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Waste extends AuditingAt {
     @Id
+    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
@@ -49,22 +50,18 @@ public class Waste extends AuditingAt {
     @Column(nullable = false)
     private String fileName;
 
-    @Setter
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private WasteCategory wasteCategory;
 
-    @Setter
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private WasteStatus wasteStatus;
 
-    @Setter
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private SellStatus sellStatus;
 
-    @Setter
     @Type(type = "json")
     @Column(columnDefinition = "longtext")
     private Address address;

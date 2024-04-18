@@ -77,7 +77,7 @@ public class WasteApi {
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
         WasteDto wasteDto = wasteService.updateWaste(
-                imgFile, wasteRequest, wasteService.findFileNameOfWaste(wasteId).fileName(), memberPrincipal);
+                wasteId, imgFile, wasteRequest, wasteService.findFileNameOfWaste(wasteId).fileName(), memberPrincipal);
         return ResponseEntity.ok(wasteDto);
     }
 

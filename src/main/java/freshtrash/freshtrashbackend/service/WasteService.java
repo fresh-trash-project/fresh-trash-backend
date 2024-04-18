@@ -9,6 +9,7 @@ import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.WasteLike;
 import freshtrash.freshtrashbackend.entity.WasteReview;
+import freshtrash.freshtrashbackend.exception.FileException;
 import freshtrash.freshtrashbackend.exception.ReviewException;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -42,6 +43,7 @@ public class WasteService {
         return wasteRepository.findAll(district, predicate, pageable).map(WasteDto::fromEntity);
     }
 
+    @Transactional
     public WasteDto addWaste(MultipartFile imgFile, WasteRequest wasteRequest, MemberPrincipal memberPrincipal) {
         // 주소가 입력되지 않았을 경우
         if (Objects.isNull(wasteRequest.address())) throw new WasteException(ErrorCode.EMPTY_ADDRESS);
@@ -54,25 +56,29 @@ public class WasteService {
         return WasteDto.fromEntity(savedWaste, memberPrincipal);
     }
 
+    @Transactional
     public WasteDto updateWaste(
-            MultipartFile imgFile, WasteRequest wasteRequest, String savedFileName, MemberPrincipal memberPrincipal) {
+            Long wasteId, MultipartFile imgFile, WasteRequest wasteRequest, String savedFileName, MemberPrincipal memberPrincipal) {
+
+        if (!FileUtils.isValid(imgFile)) {
+            throw new FileException(ErrorCode.INVALID_FIlE);
+        }
+
+        // DB 업데이트
         String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
         Waste updatedWaste = wasteRequest.toEntity(updatedFileName, memberPrincipal.id());
-
-        // 파일은 유효할 경우에만 수정합니다
-        if (FileUtils.isValid(imgFile)) {
-            // DB 업데이트
-            wasteRepository.save(updatedWaste);
-            // 수정된 파일 저장
-            fileService.uploadFile(imgFile, updatedFileName);
-            wasteRepository.flush();
-            // 저장된 파일 삭제
-            fileService.deleteFileIfExists(savedFileName);
-        }
+        updatedWaste.setId(wasteId);
+        wasteRepository.save(updatedWaste);
+        // 수정된 파일 저장
+        fileService.uploadFile(imgFile, updatedFileName);
+        wasteRepository.flush();
+        // 저장된 파일 삭제
+        fileService.deleteFileIfExists(savedFileName);
 
         return WasteDto.fromEntity(updatedWaste, memberPrincipal);
     }
 
+    @Transactional
     public void deleteWaste(Long wasteId, String savedFileName) {
         wasteRepository.deleteById(wasteId);
         // 파일 삭제
