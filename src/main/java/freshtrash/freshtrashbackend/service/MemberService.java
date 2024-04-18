@@ -12,6 +12,7 @@ import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -97,6 +98,10 @@ public class MemberService {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
+    /**
+     * member 정보 수정
+     */
+    @Transactional
     public Member updateMember(Long memberId, MemberRequest memberRequest, MultipartFile imgFile) {
         checkNicknameDuplication(memberRequest.nickname());
 
@@ -109,20 +114,21 @@ public class MemberService {
 
         // 파일은 유효할 경우에만 수정
         if (FileUtils.isValid(imgFile)) {
-            String savedFileName = member.getFileName(); // 기존 저장된 파일
             member.setFileName(updatedFileName);
             // 수정된 파일 저장
             fileService.uploadFile(imgFile, updatedFileName);
-            memberRepository.saveAndFlush(member);
-
-            if (StringUtils.hasText(savedFileName)) {
-                // 이전 파일 삭제
-                fileService.deleteFileIfExists(savedFileName);
-            }
-        } else {
             memberRepository.save(member);
         }
 
         return member;
+    }
+
+    /**
+     * 이전 파일 삭제
+     */
+    public void deleteOldFile(String fileName) {
+        if (StringUtils.hasText(fileName)) {
+            fileService.deleteFileIfExists(fileName);
+        }
     }
 }
