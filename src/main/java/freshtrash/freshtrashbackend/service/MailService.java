@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -30,8 +31,8 @@ public class MailService {
     private final int AUTH_SUCCESS_DURATION_MIN = 300;
     private final String AUTH_SUCCESS = "AuthSuccess";
 
+    @Async
     public void sendMailWithCode(String email, String subject, String code) {
-        isValidMail(email);
         String text = "fresh-trash 메일 인증 코드입니다. <br/>인증코드:" + code;
         sendMail(email, subject, text);
         redisService.saveEmailVerificationCode(email, code, AUTH_CODE_DURATION_MIN);
@@ -70,7 +71,7 @@ public class MailService {
     /**
      * 메일 유효성 검증
      */
-    private void isValidMail(String email) {
+    public void isValidMail(String email) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://emailvalidation.abstractapi.com/v1/?api_key=" + mailProperties.apiKey()
