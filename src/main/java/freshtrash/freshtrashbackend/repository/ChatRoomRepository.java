@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,4 +26,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     @Query("select (cr is not null) from ChatRoom cr where cr.id = ?1 and (cr.buyerId = ?2 or cr.sellerId = ?2)")
     boolean existsByIdAndMemberId(Long chatRoomId, Long memberId);
+
+    @EntityGraph(attributePaths = "waste")
+    Optional<ChatRoom> findBySellerIdAndBuyerIdAndWasteId(Long sellerId, Long buyerId, Long wasteId);
 }
