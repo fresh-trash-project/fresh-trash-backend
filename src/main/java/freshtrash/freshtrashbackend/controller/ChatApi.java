@@ -54,12 +54,13 @@ public class ChatApi {
      * 채팅 요청
      */
     @PostMapping
-    public ResponseEntity<ChatRoomDetailsResponse> createChatRoom(
+    public ResponseEntity<ChatRoomDetailsResponse> handleChatRoomRequest(
             @PathVariable Long wasteId,
             @Valid @RequestBody ChatRoomRequest request,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        ChatRoom chatRoom = chatRoomService.createChatRoom(wasteId, memberPrincipal.id());
+        ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(wasteId, memberPrincipal.id());
         ChatRoomDetailsResponse response = ChatRoomDetailsResponse.fromEntity(chatRoom);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
