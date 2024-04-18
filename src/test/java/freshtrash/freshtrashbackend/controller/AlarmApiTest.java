@@ -24,6 +24,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,7 +72,7 @@ class AlarmApiTest {
         given(alarmService.isOwnerOfAlarm(anyLong(), anyLong())).willReturn(true);
         willDoNothing().given(alarmService).readAlarm(anyLong());
         //when
-        mvc.perform(get("/api/v1/notis/" + alarmId))
+        mvc.perform(put("/api/v1/notis/" + alarmId))
                 .andExpect(status().isOk());
         //then
     }
