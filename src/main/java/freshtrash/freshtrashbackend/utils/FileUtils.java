@@ -14,24 +14,6 @@ public class FileUtils {
     private static final Set<String> IMAGE_EXTENSIONS = Set.of("jpeg", "jpg", "png");
 
     /**
-     * 확장자 index 반환
-     */
-    public static int indexOfExtension(String filename) {
-        if (!StringUtils.hasText(filename)) {
-            throw new FileException(ErrorCode.INVALID_FIlE_NAME);
-        }
-        return filename.lastIndexOf(EXTENSION_SEPARATOR);
-    }
-
-    /**
-     * 확장자만 추출 (e.g. png)
-     */
-    public static String getExtension(String filename) {
-        int index = indexOfExtension(filename);
-        return filename.substring(index + 1);
-    }
-
-    /**
      * 임의의 고유한 파일명 생성
      */
     public static String generateUniqueFileName(MultipartFile file) {
@@ -43,6 +25,17 @@ public class FileUtils {
      */
     public static boolean isValid(MultipartFile file) {
         return !isEmpty(file) && isCompatibleExtension(file);
+    }
+
+    /**
+     * 확장자만 추출 (e.g. png)
+     */
+    private static String getExtension(String filename) {
+        if (!StringUtils.hasText(filename)) {
+            throw new FileException(ErrorCode.INVALID_FIlE_NAME);
+        }
+        int index = filename.lastIndexOf(EXTENSION_SEPARATOR);
+        return filename.substring(index + 1);
     }
 
     private static boolean isCompatibleExtension(MultipartFile file) {
