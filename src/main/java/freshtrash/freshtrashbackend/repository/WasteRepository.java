@@ -11,9 +11,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Transactional(propagation = Propagation.SUPPORTS)
 public interface WasteRepository
         extends JpaRepository<Waste, Long>, CustomWasteRepository, QuerydslBinderCustomizer<QWaste> {
     @Override
