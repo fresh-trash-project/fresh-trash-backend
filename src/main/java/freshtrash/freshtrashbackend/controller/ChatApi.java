@@ -59,7 +59,11 @@ public class ChatApi {
             @Valid @RequestBody ChatRoomRequest request,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(wasteId, memberPrincipal.id());
-        ChatRoomDetailsResponse response = ChatRoomDetailsResponse.fromEntity(chatRoom);
+
+        // 채팅방 ID를 사용하여 웹소켓 토픽 경로 생성
+        String websocketTopicPath = "/topic/chats/" + chatRoom.getId();
+
+        ChatRoomDetailsResponse response = ChatRoomDetailsResponse.fromEntity(chatRoom, websocketTopicPath);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
