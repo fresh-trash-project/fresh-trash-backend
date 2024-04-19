@@ -30,8 +30,6 @@ public class MailService {
     private final MailProperties mailProperties;
     private final EmailCodeCacheRepository emailCodeCacheRepository;
     private final long AUTH_CODE_EXPIRED_SECONDS = 10 * 60;
-    private final long AUTH_SUCCESS_EXPIRED_SECONDS = 300 * 60;
-    private final String AUTH_SUCCESS = "AuthSuccess";
 
     @Async
     public void sendMailWithCode(String email, String subject, String code) {
@@ -56,9 +54,6 @@ public class MailService {
         if (!emailCodeCache.code().equals(code)) {
             throw new MailException(ErrorCode.AUTH_CODE_UNMATCHED);
         }
-
-        // 인증완료 redis 저장
-        emailCodeCacheRepository.save(EmailCodeCache.of(email, AUTH_SUCCESS, AUTH_SUCCESS_EXPIRED_SECONDS));
     }
 
     public void sendMail(String toMail, String subject, String text) {
