@@ -5,12 +5,9 @@ import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-<<<<<<< HEAD
-=======
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
->>>>>>> eb4f5e0 (refactor: #81-Dto -> Response로 통일)
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
-import freshtrash.freshtrashbackend.dto.response.WasteResponse;
+
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.Waste;
