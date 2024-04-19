@@ -61,7 +61,6 @@ public class WasteService {
             Long wasteId,
             MultipartFile imgFile,
             WasteRequest wasteRequest,
-            String savedFileName,
             MemberPrincipal memberPrincipal) {
 
         if (!FileUtils.isValid(imgFile)) {
@@ -75,9 +74,6 @@ public class WasteService {
         wasteRepository.save(updatedWaste);
         // 수정된 파일 저장
         fileService.uploadFile(imgFile, updatedFileName);
-        wasteRepository.flush();
-        // 저장된 파일 삭제
-        fileService.deleteFileIfExists(savedFileName);
 
         return WasteResponse.fromEntity(updatedWaste, memberPrincipal);
     }
