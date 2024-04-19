@@ -27,6 +27,7 @@ public enum ErrorCode {
 
     // Mail
     AUTH_CODE_UNMATCHED(HttpStatus.BAD_REQUEST, "잘못된 인증코드입니다."),
+    NOT_FOUND_AUTH_CODE(HttpStatus.NOT_FOUND, "인증코드가 만료되었거나 존재하지 않습니다."),
     EMPTY_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증코드가 입력되지 않았습니다."),
     MAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "메일전송에 실패했습니다"),
     MAIL_VALIDATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "메일검증에 실패했습니다."),

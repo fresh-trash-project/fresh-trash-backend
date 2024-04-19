@@ -2,9 +2,11 @@ package freshtrash.freshtrashbackend.service;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import freshtrash.freshtrashbackend.dto.cache.EmailCodeCache;
 import freshtrash.freshtrashbackend.dto.properties.MailProperties;
 import freshtrash.freshtrashbackend.exception.MailException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.repository.EmailCodeCacheRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,33 +27,33 @@ import java.net.http.HttpResponse;
 @RequiredArgsConstructor
 public class MailService {
     private final JavaMailSender mailSender;
-    private final RedisService redisService;
     private final MailProperties mailProperties;
-    private final int AUTH_CODE_DURATION_MIN = 10;
-    private final int AUTH_SUCCESS_DURATION_MIN = 300;
-    private final String AUTH_SUCCESS = "AuthSuccess";
+    private final EmailCodeCacheRepository emailCodeCacheRepository;
+    private final long AUTH_CODE_EXPIRED_SECONDS = 10 * 60;
 
     @Async
     public void sendMailWithCode(String email, String subject, String code) {
         String text = "fresh-trash 메일 인증 코드입니다. <br/>인증코드:" + code;
         sendMail(email, subject, text);
-        redisService.saveEmailVerificationCode(email, code, AUTH_CODE_DURATION_MIN);
+        emailCodeCacheRepository.save(EmailCodeCache.of(email, code, AUTH_CODE_EXPIRED_SECONDS));
         log.debug("--reids에 code 저장");
     }
 
-    public boolean verifyEmailCode(String email, String code) {
-        String authCode = redisService.getData(email);
+    public EmailCodeCache getEmailCodeCache(String email) {
+        return emailCodeCacheRepository
+                .findById(email)
+                .orElseThrow(() -> new MailException(ErrorCode.NOT_FOUND_AUTH_CODE));
+    }
+
+    public void verifyEmailCode(String email, String code) {
+        EmailCodeCache emailCodeCache = getEmailCodeCache(email);
         if (!StringUtils.hasText(code)) {
             throw new MailException(ErrorCode.EMPTY_AUTH_CODE);
         }
 
-        if (!authCode.equals(code)) {
+        if (!emailCodeCache.code().equals(code)) {
             throw new MailException(ErrorCode.AUTH_CODE_UNMATCHED);
         }
-
-        // 인증완료 redis 저장
-        redisService.saveEmailVerificationCode(email, AUTH_SUCCESS, AUTH_SUCCESS_DURATION_MIN);
-        return true;
     }
 
     public void sendMail(String toMail, String subject, String text) {
