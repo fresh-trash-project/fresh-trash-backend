@@ -25,4 +25,15 @@ public record ChatRoomResponse(
                 .buyerNickname(chatRoom.getBuyer().getNickname())
                 .build();
     }
+
+    public static ChatRoomResponse fromEntity(ChatRoom chatRoom, String sellerNickname, String buyerNickname) {
+        return ChatRoomResponse.builder()
+                .id(chatRoom.getId())
+                .sellStatus(chatRoom.getSellStatus())
+                .openOrClose(chatRoom.isOpenOrClose())
+                .createdAt(chatRoom.getCreatedAt())
+                .sellerNickname(sellerNickname)
+                .buyerNickname(buyerNickname)
+                .build();
+    }
 }

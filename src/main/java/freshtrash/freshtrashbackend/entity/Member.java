@@ -62,6 +62,7 @@ public class Member extends AuditingAt {
 
     @Builder
     private Member(
+            Long id,
             String email,
             String password,
             String nickname,
@@ -70,6 +71,7 @@ public class Member extends AuditingAt {
             LoginType loginType,
             UserRole userRole,
             AccountStatus accountStatus) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
