@@ -58,10 +58,7 @@ public class WasteService {
 
     @Transactional
     public WasteResponse updateWaste(
-            Long wasteId,
-            MultipartFile imgFile,
-            WasteRequest wasteRequest,
-            MemberPrincipal memberPrincipal) {
+            Long wasteId, MultipartFile imgFile, WasteRequest wasteRequest, MemberPrincipal memberPrincipal) {
 
         if (!FileUtils.isValid(imgFile)) {
             throw new FileException(ErrorCode.INVALID_FIlE);
@@ -78,11 +75,8 @@ public class WasteService {
         return WasteResponse.fromEntity(updatedWaste, memberPrincipal);
     }
 
-    @Transactional
-    public void deleteWaste(Long wasteId, String savedFileName) {
+    public void deleteWaste(Long wasteId) {
         wasteRepository.deleteById(wasteId);
-        // 파일 삭제
-        fileService.deleteFileIfExists(savedFileName);
     }
 
     public FileNameSummary findFileNameOfWaste(Long wasteId) {
