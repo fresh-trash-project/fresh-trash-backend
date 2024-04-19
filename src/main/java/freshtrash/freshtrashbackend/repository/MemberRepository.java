@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.repository;
 
 import freshtrash.freshtrashbackend.entity.Member;
+import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,4 +17,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByNickname(String nickname);
+
+    Optional<FileNameSummary> findFileNameById(Long memberId);
 }

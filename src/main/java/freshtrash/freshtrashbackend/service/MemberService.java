@@ -7,6 +7,7 @@ import freshtrash.freshtrashbackend.exception.AuthException;
 import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
+import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -130,5 +131,11 @@ public class MemberService {
         if (StringUtils.hasText(fileName)) {
             fileService.deleteFileIfExists(fileName);
         }
+    }
+
+    public FileNameSummary findFileNameOfMember(Long memberId) {
+        return memberRepository
+                .findFileNameById(memberId)
+                .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
 }

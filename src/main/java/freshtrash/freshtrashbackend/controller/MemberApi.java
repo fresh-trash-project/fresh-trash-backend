@@ -36,7 +36,8 @@ public class MemberApi {
             @AuthenticationPrincipal MemberPrincipal memberPrincipal,
             @RequestPart MemberRequest memberRequest,
             @RequestPart MultipartFile imgFile) {
-        String oldFile = memberService.getMember(memberPrincipal.id()).getFileName();
+        String oldFile =
+                memberService.findFileNameOfMember(memberPrincipal.id()).fileName();
         MemberResponse memberResponse =
                 MemberResponse.fromEntity(memberService.updateMember(memberPrincipal.id(), memberRequest, imgFile));
 
