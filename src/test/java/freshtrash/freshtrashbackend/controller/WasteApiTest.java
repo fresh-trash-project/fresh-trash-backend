@@ -14,6 +14,7 @@ import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
 import freshtrash.freshtrashbackend.entity.constants.WasteStatus;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
+import freshtrash.freshtrashbackend.service.LocalFileService;
 import freshtrash.freshtrashbackend.service.WasteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,9 @@ class WasteApiTest {
 
     @MockBean
     private WasteService wasteService;
+
+    @MockBean
+    private LocalFileService localFileService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -193,12 +197,9 @@ class WasteApiTest {
         given(wasteService.isWriterOfArticle(anyLong(), anyLong())).willReturn(true);
         given(wasteService.findFileNameOfWaste(anyLong())).willReturn(new FileNameSummary("test.png"));
         given(wasteService.updateWaste(
-                        anyLong(),
-                        any(MultipartFile.class),
-                        any(WasteRequest.class),
-                        anyString(),
-                        any(MemberPrincipal.class)))
+                        anyLong(), any(MultipartFile.class), any(WasteRequest.class), any(MemberPrincipal.class)))
                 .willReturn(wasteResponse);
+        willDoNothing().given(localFileService).deleteFileIfExists(anyString());
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/wastes/" + wasteId)
                         .file("imgFile", imgFile.getBytes())
@@ -227,7 +228,8 @@ class WasteApiTest {
         Long wasteId = 1L;
         given(wasteService.isWriterOfArticle(anyLong(), anyLong())).willReturn(true);
         given(wasteService.findFileNameOfWaste(anyLong())).willReturn(new FileNameSummary("test.png"));
-        willDoNothing().given(wasteService).deleteWaste(anyLong(), anyString());
+        willDoNothing().given(localFileService).deleteFileIfExists(anyString());
+        willDoNothing().given(wasteService).deleteWaste(anyLong());
         // when
         mvc.perform(delete("/api/v1/wastes/" + wasteId)).andExpect(status().isNoContent());
         // then

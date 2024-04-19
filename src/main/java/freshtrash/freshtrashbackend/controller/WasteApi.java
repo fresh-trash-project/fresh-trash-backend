@@ -1,17 +1,18 @@
 package freshtrash.freshtrashbackend.controller;
 
 import com.querydsl.core.types.Predicate;
-import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.WasteReviewDto;
+import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.service.FileService;
 import freshtrash.freshtrashbackend.service.WasteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequiredArgsConstructor
 public class WasteApi {
     private final WasteService wasteService;
+    private final FileService fileService;
 
     /**
      * 폐기물 단일 조회
@@ -75,9 +77,13 @@ public class WasteApi {
             @RequestPart @Valid WasteRequest wasteRequest,
             @PathVariable Long wasteId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
-        WasteResponse wasteResponse = wasteService.updateWaste(
-                wasteId, imgFile, wasteRequest, wasteService.findFileNameOfWaste(wasteId).fileName(), memberPrincipal);
+
+        String savedFileName = wasteService.findFileNameOfWaste(wasteId).fileName();
+        WasteResponse wasteResponse = wasteService.updateWaste(wasteId, imgFile, wasteRequest, memberPrincipal);
+        fileService.deleteFileIfExists(savedFileName);
+
         return ResponseEntity.ok(wasteResponse);
     }
 
@@ -88,7 +94,8 @@ public class WasteApi {
     public ResponseEntity<Void> deleteWaste(
             @PathVariable Long wasteId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
-        wasteService.deleteWaste(wasteId, wasteService.findFileNameOfWaste(wasteId).fileName());
+        wasteService.deleteWaste(wasteId);
+        fileService.deleteFileIfExists(wasteService.findFileNameOfWaste(wasteId).fileName());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
