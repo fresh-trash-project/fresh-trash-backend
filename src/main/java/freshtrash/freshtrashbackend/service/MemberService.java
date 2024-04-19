@@ -111,14 +111,12 @@ public class MemberService {
         member.setNickname(memberRequest.nickname());
         member.setAddress(memberRequest.address());
 
-        String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
-
         // 파일은 유효할 경우에만 수정
         if (FileUtils.isValid(imgFile)) {
+            String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
             member.setFileName(updatedFileName);
             // 수정된 파일 저장
             fileService.uploadFile(imgFile, updatedFileName);
-            memberRepository.save(member);
         }
 
         return member;
