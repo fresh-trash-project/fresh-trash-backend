@@ -3,8 +3,8 @@ package freshtrash.freshtrashbackend.service;
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.QWaste;
 import freshtrash.freshtrashbackend.entity.Waste;
@@ -78,7 +78,8 @@ class WasteServiceTest {
         given(wasteRepository.save(any(Waste.class))).willReturn(waste);
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
         // when
-        WasteResponse wasteResponse = wasteService.addWaste(Fixture.createMultipartFile("image"), wasteRequest, memberPrincipal);
+        WasteResponse wasteResponse =
+                wasteService.addWaste(Fixture.createMultipartFile("image"), wasteRequest, memberPrincipal);
         // then
         assertThat(wasteResponse.title()).isEqualTo(wasteRequest.title());
         assertThat(wasteResponse.content()).isEqualTo(wasteRequest.content());
@@ -97,12 +98,13 @@ class WasteServiceTest {
         MockMultipartFile multipartFile = Fixture.createMultipartFile("test content");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         String savedFileName = "saved.png";
+        String updatedFileName = "updated.png";
         MemberPrincipal memberPrincipal = FixtureDto.createMemberPrincipal();
+        Waste waste = Waste.fromRequest(wasteRequest, updatedFileName, memberPrincipal.id());
+        given(wasteRepository.save(any(Waste.class))).willReturn(waste);
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
-        willDoNothing().given(wasteRepository).flush();
-        willDoNothing().given(fileService).deleteFileIfExists(anyString());
         // when
-        WasteResponse wasteResponse = wasteService.updateWaste(wasteId, multipartFile, wasteRequest, savedFileName, memberPrincipal);
+        WasteResponse wasteResponse = wasteService.updateWaste(wasteId, multipartFile, wasteRequest, memberPrincipal);
         // then
         assertThat(wasteResponse.title()).isEqualTo(wasteRequest.title());
         assertThat(wasteResponse.content()).isEqualTo(wasteRequest.content());
@@ -119,11 +121,9 @@ class WasteServiceTest {
     void given_wasteId_when_then_deleteWasteAndFile() {
         // given
         Long wasteId = 1L;
-        String savedFileName = "saved.png";
         willDoNothing().given(wasteRepository).deleteById(anyLong());
-        willDoNothing().given(fileService).deleteFileIfExists(anyString());
         // when
-        wasteService.deleteWaste(wasteId, savedFileName);
+        wasteService.deleteWaste(wasteId);
         // then
     }
 }

@@ -44,23 +44,6 @@ public class FixtureDto {
                 Fixture.createAddress());
     }
 
-    public static WasteResponse createWasteDto() {
-        return new WasteResponse(
-                "title",
-                "content",
-                SellType.SHARE,
-                1000,
-                2,
-                3,
-                "test.png",
-                WasteCategory.BEAUTY,
-                WasteStatus.BEST,
-                SellStatus.CLOSE,
-                Fixture.createAddress(),
-                LocalDateTime.now(),
-                new UserInfo("test", 4, "test.png", Fixture.createAddress()));
-    }
-
     public static MemberPrincipal createMemberPrincipal() {
         return MemberPrincipal.builder()
                 .id(1L)
