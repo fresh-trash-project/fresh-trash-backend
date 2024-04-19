@@ -6,7 +6,6 @@ import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.response.ReviewResponse;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
-import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
@@ -129,7 +128,7 @@ public class WasteApi {
      * 폐기물 관심 추가 또는 삭제
      */
     @PostMapping("/{wasteId}/likes")
-    public ResponseEntity<ApiResponse<Boolean>> addOrDeleteWasteLike(
+    public ResponseEntity<Void> addOrDeleteWasteLike(
             @RequestParam LikeStatus likeStatus,
             @PathVariable Long wasteId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
@@ -141,7 +140,7 @@ public class WasteApi {
             wasteService.deleteWasteLike(memberPrincipal.id(), wasteId);
         }
 
-        return ResponseEntity.ok(ApiResponse.of(true));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     /**
