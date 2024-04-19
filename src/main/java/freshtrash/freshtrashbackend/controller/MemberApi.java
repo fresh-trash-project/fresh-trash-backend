@@ -36,8 +36,15 @@ public class MemberApi {
             @AuthenticationPrincipal MemberPrincipal memberPrincipal,
             @RequestPart MemberRequest memberRequest,
             @RequestPart MultipartFile imgFile) {
+        String oldFile =
+                memberService.findFileNameOfMember(memberPrincipal.id()).fileName();
         MemberResponse memberResponse =
                 MemberResponse.fromEntity(memberService.updateMember(memberPrincipal.id(), memberRequest, imgFile));
+
+        // 파일이 수정된 경우 -> 이전 파일 삭제
+        if (!oldFile.equals(memberResponse.fileName())) {
+            memberService.deleteOldFile(oldFile);
+        }
         return ResponseEntity.ok(memberResponse);
     }
 }

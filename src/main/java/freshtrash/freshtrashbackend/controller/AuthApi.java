@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.dto.request.LoginRequest;
 import freshtrash.freshtrashbackend.dto.request.SignUpRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
+import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class AuthApi {
      */
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<String>> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
-        memberService.registerMember(signUpRequest.toEntity());
+        memberService.registerMember(Member.fromSignUpRequest(signUpRequest));
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("you're successfully sign up. you can be login."));
     }

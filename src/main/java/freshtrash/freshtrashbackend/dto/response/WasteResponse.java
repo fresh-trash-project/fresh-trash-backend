@@ -1,6 +1,5 @@
 package freshtrash.freshtrashbackend.dto.response;
 
-import freshtrash.freshtrashbackend.dto.UserInfo;
 import freshtrash.freshtrashbackend.dto.constants.SellType;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
@@ -27,7 +26,8 @@ public record WasteResponse(
         SellStatus sellStatus,
         Address address,
         LocalDateTime createdAt,
-        UserInfo userInfo) {
+        MemberResponse memberResponse) {
+
     public static class WasteResponseBuilder {
         public WasteResponseBuilder wastePrice(Integer wastePrice) {
             this.wastePrice = wastePrice;
@@ -37,16 +37,15 @@ public record WasteResponse(
     }
 
     public static WasteResponse fromEntity(Waste waste) {
-        return WasteResponse.of(waste, UserInfo.fromEntity(waste.getMember()));
+        return WasteResponse.of(waste, MemberResponse.fromEntity(waste.getMember()));
     }
 
     public static WasteResponse fromEntity(Waste waste, MemberPrincipal memberPrincipal) {
-        return WasteResponse.of(waste, UserInfo.fromPrincipal(memberPrincipal));
+        return WasteResponse.of(waste, MemberResponse.fromPrincipal(memberPrincipal));
     }
 
-    private static WasteResponse of(Waste waste, UserInfo userInfo) {
+    private static WasteResponse of(Waste waste, MemberResponse memberResponse) {
         return WasteResponse.builder()
-                .id(waste.getId())
                 .title(waste.getTitle())
                 .content(waste.getContent())
                 .wastePrice(waste.getWastePrice())
@@ -58,7 +57,7 @@ public record WasteResponse(
                 .sellStatus(waste.getSellStatus())
                 .address(waste.getAddress())
                 .createdAt(waste.getCreatedAt())
-                .userInfo(userInfo)
+                .memberResponse(memberResponse)
                 .build();
     }
 }

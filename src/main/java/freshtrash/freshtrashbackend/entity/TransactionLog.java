@@ -1,30 +1,21 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@ToString
+@ToString(callSuper = true)
 @Table(name = "transaction_logs")
-@EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TransactionLog {
+public class TransactionLog extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 
     @ToString.Exclude
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

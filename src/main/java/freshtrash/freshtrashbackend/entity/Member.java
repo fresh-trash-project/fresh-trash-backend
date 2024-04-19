@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.dto.request.SignUpRequest;
 import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.entity.constants.LoginType;
@@ -77,5 +78,16 @@ public class Member extends AuditingAt {
         this.loginType = loginType;
         this.userRole = userRole;
         this.accountStatus = accountStatus;
+    }
+
+    public static Member fromSignUpRequest(SignUpRequest signUpRequest) {
+        return Member.builder()
+                .email(signUpRequest.email())
+                .password(signUpRequest.password())
+                .nickname(signUpRequest.nickname())
+                .loginType(LoginType.EMAIL)
+                .userRole(UserRole.USER)
+                .accountStatus(AccountStatus.ACTIVE)
+                .build();
     }
 }

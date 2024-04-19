@@ -1,24 +1,20 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "chat_rooms")
 @Getter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@EntityListeners(AuditingEntityListener.class)
-public class ChatRoom {
+public class ChatRoom extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -30,11 +26,6 @@ public class ChatRoom {
 
     @Column(nullable = false)
     private boolean openOrClose;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 
     @ToString.Exclude
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

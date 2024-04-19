@@ -1,22 +1,18 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Table(
         name = "waste_likes",
         indexes = @Index(name = "member_id_and_waste_id", columnList = "memberId, wasteId", unique = true))
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class WasteLike {
+public class WasteLike extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -37,11 +33,6 @@ public class WasteLike {
 
     @Column(nullable = false)
     private Long wasteId;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 
     private WasteLike(Long memberId, Long wasteId) {
         this.memberId = memberId;

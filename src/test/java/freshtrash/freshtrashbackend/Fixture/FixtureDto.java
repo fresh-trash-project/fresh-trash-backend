@@ -1,8 +1,5 @@
 package freshtrash.freshtrashbackend.Fixture;
 
-import freshtrash.freshtrashbackend.dto.UserInfo;
-import freshtrash.freshtrashbackend.dto.response.WasteResponse;
-import freshtrash.freshtrashbackend.dto.constants.SellType;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
@@ -10,8 +7,6 @@ import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
 import freshtrash.freshtrashbackend.entity.constants.WasteStatus;
-
-import java.time.LocalDateTime;
 
 public class FixtureDto {
 
