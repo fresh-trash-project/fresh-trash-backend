@@ -33,7 +33,7 @@ public interface WasteRepository
 
     boolean existsByIdAndMember_Id(Long wasteId, Long memberId);
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying
     @Query("update Waste w set w.likeCount = w.likeCount + ?2 where w.id = ?1")
     void updateLikeCount(Long wasteId, int updateCount);
 }
