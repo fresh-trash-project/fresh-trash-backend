@@ -21,7 +21,7 @@ public enum ErrorCode {
     FORBIDDEN_WASTE(HttpStatus.FORBIDDEN, "폐기물에 대한 권한이 없습니다."),
     OWNER_WASTE_CANT_LIKE(HttpStatus.BAD_REQUEST, "본인 폐기물에는 관심표시할 수 없습니다."),
     ALREADY_EXISTS_LIKE(HttpStatus.BAD_REQUEST, "이미 관심표시한 상태입니다."),
-    NOT_EXISTS_LIKE(HttpStatus.BAD_REQUEST, "관심표시가 존재하지 않습니다."),
+    NOT_FOUND_LIKE(HttpStatus.NOT_FOUND, "관심표시가 존재하지 않습니다."),
 
     // Review
     ALREADY_EXISTS_REVIEW(HttpStatus.BAD_REQUEST, "이미 리뷰가 등록되었습니다."),

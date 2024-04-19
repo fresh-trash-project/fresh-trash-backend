@@ -119,7 +119,7 @@ public class WasteService {
     @Transactional
     public void deleteWasteLike(Long memberId, Long wasteId) {
         if (!wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId)) {
-            throw new WasteException(ErrorCode.NOT_EXISTS_LIKE);
+            throw new WasteException(ErrorCode.NOT_FOUND_LIKE);
         }
 
         wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
