@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Table(name = "alarms")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

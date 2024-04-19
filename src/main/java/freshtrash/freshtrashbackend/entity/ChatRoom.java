@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name = "chat_rooms")
 @Getter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ChatRoom extends CreatedAt {

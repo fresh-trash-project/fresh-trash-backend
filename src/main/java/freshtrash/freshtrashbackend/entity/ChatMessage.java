@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "chat_messages")
 @Getter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ChatMessage extends CreatedAt {

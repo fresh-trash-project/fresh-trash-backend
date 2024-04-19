@@ -9,7 +9,7 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Table(name = "waste_reviews")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

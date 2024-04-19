@@ -6,7 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Table(
         name = "waste_likes",
         indexes = @Index(name = "member_id_and_waste_id", columnList = "memberId, wasteId", unique = true))

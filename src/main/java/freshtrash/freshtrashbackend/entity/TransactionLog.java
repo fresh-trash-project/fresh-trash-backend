@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@ToString
+@ToString(callSuper = true)
 @Table(name = "transaction_logs")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
