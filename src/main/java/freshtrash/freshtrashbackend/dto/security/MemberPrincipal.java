@@ -1,10 +1,13 @@
 package freshtrash.freshtrashbackend.dto.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.security.TokenInfo;
 import lombok.Builder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,16 +18,17 @@ import java.util.Map;
 import java.util.Set;
 
 @Builder
+@RedisHash(value = "Member")
 public record MemberPrincipal(
-        Long id,
+        @Id Long id,
         String email,
         String password,
-        Collection<? extends GrantedAuthority> authorities,
+        @JsonIgnore Collection<? extends GrantedAuthority> authorities,
         String nickname,
         double rating,
         String fileName,
         Address address,
-        Map<String, Object> oAuth2Attributes)
+        @JsonIgnore Map<String, Object> oAuth2Attributes)
         implements UserDetails, OAuth2User {
 
     public static class MemberPrincipalBuilder {
