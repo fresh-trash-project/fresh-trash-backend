@@ -29,13 +29,12 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final MailProperties mailProperties;
     private final EmailCodeCacheRepository emailCodeCacheRepository;
-    private final long AUTH_CODE_EXPIRED_SECONDS = 10 * 60;
 
     @Async
     public void sendMailWithCode(String email, String subject, String code) {
         String text = "fresh-trash 메일 인증 코드입니다. <br/>인증코드:" + code;
         sendMail(email, subject, text);
-        emailCodeCacheRepository.save(EmailCodeCache.of(email, code, AUTH_CODE_EXPIRED_SECONDS));
+        emailCodeCacheRepository.save(EmailCodeCache.of(email, code));
         log.debug("--reids에 code 저장");
     }
 
