@@ -1,6 +1,5 @@
 package freshtrash.freshtrashbackend.controller;
 
-import freshtrash.freshtrashbackend.dto.response.ChatRoomDetailsResponse;
 import freshtrash.freshtrashbackend.dto.response.ChatRoomResponse;
 import freshtrash.freshtrashbackend.dto.response.ChatRoomWithMessagesResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
@@ -55,18 +54,15 @@ public class ChatApi {
      * 채팅 요청
      */
     @PostMapping
-    public ResponseEntity<ChatRoomDetailsResponse> handleChatRoomRequest(
+    public ResponseEntity<ChatRoomResponse> handleChatRoomRequest(
             @PathVariable Long wasteId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Member seller = wasteService.getSeller(wasteId);
         checkIfSellerOfWaste(memberPrincipal.id(), seller.getId());
 
-        ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(wasteId, seller.getId(), memberPrincipal.id());
+        ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(seller.getId(), memberPrincipal.id(), wasteId);
 
-        // 채팅방 ID를 사용하여 웹소켓 토픽 경로 생성
-        String websocketTopicPath = "/topic/chats/" + chatRoom.getId();
-
-        ChatRoomDetailsResponse response = ChatRoomDetailsResponse.fromEntity(
-                chatRoom, seller.getNickname(), memberPrincipal.nickname(), websocketTopicPath);
+        ChatRoomResponse response =
+                ChatRoomResponse.fromEntity(chatRoom, seller.getNickname(), memberPrincipal.nickname());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
