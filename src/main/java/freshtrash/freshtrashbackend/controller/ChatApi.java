@@ -5,13 +5,12 @@ import freshtrash.freshtrashbackend.dto.response.ChatRoomResponse;
 import freshtrash.freshtrashbackend.dto.response.ChatRoomWithMessagesResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
-import freshtrash.freshtrashbackend.entity.Waste;
+import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.exception.ChatException;
 import freshtrash.freshtrashbackend.exception.ChatRoomException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.ChatService;
-import freshtrash.freshtrashbackend.service.MemberService;
 import freshtrash.freshtrashbackend.service.WasteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -57,24 +56,25 @@ public class ChatApi {
      */
     @PostMapping
     public ResponseEntity<ChatRoomDetailsResponse> handleChatRoomRequest(
-            @PathVariable Long wasteId,
-            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        Waste waste = wasteService.getWaste(wasteId);
+            @PathVariable Long wasteId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Member seller = wasteService.getSeller(wasteId);
+        checkIfSellerOfWaste(memberPrincipal.id(), seller.getId());
 
-        // 판매자가 자신이 등록한 폐기물에 대해 채팅을 시도하는 경우 예외 처리
-        Long sellerId = waste.getMember().getId();
-
-        if (sellerId.equals(memberPrincipal.id())) {
-            throw new ChatRoomException(ErrorCode.CANNOT_CHAT_WITH_SELF);
-        }
-
-        ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(wasteId, sellerId, memberPrincipal.id());
+        ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(wasteId, seller.getId(), memberPrincipal.id());
 
         // 채팅방 ID를 사용하여 웹소켓 토픽 경로 생성
         String websocketTopicPath = "/topic/chats/" + chatRoom.getId();
 
-        ChatRoomDetailsResponse response = ChatRoomDetailsResponse.fromEntity(chatRoom, waste.getMember().getNickname(), memberPrincipal.nickname(), websocketTopicPath);
+        ChatRoomDetailsResponse response = ChatRoomDetailsResponse.fromEntity(
+                chatRoom, seller.getNickname(), memberPrincipal.nickname(), websocketTopicPath);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * 판매자가 자신이 등록한 폐기물에 대해 채팅을 시도하는 경우 예외 처리
+     */
+    private static void checkIfSellerOfWaste(Long buyerId, Long sellerId) {
+        if (sellerId.equals(buyerId)) throw new ChatRoomException(ErrorCode.CANNOT_CHAT_WITH_SELF);
     }
 }

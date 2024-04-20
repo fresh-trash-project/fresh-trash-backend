@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.repository;
 
 import com.querydsl.core.types.dsl.StringPath;
+import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.QWaste;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.repository.custom.CustomWasteRepository;
@@ -28,6 +29,9 @@ public interface WasteRepository
 
     @EntityGraph(attributePaths = "member")
     Optional<Waste> findById(Long wasteId);
+
+    @Query("select w.member from Waste w where w.id = ?1")
+    Optional<Member> findSellerById(Long wasteId);
 
     Optional<FileNameSummary> findFileNameById(Long wasteId);
 
