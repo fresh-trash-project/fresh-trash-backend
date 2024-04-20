@@ -129,4 +129,11 @@ public class WasteService {
         wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
         wasteRepository.updateLikeCount(wasteId, -1);
     }
+
+    public Page<WasteResponse> getLikedWastes(Long memberId, Pageable pageable) {
+        return wasteLikeRepository
+                .findAllByMember_Id(memberId, pageable)
+                .map(WasteLike::getWaste)
+                .map(WasteResponse::fromEntity);
+    }
 }

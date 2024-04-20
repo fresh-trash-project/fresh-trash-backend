@@ -2,10 +2,10 @@ package freshtrash.freshtrashbackend.controller;
 
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
-import freshtrash.freshtrashbackend.dto.response.WasteResponse;
-import freshtrash.freshtrashbackend.dto.response.ReviewResponse;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.response.ReviewResponse;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
@@ -38,7 +38,7 @@ public class WasteApi {
     /**
      * 폐기물 단일 조회
      */
-    @GetMapping("{wasteId}")
+    @GetMapping("/{wasteId}")
     public ResponseEntity<WasteResponse> getWaste(@PathVariable Long wasteId) {
         WasteResponse wasteResponse = WasteResponse.fromEntity(wasteService.getWaste(wasteId));
         return ResponseEntity.ok(wasteResponse);
@@ -58,6 +58,16 @@ public class WasteApi {
         return ResponseEntity.ok(wastes);
     }
 
+    @GetMapping("/likes")
+    public ResponseEntity<Page<WasteResponse>> getLikedWastes(
+            @PageableDefault(sort = "createdAt", direction = DESC) Pageable pageable,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        Page<WasteResponse> wastes = wasteService.getLikedWastes(memberPrincipal.id(), pageable);
+        return ResponseEntity.ok(wastes);
+    }
+
+    // TODO: TransactionLog를 조회하여 구매, 판매 폐기물 목록 조회
+
     /**
      * 폐기물 등록
      */
@@ -70,7 +80,7 @@ public class WasteApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(wasteResponse);
     }
 
-    @PutMapping("{wasteId}")
+    @PutMapping("/{wasteId}")
     public ResponseEntity<WasteResponse> updateWaste(
             @RequestPart MultipartFile imgFile,
             @RequestPart @Valid WasteRequest wasteRequest,
