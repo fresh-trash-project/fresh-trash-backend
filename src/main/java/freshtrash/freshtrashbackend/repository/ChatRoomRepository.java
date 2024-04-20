@@ -1,10 +1,12 @@
 package freshtrash.freshtrashbackend.repository;
 
 import freshtrash.freshtrashbackend.entity.ChatRoom;
+import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +17,7 @@ import java.util.Optional;
 @Transactional(propagation = Propagation.SUPPORTS)
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
-    List<ChatRoom> findByWaste_Id(Long wasteId);
+    List<ChatRoom> findByWaste_IdAndSellStatusNot(Long wasteId, SellStatus sellStatus);
 
     @EntityGraph(attributePaths = {"buyer", "seller", "chatMessages"})
     Optional<ChatRoom> findById(Long chatRoomId);
@@ -29,4 +31,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     @EntityGraph(attributePaths = "waste")
     Optional<ChatRoom> findBySellerIdAndBuyerIdAndWasteId(Long sellerId, Long buyerId, Long wasteId);
+
+    @Modifying
+    @Query("update ChatRoom cr set cr.sellStatus = ?2 where cr.id = ?1")
+    void updateSellStatus(Long chatRoomId, SellStatus sellStatus);
 }

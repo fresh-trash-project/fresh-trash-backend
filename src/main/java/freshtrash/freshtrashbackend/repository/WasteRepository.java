@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.StringPath;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.QWaste;
 import freshtrash.freshtrashbackend.entity.Waste;
+import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.repository.custom.CustomWasteRepository;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -40,4 +41,8 @@ public interface WasteRepository
     @Modifying
     @Query("update Waste w set w.likeCount = w.likeCount + ?2 where w.id = ?1")
     void updateLikeCount(Long wasteId, int updateCount);
+
+    @Modifying
+    @Query("update Waste w set w.sellStatus = ?2 where w.id = ?1")
+    void updateSellStatus(Long wasteId, SellStatus sellStatus);
 }

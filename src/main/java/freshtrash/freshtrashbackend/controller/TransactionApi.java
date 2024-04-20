@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.config.RabbitMQConfig;
+import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatService;
 import freshtrash.freshtrashbackend.service.TransactionService;
@@ -27,18 +28,18 @@ public class TransactionApi {
     private static final String COMPLETED_SELL_MESSAGE = "판매 완료되었습니다.";
     private static final String REQUEST_REVIEW_MESSAGE = "판매 완료되었습니다. 판매자에 대한 리뷰를 작성해주세요.";
 
-    @PostMapping("/{wasteId}")
-    public ResponseEntity<Void> completeTransaction(@PathVariable Long wasteId) {
-        chatService.getChatRoomsByWasteId(wasteId).forEach(chatRoom -> {
-            // 판매자, 구매자에게 알람 전송
-            if (chatRoom.getSellStatus() == SellStatus.CLOSE) {
-                sendWasteTransactionMessage(COMPLETED_SELL_MESSAGE, wasteId, chatRoom.getSellerId());
-                sendWasteTransactionMessage(REQUEST_REVIEW_MESSAGE, wasteId, chatRoom.getBuyerId());
-                // 거래 내역 저장
-                transactionService.saveTransactionLog(wasteId, chatRoom.getSellerId(), chatRoom.getBuyerId());
-            }
-            // 구매자가 아닌 사용자들에게 알람 전송
-            else sendWasteTransactionMessage(COMPLETED_SELL_MESSAGE, wasteId, chatRoom.getBuyerId());
+    @PostMapping("/{wasteId}/chats/{chatRoomId}")
+    public ResponseEntity<Void> completeTransaction(@PathVariable Long wasteId, @PathVariable Long chatRoomId) {
+        ChatRoom closedChatRoom = chatService.getChatRoom(chatRoomId);
+        transactionService.completeTransaction(
+                wasteId, chatRoomId, closedChatRoom.getSellerId(), closedChatRoom.getBuyerId(), SellStatus.CLOSE);
+
+        // 판매자, 구매자에게 알람 전송
+        sendWasteTransactionMessage(COMPLETED_SELL_MESSAGE, wasteId, closedChatRoom.getSellerId());
+        sendWasteTransactionMessage(REQUEST_REVIEW_MESSAGE, wasteId, closedChatRoom.getBuyerId());
+        // 구매자가 아닌 사용자들에게 알람 전송
+        chatService.getChatRoomsByWasteId(wasteId, SellStatus.CLOSE).forEach(chatRoom -> {
+            sendWasteTransactionMessage(COMPLETED_SELL_MESSAGE, wasteId, chatRoom.getBuyerId());
         });
 
         return ResponseEntity.ok(null);
