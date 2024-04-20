@@ -1,6 +1,9 @@
 package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.config.RabbitMQConfig;
+import freshtrash.freshtrashbackend.dto.constants.TransactionMemberType;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
+import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatService;
@@ -10,11 +13,14 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
 @RequestMapping("/api/v1/transactions")
@@ -27,6 +33,16 @@ public class TransactionApi {
 
     private static final String COMPLETED_SELL_MESSAGE = "판매 완료되었습니다.";
     private static final String REQUEST_REVIEW_MESSAGE = "판매 완료되었습니다. 판매자에 대한 리뷰를 작성해주세요.";
+
+    @GetMapping
+    public ResponseEntity<Page<WasteResponse>> getTransactedWastes(
+            @RequestParam TransactionMemberType memberType,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+            @PageableDefault(sort = "createdAt", direction = DESC) Pageable pageable) {
+
+        Page<WasteResponse> wastes = transactionService.getTransactedWastes(memberPrincipal.id(), memberType, pageable);
+        return ResponseEntity.ok(wastes);
+    }
 
     @PostMapping("/{wasteId}/chats/{chatRoomId}")
     public ResponseEntity<Void> completeTransaction(@PathVariable Long wasteId, @PathVariable Long chatRoomId) {
