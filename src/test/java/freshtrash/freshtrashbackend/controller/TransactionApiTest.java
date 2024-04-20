@@ -47,17 +47,21 @@ class TransactionApiTest {
     void given_wasteId_when_getChatRooms_then_sendAlarmsToSellerAndBuyerAndNotBuyers() throws Exception {
         // given
         Long wasteId = 1L;
+        Long chatRoomId = 5L;
         Long sellerId = 1L;
         Long buyerId = 2L;
         Long notBuyerId = 3L;
-        given(chatService.getChatRoomsByWasteId(anyLong()))
-                .willReturn(List.of(
-                        Fixture.createChatRoom(wasteId, sellerId, buyerId, true, SellStatus.CLOSE),
-                        Fixture.createChatRoom(wasteId, sellerId, notBuyerId, true, SellStatus.ONGOING)));
-        willDoNothing().given(transactionService).saveTransactionLog(anyLong(), anyLong(), anyLong());
+        given(chatService.getChatRoom(anyLong()))
+                .willReturn(Fixture.createChatRoom(wasteId, sellerId, buyerId, true, SellStatus.CLOSE));
+        willDoNothing()
+                .given(transactionService)
+                .completeTransaction(anyLong(), anyLong(), anyLong(), anyLong(), eq(SellStatus.CLOSE));
+        given(chatService.getChatRoomsByWasteId(anyLong(), eq(SellStatus.CLOSE)))
+                .willReturn(List.of(Fixture.createChatRoom(wasteId, sellerId, notBuyerId, true, SellStatus.ONGOING)));
         willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
         // when
-        mvc.perform(post("/api/v1/transactions/" + wasteId)).andExpect(status().isOk());
+        mvc.perform(post("/api/v1/transactions/" + wasteId + "/chats/" + chatRoomId))
+                .andExpect(status().isOk());
         // then
     }
 }

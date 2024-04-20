@@ -18,6 +18,7 @@ import java.util.List;
 public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
 
+    // TODO: 메소드 네이밍 수정
     public List<ChatRoom> getChatRoomsByWasteId(Long wasteId, SellStatus sellStatus) {
         return chatRoomRepository.findByWaste_IdAndSellStatusNot(wasteId, sellStatus);
     }

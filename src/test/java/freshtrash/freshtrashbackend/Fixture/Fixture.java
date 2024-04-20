@@ -111,4 +111,12 @@ public class Fixture {
     public static ChatMessage createChatMessage() {
         return ChatMessage.of(1L, 2L, "message");
     }
+
+    public static TransactionLog createTransactionLog(Long wasteId, Long sellerId, Long buyerId) {
+        return TransactionLog.builder()
+                .wasteId(wasteId)
+                .sellerId(sellerId)
+                .buyerId(buyerId)
+                .build();
+    }
 }
