@@ -35,7 +35,7 @@ public class TestSecurityConfig {
     @BeforeTestMethod
     void securitySetUp() {
         String userEmail = "testUser@gmail.com";
-        given(memberService.getMemberEntityByEmail(eq(userEmail))).willReturn(createMember(userEmail));
+        given(memberService.getMemberByEmail(eq(userEmail))).willReturn(createMember(userEmail));
     }
 
     private Member createMember(String email) {

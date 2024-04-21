@@ -2,15 +2,18 @@ package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
+import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.exception.AuthException;
 import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.repository.MemberCacheRepository;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +24,23 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final MemberCacheRepository memberCacheRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
     private final FileService fileService;
 
-    public Member getMemberEntityByEmail(String email) {
+    public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+    }
+
+    public Member getMemberById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+    }
+
+    public MemberPrincipal getMemberCache(Long memberId) {
+        return memberCacheRepository
+                .findById(memberId)
+                .orElseGet(() -> MemberPrincipal.fromEntity(getMemberById(memberId)));
     }
 
     /**
@@ -43,10 +57,11 @@ public class MemberService {
      * 로그인
      */
     public LoginResponse signIn(String email, String password) {
-        Member member = getMemberEntityByEmail(email);
+        Member member = getMemberByEmail(email);
         checkPassword(password, member.getPassword());
         // 토큰 발급
-        String accessToken = generateAccessToken(email, member);
+        String accessToken = tokenProvider.generateAccessToken(member.getId());
+        memberCacheRepository.save(MemberPrincipal.fromEntity(member));
         return LoginResponse.of(accessToken);
     }
 
@@ -66,30 +81,6 @@ public class MemberService {
         if (memberRepository.existsByNickname(nickname)) {
             throw new MemberException(ErrorCode.ALREADY_EXISTS_NICKNAME);
         }
-    }
-
-    /**
-     * 비밀번호 일치 확인
-     * @param inputPassword 입력한 비밀번호
-     * @param existPassword 기존 비밀번호
-     */
-    private void checkPassword(String inputPassword, String existPassword) {
-        if (!encoder.matches(inputPassword, existPassword)) {
-            throw new AuthException("not matched password");
-        }
-    }
-
-    /**
-     * AccessToken 발급
-     */
-    private String generateAccessToken(String email, Member member) {
-        return tokenProvider.generateAccessToken(
-                email,
-                member.getNickname(),
-                String.format("%s:%s", member.getId(), member.getUserRole().getName()),
-                member.getRating(),
-                member.getFileName(),
-                member.getAddress());
     }
 
     /**
@@ -118,6 +109,7 @@ public class MemberService {
             // 수정된 파일 저장
             fileService.uploadFile(imgFile, updatedFileName);
         }
+        memberCacheRepository.save(MemberPrincipal.fromEntity(member));
 
         return member;
     }
@@ -135,5 +127,16 @@ public class MemberService {
         return memberRepository
                 .findFileNameById(memberId)
                 .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+    }
+
+    /**
+     * 비밀번호 일치 확인
+     * @param inputPassword 입력한 비밀번호
+     * @param existPassword 기존 비밀번호
+     */
+    private void checkPassword(String inputPassword, String existPassword) {
+        if (!encoder.matches(inputPassword, existPassword)) {
+            throw new AuthException("not matched password");
+        }
     }
 }

@@ -2,7 +2,7 @@ package freshtrash.freshtrashbackend.security;
 
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.exception.AuthException;
-import io.jsonwebtoken.Claims;
+import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +27,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     public static final String ACCESS_TOKEN_HEADER = HttpHeaders.AUTHORIZATION;
     public static final String TOKEN_PREFIX = "Bearer";
     private final TokenProvider tokenProvider;
+    private final MemberService memberService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -37,7 +38,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-            setAuthentication(request, tokenProvider.parseOrValidateClaims(accessToken), accessToken);
+            setAuthentication(request, accessToken);
         } catch (Exception e) {
             log.error("Error occurs during authenticate, {}", e.getMessage());
             throw new AuthException("Failed authenticate");
@@ -56,14 +57,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         return token;
     }
 
-    /**
-     * Set Authentication
-     */
-    private void setAuthentication(HttpServletRequest request, Claims claims, String accessToken) {
-        MemberPrincipal memberPrincipal = tokenProvider.getUserDetails(claims);
+    private void setAuthentication(HttpServletRequest request, String accessToken) {
+        MemberPrincipal memberPrincipal = getMemberPrincipal(accessToken);
         UsernamePasswordAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(
                 memberPrincipal, accessToken, memberPrincipal.getAuthorities());
         authenticated.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticated);
+    }
+
+    private MemberPrincipal getMemberPrincipal(String accessToken) {
+        Long memberId = tokenProvider.getMemberIdFromToken(accessToken);
+        return memberService.getMemberCache(memberId);
     }
 }

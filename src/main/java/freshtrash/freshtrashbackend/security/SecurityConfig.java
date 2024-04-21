@@ -72,7 +72,7 @@ public class SecurityConfig {
 
             // 회원이 존재하지 않는다면 저장하지 않고 회원가입이 안된 상태로 반환
             try {
-                return MemberPrincipal.fromEntity(memberService.getMemberEntityByEmail(email));
+                return MemberPrincipal.fromEntity(memberService.getMemberByEmail(email));
             } catch (MemberException e) {
                 return MemberPrincipal.builder()
                         .email(email)
@@ -86,7 +86,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(MemberService memberService) {
-        return email -> MemberPrincipal.fromEntity(memberService.getMemberEntityByEmail(email));
+        return email -> MemberPrincipal.fromEntity(memberService.getMemberByEmail(email));
     }
 
     @Bean
