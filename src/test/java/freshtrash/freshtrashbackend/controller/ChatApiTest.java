@@ -42,7 +42,7 @@ class ChatApiTest {
         // given
         Long wasteId = 1L;
         int expectedSize = 1;
-        given(chatService.getChatRooms(anyLong(), any(Pageable.class)))
+        given(chatService.getChatRoomsWithMemberId(anyLong(), any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(ChatRoomResponse.fromEntity(Fixture.createChatRoom()))));
         // when
         mvc.perform(get("/api/v1/wastes/" + wasteId + "/chats"))

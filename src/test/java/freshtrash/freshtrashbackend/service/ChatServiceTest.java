@@ -3,6 +3,7 @@ package freshtrash.freshtrashbackend.service;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.dto.response.ChatRoomResponse;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
+import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.repository.ChatRoomRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -32,15 +33,17 @@ class ChatServiceTest {
     @Mock
     private ChatRoomRepository chatRoomRepository;
 
-    @DisplayName("Waste id로 채팅방 목록 조회")
+    @DisplayName("Waste id에 해당하는 채팅방 중 SellStatus와 일치하지 않는 채팅방 조회")
     @Test
-    void given_wasteId_when_then_getChatRoomList() {
+    void given_wasteIdAndSellStatus_when_then_getChatRoomList() {
         // given
         Long wasteId = 1L;
+        SellStatus sellStatus = SellStatus.CLOSE;
         int expectedSize = 1;
-        given(chatRoomRepository.findByWaste_Id(anyLong())).willReturn(List.of(Fixture.createChatRoom()));
+        given(chatRoomRepository.findByWaste_IdAndSellStatusNot(anyLong(), any(SellStatus.class)))
+                .willReturn(List.of(Fixture.createChatRoom()));
         // when
-        List<ChatRoom> chatRooms = chatService.getChatRoomsByWasteId(wasteId);
+        List<ChatRoom> chatRooms = chatService.getChatRoomsByWasteId(wasteId, sellStatus);
         // then
         Assertions.assertThat(chatRooms.size()).isEqualTo(expectedSize);
     }
@@ -55,7 +58,7 @@ class ChatServiceTest {
         given(chatRoomRepository.findAllBySeller_IdOrBuyer_Id(anyLong(), any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createChatRoom())));
         // when
-        Page<ChatRoomResponse> chatRooms = chatService.getChatRooms(memberId, pageable);
+        Page<ChatRoomResponse> chatRooms = chatService.getChatRoomsWithMemberId(memberId, pageable);
         // then
         assertThat(chatRooms.getSize()).isEqualTo(expectedSize);
     }

@@ -31,7 +31,7 @@ public class ChatApi {
     @GetMapping
     public ResponseEntity<Page<ChatRoomResponse>> getChatRooms(
             @PageableDefault Pageable pageable, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        return ResponseEntity.ok(chatService.getChatRooms(memberPrincipal.id(), pageable));
+        return ResponseEntity.ok(chatService.getChatRoomsWithMemberId(memberPrincipal.id(), pageable));
     }
 
     @GetMapping("/{chatRoomId}")
