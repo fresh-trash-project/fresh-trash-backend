@@ -88,6 +88,9 @@ CREATE TABLE `chat_rooms`
   DEFAULT CHARSET = utf8mb4 COMMENT ='채팅방';
 
 
+CREATE UNIQUE INDEX waste_id_and_seller_id_and_buyer_id ON chat_rooms (waste_id, seller_id, buyer_id);
+
+
 CREATE TABLE `chat_messages`
 (
     `id`           bigint AUTO_INCREMENT NOT NULL,

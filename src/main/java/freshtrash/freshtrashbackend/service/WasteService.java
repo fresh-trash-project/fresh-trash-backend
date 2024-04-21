@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.WasteLike;
 import freshtrash.freshtrashbackend.entity.WasteReview;
@@ -37,6 +38,10 @@ public class WasteService {
 
     public Waste getWaste(Long wasteId) {
         return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
+    }
+
+    public Member getSeller(Long wasteId) {
+        return wasteRepository.findSellerById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 
     public Page<WasteResponse> getWastes(String district, Predicate predicate, Pageable pageable) {

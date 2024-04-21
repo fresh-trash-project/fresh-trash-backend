@@ -9,7 +9,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "chat_rooms")
+@Table(
+        name = "chat_rooms",
+        indexes =
+                @Index(
+                        name = "waste_id_and_seller_id_and_buyer_id",
+                        columnList = "wasteId, sellerId, buyerId",
+                        unique = true))
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
