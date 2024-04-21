@@ -13,6 +13,7 @@ import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,6 +109,7 @@ public class MemberService {
             // 수정된 파일 저장
             fileService.uploadFile(imgFile, updatedFileName);
         }
+        memberCacheRepository.save(MemberPrincipal.fromEntity(member));
 
         return member;
     }
