@@ -70,7 +70,7 @@ public class ChatApi {
     /**
      * 판매자가 자신이 등록한 폐기물에 대해 채팅을 시도하는 경우 예외 처리
      */
-    private static void checkIfSellerOfWaste(Long buyerId, Long sellerId) {
+    private void checkIfSellerOfWaste(Long buyerId, Long sellerId) {
         if (sellerId.equals(buyerId)) throw new ChatRoomException(ErrorCode.CANNOT_CHAT_WITH_SELF);
     }
 }
