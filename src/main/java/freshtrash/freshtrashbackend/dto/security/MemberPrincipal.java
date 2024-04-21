@@ -22,7 +22,7 @@ import java.util.Set;
 public record MemberPrincipal(
         @Id Long id,
         String email,
-        String password,
+        @JsonIgnore String password,
         @JsonIgnore Collection<? extends GrantedAuthority> authorities,
         String nickname,
         double rating,
