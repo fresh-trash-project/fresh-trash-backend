@@ -8,6 +8,7 @@ import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.QWaste;
 import freshtrash.freshtrashbackend.entity.Waste;
+import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
 import freshtrash.freshtrashbackend.repository.WasteRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,9 @@ class WasteServiceTest {
 
     @Mock
     private WasteRepository wasteRepository;
+
+    @Mock
+    private WasteLikeRepository wasteLikeRepository;
 
     @Mock
     private FileService fileService;
@@ -126,5 +130,20 @@ class WasteServiceTest {
         // when
         wasteService.deleteWaste(wasteId);
         // then
+    }
+
+    @DisplayName("관심 Waste 목록 조회")
+    @Test
+    void given_memberIdAndPageable_when_getWasteLikes_then_convertToWasteResponse() {
+        // given
+        Long memberId = 1L;
+        int expectedSize = 1;
+        Pageable pageable = PageRequest.of(0, 10);
+        given(wasteLikeRepository.findAllByMember_Id(anyLong(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(Fixture.createWasteLike())));
+        // when
+        Page<WasteResponse> wastes = wasteService.getLikedWastes(memberId, pageable);
+        // then
+        assertThat(wastes.getSize()).isEqualTo(expectedSize);
     }
 }

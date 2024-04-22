@@ -119,4 +119,17 @@ public class Fixture {
                 .buyerId(buyerId)
                 .build();
     }
+
+    public static WasteLike createWasteLike() {
+        WasteLike wasteLike = WasteLike.of(1L, 2L);
+        ReflectionTestUtils.setField(wasteLike, "waste", createWaste());
+        return wasteLike;
+    }
+
+    public static TransactionLog createTransactionLog() {
+        TransactionLog transactionLog =
+                TransactionLog.builder().buyerId(1L).sellerId(2L).wasteId(3L).build();
+        ReflectionTestUtils.setField(transactionLog, "waste", createWaste());
+        return transactionLog;
+    }
 }
