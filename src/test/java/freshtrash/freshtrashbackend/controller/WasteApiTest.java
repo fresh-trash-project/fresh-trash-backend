@@ -5,9 +5,8 @@ import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
-
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.Waste;
@@ -93,7 +92,21 @@ class WasteApiTest {
         // when
         mvc.perform(get("/api/v1/wastes"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(jsonPath("$.numberOfElements").value(1));
+        // then
+    }
+
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
+    @DisplayName("관심 폐기물 목록 조회")
+    @Test
+    void given_loginUserAndPageable_when_getLikedWastes_then_returnPagingWasteData() throws Exception {
+        // given
+        given(wasteService.getLikedWastes(anyLong(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(WasteResponse.fromEntity(Fixture.createWaste()))));
+        // when
+        mvc.perform(get("/api/v1/wastes/likes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.numberOfElements").value(1));
         // then
     }
 
