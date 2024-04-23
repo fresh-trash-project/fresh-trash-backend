@@ -53,7 +53,8 @@ public class TransactionService {
                 .build());
     }
 
-    private void updateSellStatus(Long wasteId, Long chatRoomId, SellStatus sellStatus) {
+    @Transactional
+    public void updateSellStatus(Long wasteId, Long chatRoomId, SellStatus sellStatus) {
         wasteRepository.updateSellStatus(wasteId, sellStatus);
         chatRoomRepository.updateSellStatus(chatRoomId, sellStatus);
     }
