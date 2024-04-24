@@ -46,6 +46,7 @@ public record WasteResponse(
 
     private static WasteResponse of(Waste waste, MemberResponse memberResponse) {
         return WasteResponse.builder()
+                .id(waste.getId())
                 .title(waste.getTitle())
                 .content(waste.getContent())
                 .wastePrice(waste.getWastePrice())
