@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -20,14 +21,18 @@ public class CustomWasteRepositoryImpl implements CustomWasteRepository {
 
     @Override
     public Page<Waste> findAll(String district, Predicate predicate, Pageable pageable) {
+        // district가 입력되었을 경우 predicate
+        if (StringUtils.hasText(district)) {
+            predicate = Expressions.booleanTemplate(
+                            "JSON_CONTAINS({0}, {1}, {2})",
+                            QWaste.waste.address,
+                            Expressions.stringTemplate("JSON_QUOTE({0})", district),
+                            "$.district")
+                    .isTrue().or(predicate);
+        }
         List<Waste> wastes = jpaQueryFactory
                 .selectFrom(QWaste.waste)
-                .where(Expressions.booleanTemplate(
-                                "JSON_CONTAINS({0}, {1}, {2})",
-                                QWaste.waste.address,
-                                Expressions.stringTemplate("JSON_QUOTE({0})", district),
-                                "$.district")
-                        .isTrue().or(predicate))
+                .where(predicate)
                 .leftJoin(QWaste.waste.member)
                 .fetchJoin()
                 .offset(pageable.getOffset())
