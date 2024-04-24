@@ -19,6 +19,9 @@ values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING
         now(), null, null),
        (2, '보물단지1', '폐기물 설명 내용', 0, 0, 0, '보물단지이미지.png', 'HEALTH', 'GOOD', 'ONGOING',
         json_object('zipcode', '16255', 'state', '경기도', 'city', '수원시', 'district', '팔달구', 'detail', '창룡대로'),
+        now(), null, null),
+       (3, '물건1', '물건 설명 내용', 0, 0, 0, '물건.png', 'CLOTHING', 'GOOD', 'ONGOING',
+        json_object('zipcode', '16666', 'state', '경기도', 'city', '수원시', 'district', '팔달구', 'detail', '창룡대로'),
         now(), null, null);
 
 
@@ -38,4 +41,10 @@ insert into transaction_logs(waste_id, seller_id, buyer_id, created_at)
 values (1, 1, 2, now());
 
 insert into alarms(member_id, alarm_type, alarm_args, message, created_at, read_at)
-values (1, 'CHAT', json_object('fromMemberId', '2', 'targetId', '1'), '거래 완료되었습니다.', now(), null);
+values (1, 'CHAT', json_object('fromMemberId', '2', 'targetId', '1'), '거래 완료되었습니다.', now(), null),
+       (1, 'CHAT', json_object('fromMemberId', '1', 'targetId', '2'), '알람 테스트', now(), null),
+       (1, 'TRANSACTION', json_object('fromMemberId', '3', 'targetId', '1'), '예약 요청이 왔습니다. 수락 또는 거절 해주세요', now(), null),
+       (3, 'TRANSACTION', json_object('fromMemberId', '1', 'targetId', '1'), '예약이 거절되었습니다.', now(), null),
+       (2, 'TRANSACTION', json_object('fromMemberId', '3', 'targetId', '1'), '판매 완료되었습니다.', now(), null),
+       (3, 'TRANSACTION', json_object('fromMemberId', '2', 'targetId', '1'), '판매 완료되었습니다.', now(), null);
+
