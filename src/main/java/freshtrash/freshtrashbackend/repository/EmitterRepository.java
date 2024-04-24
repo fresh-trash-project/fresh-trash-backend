@@ -19,12 +19,12 @@ public class EmitterRepository {
         return sseEmitter;
     }
 
-    public Optional<SseEmitter> get(Long memberId) {
+    public Optional<SseEmitter> findByMemberId(Long memberId) {
         String key = getKey(memberId);
         return Optional.ofNullable(emitterMap.get(key));
     }
 
-    public void delete(Long memberId) {
+    public void deleteByMemberId(Long memberId) {
         emitterMap.remove(getKey(memberId));
     }
 

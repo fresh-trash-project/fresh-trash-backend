@@ -16,6 +16,7 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -82,7 +83,7 @@ public class AlarmService {
     private void receive(String message, Long memberId, Long targetId, Long fromMemberId) {
         Alarm alarm = saveAlarm(message, memberId, targetId, fromMemberId);
         emitterRepository
-                .get(memberId)
+                .findByMemberId(memberId)
                 .ifPresentOrElse(
                         sseEmitter -> {
                             try {
@@ -91,7 +92,7 @@ public class AlarmService {
                                         .name(WASTE_TRANSACTION_ALARM_NAME)
                                         .data(alarm.toResponse()));
                             } catch (IOException e) {
-                                emitterRepository.delete(memberId);
+                                emitterRepository.deleteByMemberId(memberId);
                                 throw new AlarmException(ErrorCode.ALARM_CONNECT_ERROR, e);
                             }
                         },
@@ -102,13 +103,17 @@ public class AlarmService {
      * SSE 연결 요청
      */
     public SseEmitter connectAlarm(Long memberId) {
-        SseEmitter sseEmitter = new SseEmitter(SSE_TIMEOUT);
-        emitterRepository.save(memberId, sseEmitter);
-        sseEmitter.onCompletion(() -> emitterRepository.delete(memberId));
-        sseEmitter.onTimeout(() -> emitterRepository.delete(memberId));
-        sseEmitter.onError((e) -> {
-            emitterRepository.delete(memberId);
-            log.error("SseEmitter Error: ", e);
+        // 이전에 생성한 SseEmitter가 없을 경우 새로 생성
+        SseEmitter sseEmitter = emitterRepository.findByMemberId(memberId).orElseGet(() -> {
+            SseEmitter newSseEmitter = new SseEmitter(SSE_TIMEOUT);
+            emitterRepository.save(memberId, newSseEmitter);
+            newSseEmitter.onCompletion(() -> emitterRepository.deleteByMemberId(memberId));
+            newSseEmitter.onTimeout(() -> emitterRepository.deleteByMemberId(memberId));
+            newSseEmitter.onError((e) -> {
+                emitterRepository.deleteByMemberId(memberId);
+                log.error("SseEmitter Error: ", e);
+            });
+            return newSseEmitter;
         });
 
         try {
