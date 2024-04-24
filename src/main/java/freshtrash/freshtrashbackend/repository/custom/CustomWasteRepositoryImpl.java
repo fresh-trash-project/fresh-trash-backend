@@ -25,20 +25,21 @@ public class CustomWasteRepositoryImpl implements CustomWasteRepository {
         if (StringUtils.hasText(district)) {
             predicate = Expressions.booleanTemplate(
                             "JSON_CONTAINS({0}, {1}, {2})",
-                            QWaste.waste.address,
-                            Expressions.stringTemplate("JSON_QUOTE({0})", district),
-                            "$.district")
-                    .isTrue().or(predicate);
+                            QWaste.waste.address, Expressions.stringTemplate("JSON_QUOTE({0})", district), "$.district")
+                    .isTrue()
+                    .or(predicate);
         }
+        QWaste waste = QWaste.waste;
+        Long totalOfElements = jpaQueryFactory.select(waste.count()).from(waste).fetchFirst();
         List<Waste> wastes = jpaQueryFactory
-                .selectFrom(QWaste.waste)
+                .selectFrom(waste)
                 .where(predicate)
-                .leftJoin(QWaste.waste.member)
+                .leftJoin(waste.member)
                 .fetchJoin()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(wastes, pageable, wastes.size());
+        return new PageImpl<>(wastes, pageable, totalOfElements);
     }
 }
