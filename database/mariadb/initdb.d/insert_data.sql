@@ -1,13 +1,13 @@
 insert into members(email, password, rating, nickname, address, file_name, login_type, user_role, account_status,
                     created_at, modified_at)
-values ('abc@never.com', '$2a$10$4mbVj4n1KeBmNsQCeXZpZujVo.cmXMdPIoDUQ1c1jkR87LdBA4gJW', 10, 'abc',
+values ('abc@never.com', '$2a$10$ZskRs64yZZU9g6blmNdZte7FO6KaMduwlZhk7YkxJX2ZwYLSrPfA.', 10, 'abc',
         json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
         'test.png', 'GOOGLE', 'USER', 'ACTIVE', now(), null),
-       ('def@never.com', '$2a$10$GdkQ8WABeKqQOXkMaildcePPAINn3IBs2V/As1c/S8Q9W1K7SfWsG', 0, 'def',
+       ('def@never.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 0, 'def',
         null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null),
-       ('user123@never.com', '$2a$10$4mbVj4n1KeBmNsQCeXZpZujVo.cmXMdPIoDUQ1c1jkR87LdBA4gJW', 0, 'user123',
+       ('user123@never.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 0, 'user123',
         null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null),
-       ('user456@never.com', '$2a$10$4mbVj4n1KeBmNsQCeXZpZujVo.cmXMdPIoDUQ1c1jkR87LdBA4gJW', 0, 'user456',
+       ('user456@never.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 0, 'user456',
         null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null);
 
 
