@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
+import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.*;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
@@ -35,12 +36,6 @@ public class TransactionApi {
     private final DirectExchange directExchange;
     private final ChatService chatService;
     private final TransactionService transactionService;
-
-    private static final String COMPLETED_SELL_MESSAGE = "판매 완료되었습니다.";
-    private static final String REQUEST_REVIEW_MESSAGE = "판매 완료되었습니다. 판매자에 대한 리뷰를 작성해주세요.";
-    private static final String REQUEST_BOOKING_MESSAGE = "예약 요청이 왔습니다. 수락 또는 거절을 선택해 주세요.";
-    private static final String ACCEPT_BOOKING_MESSAGE = "예약이 승낙되었습니다.";
-    private static final String DECLINE_BOOKING_MESSAGE = "예약이 거절되었습니다.";
 
     @GetMapping
     public ResponseEntity<Page<WasteResponse>> getTransactedWastes(
@@ -60,13 +55,19 @@ public class TransactionApi {
 
         // 판매자, 구매자에게 알람 전송
         sendWasteTransactionMessage(
-                COMPLETED_SELL_MESSAGE, wasteId, closedChatRoom.getSellerId(), closedChatRoom.getSellerId());
+                COMPLETED_SELL_MESSAGE.getMessage(),
+                wasteId,
+                closedChatRoom.getSellerId(),
+                closedChatRoom.getBuyerId());
         sendWasteTransactionMessage(
-                REQUEST_REVIEW_MESSAGE, wasteId, closedChatRoom.getBuyerId(), closedChatRoom.getSellerId());
+                REQUEST_REVIEW_MESSAGE.getMessage(),
+                wasteId,
+                closedChatRoom.getBuyerId(),
+                closedChatRoom.getSellerId());
         // 구매자가 아닌 사용자들에게 알람 전송
         chatService.getChatRoomsByWasteId(wasteId, SellStatus.CLOSE).forEach(chatRoom -> {
             sendWasteTransactionMessage(
-                    COMPLETED_SELL_MESSAGE, wasteId, chatRoom.getBuyerId(), closedChatRoom.getSellerId());
+                    COMPLETED_SELL_MESSAGE.getMessage(), wasteId, chatRoom.getBuyerId(), closedChatRoom.getSellerId());
         });
 
         return ResponseEntity.ok(null);
@@ -81,12 +82,13 @@ public class TransactionApi {
             @PathVariable Long chatRoomId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         ChatRoom chatRoom = chatService.getChatRoom(chatRoomId);
+        String message = chatRoom.getBuyer().getNickname() + REQUEST_BOOKING_MESSAGE.getMessage();
         // 예약신청은 구매자만 할 수 있다
         if (!Objects.equals(chatRoom.getBuyerId(), memberPrincipal.id())) {
             throw new ChatRoomException(ErrorCode.CANNOT_BOOKING_WITHOUT_BUYER);
         }
         // 판매자에게 알림 보내기
-        sendWasteTransactionMessage(REQUEST_BOOKING_MESSAGE, wasteId, chatRoom.getSellerId(), chatRoom.getBuyerId());
+        sendWasteTransactionMessage(message, wasteId, chatRoom.getSellerId(), chatRoom.getBuyerId());
 
         return ResponseEntity.ok(null);
     }
@@ -98,9 +100,9 @@ public class TransactionApi {
     public ResponseEntity<Void> replyBooking(
             @PathVariable Long wasteId, @PathVariable Long chatRoomId, @RequestParam BookingStatus bookingStatus) {
         ChatRoom chatRoom = chatService.getChatRoom(chatRoomId);
-        String message = DECLINE_BOOKING_MESSAGE;
+        String message = chatRoom.getSeller().getNickname() + DECLINE_BOOKING_MESSAGE.getMessage();
         if (bookingStatus == BookingStatus.ACCEPT) {
-            message = ACCEPT_BOOKING_MESSAGE;
+            message = chatRoom.getSeller().getNickname() + ACCEPT_BOOKING_MESSAGE.getMessage();
             transactionService.updateSellStatus(wasteId, chatRoomId, SellStatus.BOOKING);
         }
 
