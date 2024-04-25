@@ -61,7 +61,7 @@ public class WasteApi {
 
     @GetMapping("/likes")
     public ResponseEntity<Page<WasteResponse>> getLikedWastes(
-            @PageableDefault(sort = "createdAt", direction = DESC) Pageable pageable,
+            @PageableDefault(size = 6, sort = "createdAt", direction = DESC) Pageable pageable,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Page<WasteResponse> wastes = wasteService.getLikedWastes(memberPrincipal.id(), pageable);
         return ResponseEntity.ok(wastes);

@@ -41,7 +41,7 @@ public class TransactionApi {
     public ResponseEntity<Page<WasteResponse>> getTransactedWastes(
             @RequestParam TransactionMemberType memberType,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal,
-            @PageableDefault(sort = "createdAt", direction = DESC) Pageable pageable) {
+            @PageableDefault(size = 6, sort = "createdAt", direction = DESC) Pageable pageable) {
 
         Page<WasteResponse> wastes = transactionService.getTransactedWastes(memberPrincipal.id(), memberType, pageable);
         return ResponseEntity.ok(wastes);
