@@ -15,18 +15,40 @@ insert into wastes(member_id, title, content, waste_price, like_count, view_coun
                    waste_status,
                    sell_status, address, created_at, modified_at, transaction_at)
 values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING',
-        json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
-        now(), null, null),
-       (2, '보물단지1', '폐기물 설명 내용', 0, 0, 0, '보물단지이미지.png', 'HEALTH', 'GOOD', 'ONGOING',
+                           json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
+                           now(), null, null),
+       (2, '보물단지1', '폐기물 설명 내용', 1000, 2, 3, '보물단지이미지.png', 'HEALTH', 'GOOD', 'ONGOING',
         json_object('zipcode', '16255', 'state', '경기도', 'city', '수원시', 'district', '팔달구', 'detail', '창룡대로'),
         now(), null, null),
-       (3, '물건1', '물건 설명 내용', 0, 0, 0, '물건.png', 'CLOTHING', 'GOOD', 'ONGOING',
+       (3, '물건1', '물건 설명 내용', 0, 3, 4, '물건1.png', 'CLOTHING', 'GOOD', 'ONGOING',
+        json_object('zipcode', '16666', 'state', '경기도', 'city', '수원시', 'district', '팔달구', 'detail', '창룡대로'),
+        now(), null, null),
+       (4, '물건2', '물건 설명 내용2', 0, 10, 5, '물건2.png', 'HEALTH', 'GOOD', 'ONGOING',
+        json_object('zipcode', '16666', 'state', '경기도', 'city', '수원시', 'district', '팔달구', 'detail', '창룡대로'),
+        now(), null, null),
+       (1, 'title2', 'content2', 500, 1, 110, 'test2.png', 'FURNITURE_DECOR', 'BEST', 'CLOSE',
+        json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
+        now(), null, null),
+       (2, '보물단지11', '폐기물 설명 내용11', 1000, 2, 3, '보물단지이미지11.png', 'FURNITURE_DECOR', 'GOOD', 'CLOSE',
+        json_object('zipcode', '16255', 'state', '경기도', 'city', '수원시', 'district', '팔달구', 'detail', '창룡대로'),
+        now(), null, null),
+       (3, '물건12', '물건 설명 내용12', 0, 334, 433, '물건12.png', 'SPORTS', 'BEST', 'CLOSE',
+        json_object('zipcode', '16666', 'state', '경기도', 'city', '수원시', 'district', '팔달구', 'detail', '창룡대로'),
+        now(), null, null),
+       (4, '물건23', '물건 설명 내용23', 0, 110, 51, '물건23.png', 'CLOTHING', 'GOOD', 'CLOSE',
         json_object('zipcode', '16666', 'state', '경기도', 'city', '수원시', 'district', '팔달구', 'detail', '창룡대로'),
         now(), null, null);
 
 
 insert into waste_likes(member_id, waste_id, created_at)
-values (2, 1, now());
+values (2, 1, now()),
+       (2, 2, now()),
+       (2, 3, now()),
+       (2, 4, now()),
+       (2, 5, now()),
+       (2, 6, now()),
+       (2, 7, now()),
+       (2, 8, now());
 
 INSERT INTO chat_rooms(waste_id, seller_id, buyer_id, sell_status, open_or_close, created_at)
 VALUES (1, 1, 2, 'ONGOING', 1, now()),
