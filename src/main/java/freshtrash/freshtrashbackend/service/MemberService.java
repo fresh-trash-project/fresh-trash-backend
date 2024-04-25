@@ -13,12 +13,13 @@ import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -94,11 +95,14 @@ public class MemberService {
      * member 정보 수정
      */
     @Transactional
-    public Member updateMember(Long memberId, MemberRequest memberRequest, MultipartFile imgFile) {
-        checkNicknameDuplication(memberRequest.nickname());
+    public Member updateMember(MemberPrincipal memberPrincipal, MemberRequest memberRequest, MultipartFile imgFile) {
+        if (!Objects.equals(memberPrincipal.nickname(), memberRequest.nickname())) {
+            checkNicknameDuplication(memberRequest.nickname());
+        }
 
-        Member member =
-                memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+        Member member = memberRepository
+                .findById(memberPrincipal.id())
+                .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
         member.setNickname(memberRequest.nickname());
         member.setAddress(memberRequest.address());
 

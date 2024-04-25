@@ -40,7 +40,7 @@ public class MemberApi {
         String oldFile =
                 memberService.findFileNameOfMember(memberPrincipal.id()).fileName();
         MemberResponse memberResponse =
-                MemberResponse.fromEntity(memberService.updateMember(memberPrincipal.id(), memberRequest, imgFile));
+                MemberResponse.fromEntity(memberService.updateMember(memberPrincipal, memberRequest, imgFile));
 
         // 파일이 수정된 경우 -> 이전 파일 삭제
         if (StringUtils.hasText(oldFile) && !oldFile.equals(memberResponse.fileName())) {
