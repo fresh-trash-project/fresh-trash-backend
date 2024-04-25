@@ -1,7 +1,11 @@
 package freshtrash.freshtrashbackend.repository.custom;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import freshtrash.freshtrashbackend.entity.QWaste;
 import freshtrash.freshtrashbackend.entity.Waste;
@@ -9,9 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -38,8 +44,19 @@ public class CustomWasteRepositoryImpl implements CustomWasteRepository {
                 .fetchJoin()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(getOrderSpecifiers(pageable.getSort()))
                 .fetch();
 
         return new PageImpl<>(wastes, pageable, totalOfElements);
+    }
+
+    private OrderSpecifier[] getOrderSpecifiers(Sort sort) {
+        List<OrderSpecifier> orders = new ArrayList<>();
+        sort.forEach(order -> {
+            Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+            PathBuilder<Waste> entityPath = new PathBuilder<>(Waste.class, "waste");
+            orders.add(new OrderSpecifier(direction, entityPath.get(order.getProperty())));
+        });
+        return orders.toArray(OrderSpecifier[]::new);
     }
 }
