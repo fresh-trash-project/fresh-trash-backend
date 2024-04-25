@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
+import freshtrash.freshtrashbackend.dto.constants.BookingStatus;
 import freshtrash.freshtrashbackend.dto.constants.TransactionMemberType;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
@@ -79,7 +80,8 @@ class TransactionApiTest {
     @DisplayName("판매/구매 폐기물 목록 조회")
     @ParameterizedTest
     @CsvSource(value = {"SELLER", "BUYER"})
-    void given_memberTypeAndLoginUserAndPageable_when_then_getPagingWasteData(TransactionMemberType memberType) throws Exception {
+    void given_memberTypeAndLoginUserAndPageable_when_then_getPagingWasteData(TransactionMemberType memberType)
+            throws Exception {
         // given
         given(transactionService.getTransactedWastes(anyLong(), any(TransactionMemberType.class), any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(WasteResponse.fromEntity(Fixture.createWaste()))));
@@ -88,6 +90,59 @@ class TransactionApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements").value(1));
 
+        // then
+    }
+
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
+    @DisplayName("예약 신청")
+    @Test
+    void given_wasteIdAndChatRoomIdAndLoginUser_when_userIsBuyer_then_sendAlarmsToSeller() throws Exception {
+        // given
+        Long wasteId = 1L;
+        Long chatRoomId = 5L;
+        Long sellerId = 3L;
+        Long buyerId = 1L;
+        given(chatService.getChatRoom(anyLong()))
+                .willReturn(Fixture.createChatRoom(wasteId, sellerId, buyerId, true, SellStatus.ONGOING));
+        willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
+
+        // when
+        mvc.perform(post("/api/v1/transactions/" + wasteId + "/chats/" + chatRoomId + "/booking"))
+                .andExpect(status().isOk());
+        // then
+    }
+
+    @DisplayName("예약 신청 응답 - 승낙")
+    @Test
+    void given_wasteIdAndChatRoomIdAndBookingStatus_when_bookingAccept_then_updateSellStatusAndsendAlarmToBuyer()
+            throws Exception {
+        // given
+        Long wasteId = 2L;
+        Long chatRoomId = 4L;
+        given(chatService.getChatRoom(anyLong()))
+                .willReturn(Fixture.createChatRoom(wasteId, 2L, 3L, true, SellStatus.ONGOING));
+        willDoNothing().given(transactionService).updateSellStatus(anyLong(), anyLong(), eq(SellStatus.BOOKING));
+        willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
+        // when
+        mvc.perform(post("/api/v1/transactions/" + wasteId + "/chats/" + chatRoomId)
+                        .queryParam("bookingStatus", BookingStatus.ACCEPT.name()))
+                .andExpect(status().isOk());
+        // then
+    }
+
+    @DisplayName("예약 신청 응답 - 거절")
+    @Test
+    void given_wasteIdAndChatRoomIdAndBookingStatus_when_bookingDecline_then_sendAlarmToBuyer() throws Exception {
+        // given
+        Long wasteId = 1L;
+        Long chatRoomId = 5L;
+        given(chatService.getChatRoom(anyLong()))
+                .willReturn(Fixture.createChatRoom(wasteId, 1L, 2L, true, SellStatus.ONGOING));
+        willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
+        // when
+        mvc.perform(post("/api/v1/transactions/" + wasteId + "/chats/" + chatRoomId)
+                        .queryParam("bookingStatus", BookingStatus.DECLINE.name()))
+                .andExpect(status().isOk());
         // then
     }
 }

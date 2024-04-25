@@ -49,11 +49,12 @@ public class AlarmService {
      * - 폐기물 거래 완료 알람
      * @param memberId 알람을 받는 사용자 id
      * @param targetId 폐기물 id
+     * @param fromMemberId 알람을 보내는 사용자 id
      */
-    public Alarm saveAlarm(String message, Long memberId, Long targetId) {
+    public Alarm saveAlarm(String message, Long memberId, Long targetId, Long fromMemberId) {
         return alarmRepository.save(Alarm.builder()
                 .alarmType(AlarmType.TRANSACTION)
-                .alarmArgs(AlarmArgs.of(targetId))
+                .alarmArgs(AlarmArgs.of(fromMemberId, targetId))
                 .message(message)
                 .memberId(memberId)
                 .build());
@@ -68,15 +69,18 @@ public class AlarmService {
         receive(
                 new String(message.getBody(), UTF_8),
                 messageProperties.getHeader(RabbitMQConfig.MEMBER_ID_KEY),
-                messageProperties.getHeader(RabbitMQConfig.WASTE_ID_KEY));
+                messageProperties.getHeader(RabbitMQConfig.WASTE_ID_KEY),
+                messageProperties.getHeader(RabbitMQConfig.FROM_MEMBER_ID_KEY));
     }
 
     /**
      * SSE 알람 전송
      * @param memberId 알람을 받는 사용자 id
+     * @param targetId 폐기물 id
+     * @param fromMemberId 알람을 보내는 사용자 id
      */
-    private void receive(String message, Long memberId, Long targetId) {
-        Alarm alarm = saveAlarm(message, memberId, targetId);
+    private void receive(String message, Long memberId, Long targetId, Long fromMemberId) {
+        Alarm alarm = saveAlarm(message, memberId, targetId, fromMemberId);
         emitterRepository
                 .get(memberId)
                 .ifPresentOrElse(

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
     public static final String WASTE_ID_KEY = "wasteId";
     public static final String MEMBER_ID_KEY = "memberId";
+    public static final String FROM_MEMBER_ID_KEY = "fromMemberId";
     public static final String WASTE_TRANSACTION_ROUTING_KEY = "waste.transaction";
     private static final String directExchangeName = "waste-direct-exchange";
 
