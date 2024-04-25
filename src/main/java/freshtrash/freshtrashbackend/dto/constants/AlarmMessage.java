@@ -1,10 +1,10 @@
 package freshtrash.freshtrashbackend.dto.constants;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum AlarmMessage {
     COMPLETED_SELL_MESSAGE("판매 완료되었습니다."),
     REQUEST_REVIEW_MESSAGE("판매 완료되었습니다. 판매자에 대한 리뷰를 작성해주세요."),
