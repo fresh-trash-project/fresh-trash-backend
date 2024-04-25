@@ -47,4 +47,7 @@ public interface WasteRepository
     @Modifying
     @Query("update Waste w set w.sellStatus = ?2 where w.id = ?1")
     void updateSellStatus(Long wasteId, SellStatus sellStatus);
+
+    @Query(nativeQuery = true, value = "update wastes w set w.view_count = w.view_count + 1 where w.id = ?1")
+    void updateViewCount(Long wasteId);
 }

@@ -136,4 +136,8 @@ public class WasteService {
                 .map(WasteLike::getWaste)
                 .map(WasteResponse::fromEntity);
     }
+
+    public void updateViewCount(Long wasteId) {
+        wasteRepository.updateViewCount(wasteId);
+    }
 }

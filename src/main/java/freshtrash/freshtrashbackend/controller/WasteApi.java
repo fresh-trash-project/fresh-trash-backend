@@ -40,6 +40,7 @@ public class WasteApi {
      */
     @GetMapping("/{wasteId}")
     public ResponseEntity<WasteResponse> getWaste(@PathVariable Long wasteId) {
+        wasteService.updateViewCount(wasteId);
         WasteResponse wasteResponse = WasteResponse.fromEntity(wasteService.getWaste(wasteId));
         return ResponseEntity.ok(wasteResponse);
     }
@@ -65,8 +66,6 @@ public class WasteApi {
         Page<WasteResponse> wastes = wasteService.getLikedWastes(memberPrincipal.id(), pageable);
         return ResponseEntity.ok(wastes);
     }
-
-    // TODO: TransactionLog를 조회하여 구매, 판매 폐기물 목록 조회
 
     /**
      * 폐기물 등록
