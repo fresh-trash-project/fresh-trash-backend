@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.repository;
 
+import com.querydsl.core.types.dsl.EnumExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.QWaste;
@@ -24,8 +25,9 @@ public interface WasteRepository
     @Override
     default void customize(QuerydslBindings bindings, QWaste root) {
         bindings.excludeUnlistedProperties(true);
-        bindings.including(root.title);
+        bindings.including(root.title, root.wasteCategory);
         bindings.bind(String.class).first((StringPath path, String value) -> path.containsIgnoreCase(value));
+        bindings.bind(root.wasteCategory).as("category").first(EnumExpression::eq);
     }
 
     @EntityGraph(attributePaths = "member")
