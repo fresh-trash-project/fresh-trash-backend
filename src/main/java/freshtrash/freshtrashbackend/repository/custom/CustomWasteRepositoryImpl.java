@@ -36,7 +36,7 @@ public class CustomWasteRepositoryImpl implements CustomWasteRepository {
                     .or(predicate);
         }
         QWaste waste = QWaste.waste;
-        Long totalOfElements = jpaQueryFactory.select(waste.count()).from(waste).fetchFirst();
+        Long totalOfElements = jpaQueryFactory.select(waste.count()).from(waste).where(predicate).fetchFirst();
         List<Waste> wastes = jpaQueryFactory
                 .selectFrom(waste)
                 .where(predicate)
