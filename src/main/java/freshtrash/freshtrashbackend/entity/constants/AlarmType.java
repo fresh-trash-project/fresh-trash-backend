@@ -6,5 +6,7 @@ public enum AlarmType {
     BIDDING,
     PAY,
     RECEIVE,
-    NOT_PAY
+    NOT_PAY,
+    BOOKING_REQUEST,
+    BOOKING_RESPONSE
 }
