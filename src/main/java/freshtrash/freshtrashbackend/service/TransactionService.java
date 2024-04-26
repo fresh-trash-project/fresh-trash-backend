@@ -21,18 +21,28 @@ public class TransactionService {
     private final ChatRoomRepository chatRoomRepository;
 
     public Page<WasteResponse> getTransactedWastes(Long memberId, TransactionMemberType memberType, Pageable pageable) {
-        // 판매 내역
-        if (memberType == TransactionMemberType.SELLER) {
-            return transactionLogRepository
+        switch (memberType) {
+            // 판매 완료 wastes
+            case SELLER_CLOSE -> {
+                return transactionLogRepository
                     .findAllBySeller_Id(memberId, pageable)
                     .map(TransactionLog::getWaste)
                     .map(WasteResponse::fromEntity);
+            }
+            // 판매 중 또는 예약 중 wastes
+            case SELLER_ONGOING -> {
+                return wasteRepository
+                        .findAllByMemberIdAndSellStatusNot(memberId, SellStatus.CLOSE, pageable)
+                        .map(WasteResponse::fromEntity);
+            }
+            // 구매 wastes
+            default -> {
+                return transactionLogRepository
+                        .findAllByBuyer_Id(memberId, pageable)
+                        .map(TransactionLog::getWaste)
+                        .map(WasteResponse::fromEntity);
+            }
         }
-        // 구매 내역
-        return transactionLogRepository
-                .findAllByBuyer_Id(memberId, pageable)
-                .map(TransactionLog::getWaste)
-                .map(WasteResponse::fromEntity);
     }
 
     /**

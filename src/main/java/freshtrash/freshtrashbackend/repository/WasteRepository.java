@@ -2,12 +2,15 @@ package freshtrash.freshtrashbackend.repository;
 
 import com.querydsl.core.types.dsl.EnumExpression;
 import com.querydsl.core.types.dsl.StringPath;
+import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.QWaste;
 import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.repository.custom.CustomWasteRepository;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -50,4 +53,7 @@ public interface WasteRepository
 
     @Query(nativeQuery = true, value = "update wastes w set w.view_count = w.view_count + 1 where w.id = ?1")
     void updateViewCount(Long wasteId);
+
+    @EntityGraph(attributePaths = "member")
+    Page<Waste> findAllByMemberIdAndSellStatusNot(Long memberId, SellStatus sellStatus, Pageable pageable);
 }
