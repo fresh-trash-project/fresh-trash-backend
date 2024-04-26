@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.dto.constants;
 
 public enum TransactionMemberType {
-    SELLER,
+    SELLER_ONGOING,
+    SELLER_CLOSE,
     BUYER
 }
