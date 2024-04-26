@@ -16,7 +16,6 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -51,10 +50,11 @@ public class AlarmService {
      * @param memberId 알람을 받는 사용자 id
      * @param targetId 폐기물 id
      * @param fromMemberId 알람을 보내는 사용자 id
+     * @param alarmType 알람 종류
      */
-    public Alarm saveAlarm(String message, Long memberId, Long targetId, Long fromMemberId) {
+    public Alarm saveAlarm(String message, Long memberId, Long targetId, Long fromMemberId, AlarmType alarmType) {
         return alarmRepository.save(Alarm.builder()
-                .alarmType(AlarmType.TRANSACTION)
+                .alarmType(alarmType)
                 .alarmArgs(AlarmArgs.of(fromMemberId, targetId))
                 .message(message)
                 .memberId(memberId)
@@ -71,7 +71,8 @@ public class AlarmService {
                 new String(message.getBody(), UTF_8),
                 messageProperties.getHeader(RabbitMQConfig.MEMBER_ID_KEY),
                 messageProperties.getHeader(RabbitMQConfig.WASTE_ID_KEY),
-                messageProperties.getHeader(RabbitMQConfig.FROM_MEMBER_ID_KEY));
+                messageProperties.getHeader(RabbitMQConfig.FROM_MEMBER_ID_KEY),
+                AlarmType.valueOf(messageProperties.getHeader(RabbitMQConfig.ALARM_TYPE)));
     }
 
     /**
@@ -79,9 +80,10 @@ public class AlarmService {
      * @param memberId 알람을 받는 사용자 id
      * @param targetId 폐기물 id
      * @param fromMemberId 알람을 보내는 사용자 id
+     * @param alarmType 알람 종류
      */
-    private void receive(String message, Long memberId, Long targetId, Long fromMemberId) {
-        Alarm alarm = saveAlarm(message, memberId, targetId, fromMemberId);
+    private void receive(String message, Long memberId, Long targetId, Long fromMemberId, AlarmType alarmType) {
+        Alarm alarm = saveAlarm(message, memberId, targetId, fromMemberId, alarmType);
         emitterRepository
                 .findByMemberId(memberId)
                 .ifPresentOrElse(
