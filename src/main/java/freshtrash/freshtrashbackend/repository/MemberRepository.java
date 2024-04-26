@@ -1,8 +1,10 @@
 package freshtrash.freshtrashbackend.repository;
 
 import freshtrash.freshtrashbackend.entity.Member;
+import freshtrash.freshtrashbackend.repository.projections.CancelCountSummary;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,4 +21,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByNickname(String nickname);
 
     Optional<FileNameSummary> findFileNameById(Long memberId);
+
+    @Query(nativeQuery = true, value = "update members m set m.cancel_count = m.cancel_count + 1 where m.id = ?1")
+    void updateCancelCount(Long id);
+
+    Optional<CancelCountSummary> findCancelCountById(Long memberId);
 }
