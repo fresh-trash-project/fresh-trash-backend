@@ -43,14 +43,6 @@ public class ChatApi {
     }
 
     /**
-     * 판매자 또는 구매자만이 대상 채팅방을 조회할 수 있습니다
-     */
-    private void checkIfSellerOrBuyerOfChatRoom(Long chatRoomId, Long memberId) {
-        if (!chatService.isSellerOrBuyerOfChatRoom(chatRoomId, memberId))
-            throw new ChatException(ErrorCode.FORBIDDEN_CHAT_ROOM);
-    }
-
-    /**
      * 채팅 요청
      */
     @PostMapping
@@ -65,6 +57,14 @@ public class ChatApi {
                 ChatRoomResponse.fromEntity(chatRoom, seller.getNickname(), memberPrincipal.nickname());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * 판매자 또는 구매자만이 대상 채팅방을 조회할 수 있습니다
+     */
+    private void checkIfSellerOrBuyerOfChatRoom(Long chatRoomId, Long memberId) {
+        if (!chatService.isSellerOrBuyerOfChatRoom(chatRoomId, memberId))
+            throw new ChatException(ErrorCode.FORBIDDEN_CHAT_ROOM);
     }
 
     /**
