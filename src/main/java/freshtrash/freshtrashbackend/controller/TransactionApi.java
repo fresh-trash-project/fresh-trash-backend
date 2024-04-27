@@ -1,7 +1,6 @@
 package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.config.RabbitMQConfig;
-import freshtrash.freshtrashbackend.dto.constants.BookingStatus;
 import freshtrash.freshtrashbackend.dto.constants.TransactionMemberType;
 import freshtrash.freshtrashbackend.dto.request.MessageRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
@@ -10,9 +9,6 @@ import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
-import freshtrash.freshtrashbackend.exception.ChatRoomException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.MemberService;
 import freshtrash.freshtrashbackend.service.TransactionService;
@@ -90,104 +86,55 @@ public class TransactionApi {
     }
 
     /**
-     * 예약 신청(구매자 -> 판매자)
+     * 예약중으로 변경(판매자)
      */
-    @PostMapping("/{wasteId}/chats/{chatRoomId}/booking")
-    public ResponseEntity<Void> sendBooking(
-            @PathVariable Long wasteId,
-            @PathVariable Long chatRoomId,
-            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+    @PostMapping("/chats/{chatRoomId}/booking")
+    public ResponseEntity<Void> updateBooking(@PathVariable Long chatRoomId) {
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
-        String message = chatRoom.getBuyer().getNickname() + REQUEST_BOOKING_MESSAGE.getMessage();
-        // 예약신청은 구매자만 할 수 있다
-        if (!Objects.equals(chatRoom.getBuyerId(), memberPrincipal.id())) {
-            throw new ChatRoomException(ErrorCode.CANNOT_BOOKING_WITHOUT_BUYER);
-        }
-        // 판매자에게 알림 보내기
+        String message = chatRoom.getSeller().getNickname() + BOOKING_MESSAGE.getMessage();
+
+        transactionService.updateSellStatus(chatRoom.getWasteId(), chatRoomId, SellStatus.BOOKING);
+        // 구매자에게 알림 보내기
         sendWasteTransactionMessage(MessageRequest.builder()
                 .message(message)
-                .wasteId(wasteId)
-                .memberId(chatRoom.getSellerId())
-                .fromMemberId(chatRoom.getBuyerId())
-                .alarmType(AlarmType.BOOKING_REQUEST)
-                .build());
-
-        return ResponseEntity.ok(null);
-    }
-
-    /**
-     * 예약 요청 응답(판매자 -> 구매자)
-     */
-    @PostMapping("/{wasteId}/chats/{chatRoomId}/booking-reply")
-    public ResponseEntity<Void> replyBooking(
-            @PathVariable Long wasteId, @PathVariable Long chatRoomId, @RequestParam BookingStatus bookingStatus) {
-        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
-        String message = chatRoom.getSeller().getNickname() + DECLINE_BOOKING_MESSAGE.getMessage();
-        if (bookingStatus == BookingStatus.ACCEPT) {
-            message = chatRoom.getSeller().getNickname() + ACCEPT_BOOKING_MESSAGE.getMessage();
-            transactionService.updateSellStatus(wasteId, chatRoomId, SellStatus.BOOKING);
-        }
-
-        // 구매자에게 알림 전송
-        sendWasteTransactionMessage(MessageRequest.builder()
-                .message(message)
-                .wasteId(wasteId)
+                .wasteId(chatRoom.getWasteId())
                 .memberId(chatRoom.getBuyerId())
                 .fromMemberId(chatRoom.getSellerId())
-                .alarmType(AlarmType.BOOKING_RESPONSE)
-                .build());
-
-        return ResponseEntity.ok(null);
-    }
-
-    /**
-     * 판매 취소(구매자, 판매자 둘다 가능)
-     */
-    @PostMapping("/{wasteId}/chats/{chatRoomId}/cancel")
-    public ResponseEntity<ApiResponse<Integer>> cancelTransaction(
-            @PathVariable Long wasteId,
-            @PathVariable Long chatRoomId,
-            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
-        String message = memberPrincipal.nickname() + CANCEL_TRANSACTION_MESSAGE.getMessage();
-        // 판매중으로 변경
-        transactionService.updateSellStatus(wasteId, chatRoomId, SellStatus.ONGOING);
-        // cancel_count + 1
-        int cancelCount = memberService.updateCancelCount(memberPrincipal).cancelCount();
-        String alertMessage = cancelCount + CANCEL_ALERT_MESSAGE.getMessage();
-
-        if (cancelCount >= 3) {
-            alertMessage = BLACKLIST_MESSAGE.getMessage();
-        }
-        // 취소한 사람에게 알림 보내기
-        sendWasteTransactionMessage(MessageRequest.builder()
-                .message(alertMessage)
-                .wasteId(wasteId)
-                .memberId(memberPrincipal.id())
-                .fromMemberId(0L)
                 .alarmType(AlarmType.TRANSACTION)
                 .build());
 
-        // 구매자가 취소한 경우 -> 판매자에게 알림 / 판매자가 취소한 경우 -> 구매자에게 알림
-        if (Objects.equals(chatRoom.getBuyerId(), memberPrincipal.id())) {
-            sendWasteTransactionMessage(MessageRequest.builder()
-                    .message(message)
-                    .wasteId(wasteId)
-                    .memberId(chatRoom.getSellerId())
-                    .fromMemberId(chatRoom.getBuyerId())
-                    .alarmType(AlarmType.TRANSACTION)
-                    .build());
-        } else {
-            sendWasteTransactionMessage(MessageRequest.builder()
-                    .message(message)
-                    .wasteId(wasteId)
-                    .memberId(chatRoom.getBuyerId())
-                    .fromMemberId(chatRoom.getSellerId())
-                    .alarmType(AlarmType.TRANSACTION)
-                    .build());
+        return ResponseEntity.ok(null);
+    }
+
+    /**
+     * 신고하기(채팅 상대방)
+     */
+    @PostMapping("/chats/{chatRoomId}/flag")
+    public ResponseEntity<ApiResponse<Integer>> flagMember(
+            @PathVariable Long chatRoomId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
+        Long targetId = chatRoom.getSellerId();
+        if (Objects.equals(memberPrincipal.id(), chatRoom.getSellerId())) {
+            targetId = chatRoom.getBuyerId();
         }
 
-        return ResponseEntity.ok(ApiResponse.of(cancelCount));
+        // flag_count + 1
+        int flagCount = memberService.updateFlagCount(targetId).flagCount();
+        String message = flagCount + FLAG_MESSAGE.getMessage();
+
+        if (flagCount >= 10) {
+            message = EXCEED_FLAG_MESSAGE.getMessage();
+        }
+        // 신고받은 유저에게 알림 보내기
+        sendWasteTransactionMessage(MessageRequest.builder()
+                .message(message)
+                .wasteId(chatRoom.getWasteId())
+                .memberId(targetId)
+                .fromMemberId(memberPrincipal.id())
+                .alarmType(AlarmType.FLAG)
+                .build());
+
+        return ResponseEntity.ok(ApiResponse.of(flagCount));
     }
 
     private Message buildMessage(MessageRequest messageRequest) {

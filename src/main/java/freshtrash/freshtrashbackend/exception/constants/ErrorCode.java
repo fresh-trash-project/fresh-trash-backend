@@ -38,7 +38,7 @@ public enum ErrorCode {
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "유저 정보가 존재하지 않습니다."),
     ALREADY_EXISTS_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
     ALREADY_EXISTS_NICKNAME(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다."),
-    EXCEED_CANCEL_COUNT(HttpStatus.BAD_REQUEST, "3번 이상 거래 취소 내역이 있기 때문에 해당 사이트 이용이 불가합니다."),
+    EXCEED_FLAG_COUNT(HttpStatus.BAD_REQUEST, "10번 이상 신고 당한 내역이 있기 때문에 해당 사이트 이용이 불가합니다."),
 
     // Alarm
     ALARM_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알람을 위한 연결 시도 실패"),
@@ -47,8 +47,7 @@ public enum ErrorCode {
     // Chat
     NOT_FOUND_CHAT_ROOM(HttpStatus.NOT_FOUND, "채팅방이 존재하지 않습니다."),
     FORBIDDEN_CHAT_ROOM(HttpStatus.FORBIDDEN, "채팅방에 대한 권한이 없습니다."),
-    CANNOT_CHAT_WITH_SELF(HttpStatus.BAD_REQUEST, "판매자는 자신이 등록한 폐기물에 대해 채팅을 시작할 수 없습니다."),
-    CANNOT_BOOKING_WITHOUT_BUYER(HttpStatus.BAD_REQUEST, "구매자만 예약 신청할 수 있습니다.");
+    CANNOT_CHAT_WITH_SELF(HttpStatus.BAD_REQUEST, "판매자는 자신이 등록한 폐기물에 대해 채팅을 시작할 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;

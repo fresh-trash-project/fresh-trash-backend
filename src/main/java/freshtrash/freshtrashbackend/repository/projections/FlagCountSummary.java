@@ -1,3 +1,3 @@
 package freshtrash.freshtrashbackend.repository.projections;
 
-public record CancelCountSummary(Integer cancelCount) {}
+public record FlagCountSummary(Integer flagCount) {}
