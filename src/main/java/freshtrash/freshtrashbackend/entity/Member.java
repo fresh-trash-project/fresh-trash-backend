@@ -49,7 +49,7 @@ public class Member extends AuditingAt {
     private String fileName;
 
     @Column
-    private int cancelCount;
+    private int flagCount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

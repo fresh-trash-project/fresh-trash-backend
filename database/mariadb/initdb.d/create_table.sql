@@ -7,7 +7,7 @@
     `nickname`       varchar(255)          NOT NULL,
     `address`        json,
     `file_name`      varchar(255),
-    `cancel_count`   integer DEFAULT 0     NOT NULL,
+    `flag_count`     integer DEFAULT 0     NOT NULL,
     `login_type`     varchar(255)          NOT NULL,
     `user_role`      varchar(255)          NOT NULL,
     `account_status` varchar(255)          NOT NULL,
