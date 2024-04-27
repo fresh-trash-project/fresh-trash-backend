@@ -6,9 +6,10 @@ import freshtrash.freshtrashbackend.entity.Member;
 import lombok.Builder;
 
 @Builder
-public record MemberResponse(String nickname, double rating, String fileName, Address address) {
+public record MemberResponse(Long id, String nickname, double rating, String fileName, Address address) {
     public static MemberResponse fromEntity(Member member) {
         return MemberResponse.builder()
+                .id(member.getId())
                 .nickname(member.getNickname())
                 .rating(member.getRating())
                 .fileName(member.getFileName())
@@ -18,6 +19,7 @@ public record MemberResponse(String nickname, double rating, String fileName, Ad
 
     public static MemberResponse fromPrincipal(MemberPrincipal memberPrincipal) {
         return MemberResponse.builder()
+                .id(memberPrincipal.id())
                 .nickname(memberPrincipal.nickname())
                 .rating(memberPrincipal.rating())
                 .fileName(memberPrincipal.fileName())
