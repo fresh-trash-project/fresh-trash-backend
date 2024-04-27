@@ -16,6 +16,8 @@ services:
       - ./mariadb/initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "3307:3307"
+    networks:
+      - docker_app
   fresh-trash-redis:
     container_name: fresh-trash-redis
     build:
@@ -25,10 +27,10 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - docker-redis
+      - docker_app
 
 networks:
-  docker-redis:
+  docker_app:
     driver: bridge
 
 
