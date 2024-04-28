@@ -91,7 +91,8 @@ public class TransactionApi {
     @PostMapping("/chats/{chatRoomId}/booking")
     public ResponseEntity<Void> updateBooking(@PathVariable Long chatRoomId) {
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
-        String message = chatRoom.getSeller().getNickname() + BOOKING_MESSAGE.getMessage();
+        String message =
+                String.format(BOOKING_MESSAGE.getMessage(), chatRoom.getSeller().getNickname());
 
         transactionService.updateSellStatus(chatRoom.getWasteId(), chatRoomId, SellStatus.BOOKING);
         // 구매자에게 알림 보내기
@@ -113,13 +114,15 @@ public class TransactionApi {
     public ResponseEntity<ApiResponse<Integer>> flagMember(
             @PathVariable Long chatRoomId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
+
+        // targetId: 채팅 상대방인 신고 받은 유저
         Long targetId = Objects.equals(memberPrincipal.id(), chatRoom.getSellerId())
                 ? chatRoom.getBuyerId()
                 : chatRoom.getSellerId();
 
         // flag_count + 1
         int flagCount = memberService.updateFlagCount(targetId).flagCount();
-        String message = flagCount + FLAG_MESSAGE.getMessage();
+        String message = String.format(FLAG_MESSAGE.getMessage(), flagCount);
 
         if (flagCount >= 10) {
             message = EXCEED_FLAG_MESSAGE.getMessage();
