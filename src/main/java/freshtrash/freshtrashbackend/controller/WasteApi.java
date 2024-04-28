@@ -102,8 +102,9 @@ public class WasteApi {
     public ResponseEntity<Void> deleteWaste(
             @PathVariable Long wasteId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfWriterOrAdmin(memberPrincipal, wasteId);
+        String savedFileName = wasteService.findFileNameOfWaste(wasteId).fileName();
         wasteService.deleteWaste(wasteId);
-        fileService.deleteFileIfExists(wasteService.findFileNameOfWaste(wasteId).fileName());
+        fileService.deleteFileIfExists(savedFileName);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
