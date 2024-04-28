@@ -9,7 +9,7 @@ import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.exception.ChatRoomException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.service.ChatService;
+import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.DirectExchange;
@@ -34,7 +34,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 public class TransactionApi {
     private final RabbitTemplate rabbitTemplate;
     private final DirectExchange directExchange;
-    private final ChatService chatService;
+    private final ChatRoomService chatRoomService;
     private final TransactionService transactionService;
 
     @GetMapping
@@ -49,7 +49,7 @@ public class TransactionApi {
 
     @PostMapping("/{wasteId}/chats/{chatRoomId}")
     public ResponseEntity<Void> completeTransaction(@PathVariable Long wasteId, @PathVariable Long chatRoomId) {
-        ChatRoom closedChatRoom = chatService.getChatRoom(chatRoomId);
+        ChatRoom closedChatRoom = chatRoomService.getChatRoom(chatRoomId);
         transactionService.completeTransaction(
                 wasteId, chatRoomId, closedChatRoom.getSellerId(), closedChatRoom.getBuyerId(), SellStatus.CLOSE);
 
@@ -65,7 +65,7 @@ public class TransactionApi {
                 closedChatRoom.getBuyerId(),
                 closedChatRoom.getSellerId());
         // 구매자가 아닌 사용자들에게 알람 전송
-        chatService.getChatRoomsByWasteId(wasteId, SellStatus.CLOSE).forEach(chatRoom -> {
+        chatRoomService.getChatRoomsByWasteId(wasteId, SellStatus.CLOSE).forEach(chatRoom -> {
             sendWasteTransactionMessage(
                     COMPLETED_SELL_MESSAGE.getMessage(), wasteId, chatRoom.getBuyerId(), closedChatRoom.getSellerId());
         });
@@ -81,7 +81,7 @@ public class TransactionApi {
             @PathVariable Long wasteId,
             @PathVariable Long chatRoomId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        ChatRoom chatRoom = chatService.getChatRoom(chatRoomId);
+        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
         String message = chatRoom.getBuyer().getNickname() + REQUEST_BOOKING_MESSAGE.getMessage();
         // 예약신청은 구매자만 할 수 있다
         if (!Objects.equals(chatRoom.getBuyerId(), memberPrincipal.id())) {
@@ -99,7 +99,7 @@ public class TransactionApi {
     @PostMapping("/{wasteId}/chats/{chatRoomId}/booking-reply")
     public ResponseEntity<Void> replyBooking(
             @PathVariable Long wasteId, @PathVariable Long chatRoomId, @RequestParam BookingStatus bookingStatus) {
-        ChatRoom chatRoom = chatService.getChatRoom(chatRoomId);
+        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
         String message = chatRoom.getSeller().getNickname() + DECLINE_BOOKING_MESSAGE.getMessage();
         if (bookingStatus == BookingStatus.ACCEPT) {
             message = chatRoom.getSeller().getNickname() + ACCEPT_BOOKING_MESSAGE.getMessage();

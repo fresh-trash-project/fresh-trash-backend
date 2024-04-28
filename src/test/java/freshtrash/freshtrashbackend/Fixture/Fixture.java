@@ -43,6 +43,7 @@ public class Fixture {
     }
 
     public static Member createMember(
+            Long id,
             String email,
             String password,
             String nickname,
@@ -58,7 +59,7 @@ public class Fixture {
                 .accountStatus(accountStatus)
                 .build();
 
-        ReflectionTestUtils.setField(member, "id", 1L);
+        ReflectionTestUtils.setField(member, "id", id);
         ReflectionTestUtils.setField(member, "fileName", "test.png");
         ReflectionTestUtils.setField(member, "address", Fixture.createAddress());
 
@@ -66,18 +67,20 @@ public class Fixture {
     }
 
     public static Member createMember() {
-        return createMember("test@gmail.com", "pw", "test", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
+        return createMember(1L, "test@gmail.com", "pw", "test", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
     }
 
     public static ChatRoom createChatRoom(
             Long wasteId, Long sellerId, Long buyerId, boolean openOrClose, SellStatus sellStatus) {
-        return ChatRoom.builder()
+        ChatRoom chatRoom = ChatRoom.builder()
                 .buyerId(buyerId)
                 .sellerId(sellerId)
                 .wasteId(wasteId)
                 .openOrClose(openOrClose)
                 .sellStatus(sellStatus)
                 .build();
+        ReflectionTestUtils.setField(chatRoom, "buyer", Fixture.createMember());
+        return chatRoom;
     }
 
     public static Alarm createAlarm() {
@@ -89,21 +92,25 @@ public class Fixture {
     }
 
     public static ChatRoom createChatRoom() {
+        Long wasteId = 1L;
+        Long buyerId = 2L;
+        Long sellerId = 3L;
         ChatRoom chatRoom = ChatRoom.builder()
                 .sellStatus(SellStatus.ONGOING)
                 .openOrClose(true)
-                .wasteId(1L)
-                .buyerId(2L)
-                .sellerId(3L)
+                .wasteId(wasteId)
+                .buyerId(buyerId)
+                .sellerId(sellerId)
                 .build();
+        ReflectionTestUtils.setField(chatRoom, "waste", createWaste());
         ReflectionTestUtils.setField(
                 chatRoom,
                 "seller",
-                createMember("seller@gmail.com", "pw", "seller", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE));
+                createMember(sellerId, "seller@gmail.com", "pw", "seller", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE));
         ReflectionTestUtils.setField(
                 chatRoom,
                 "buyer",
-                createMember("buyer@gmail.com", "pw", "buyer", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE));
+                createMember(buyerId, "buyer@gmail.com", "pw", "buyer", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE));
         ReflectionTestUtils.setField(chatRoom, "chatMessages", Set.of(createChatMessage()));
         return chatRoom;
     }

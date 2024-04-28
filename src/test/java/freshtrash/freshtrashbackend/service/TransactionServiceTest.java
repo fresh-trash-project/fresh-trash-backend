@@ -56,8 +56,8 @@ class TransactionServiceTest {
         SellStatus sellStatus = SellStatus.CLOSE;
         given(transactionLogRepository.save(any(TransactionLog.class)))
                 .willReturn(Fixture.createTransactionLog(wasteId, sellerId, buyerId));
-        willDoNothing().given(wasteRepository).updateSellStatus(anyLong(), any(SellStatus.class));
-        willDoNothing().given(chatRoomRepository).updateSellStatus(anyLong(), any(SellStatus.class));
+        willDoNothing().given(wasteRepository).updateSellStatus(eq(wasteId), eq(sellStatus));
+        willDoNothing().given(chatRoomRepository).updateSellStatus(eq(chatRoomId), eq(sellStatus));
         // when
         transactionService.completeTransaction(wasteId, chatRoomId, sellerId, buyerId, sellStatus);
         ArgumentCaptor<TransactionLog> captor = ArgumentCaptor.forClass(TransactionLog.class);
@@ -70,19 +70,22 @@ class TransactionServiceTest {
 
     @DisplayName("거래한 폐기물 목록 조회")
     @ParameterizedTest
-    @CsvSource(value = {"SELLER", "BUYER"})
+    @CsvSource(value = {"SELLER_CLOSE", "SELLER_ONGOING", "BUYER"})
     void given_memberIdAndMemberTypeAndPageable_when_getTransactionLogs_then_convertToWastes(
             TransactionMemberType memberType) {
         // given
         Long memberId = 1L;
         int expectedSize = 1;
         Pageable pageable = PageRequest.of(0, 10);
-        if (memberType == TransactionMemberType.SELLER) {
-            given(transactionLogRepository.findAllBySeller_Id(anyLong(), eq(pageable)))
+        if (memberType == TransactionMemberType.SELLER_CLOSE) {
+            given(transactionLogRepository.findAllBySeller_Id(eq(memberId), eq(pageable)))
                     .willReturn(new PageImpl<>(List.of(Fixture.createTransactionLog())));
         } else if (memberType == TransactionMemberType.BUYER) {
-            given(transactionLogRepository.findAllByBuyer_Id(anyLong(), eq(pageable)))
+            given(transactionLogRepository.findAllByBuyer_Id(eq(memberId), eq(pageable)))
                     .willReturn(new PageImpl<>(List.of(Fixture.createTransactionLog())));
+        } else {
+            given(wasteRepository.findAllByMemberIdAndSellStatusNot(eq(memberId), eq(SellStatus.CLOSE), eq(pageable)))
+                    .willReturn(new PageImpl<>(List.of(Fixture.createWaste())));
         }
         // when
         Page<WasteResponse> wastes = transactionService.getTransactedWastes(memberId, memberType, pageable);

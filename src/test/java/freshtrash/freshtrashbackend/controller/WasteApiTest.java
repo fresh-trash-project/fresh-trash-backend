@@ -58,13 +58,14 @@ class WasteApiTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     @DisplayName("폐기물 단일 조회")
     @Test
     void given_wasteId_when_getWaste_then_returnWasteData() throws Exception {
         // given
         Long wasteId = 1L;
         Waste waste = Fixture.createWaste();
-        given(wasteService.getWaste(anyLong())).willReturn(waste);
+        given(wasteService.getWaste(eq(wasteId))).willReturn(waste);
         // when
         mvc.perform(get("/api/v1/wastes/" + wasteId))
                 .andExpect(status().isOk())
@@ -101,7 +102,8 @@ class WasteApiTest {
     @Test
     void given_loginUserAndPageable_when_getLikedWastes_then_returnPagingWasteData() throws Exception {
         // given
-        given(wasteService.getLikedWastes(anyLong(), any(Pageable.class)))
+        Long memberId = 123L;
+        given(wasteService.getLikedWastes(eq(memberId), any(Pageable.class)))
                 .willReturn(new PageImpl<>(List.of(WasteResponse.fromEntity(Fixture.createWaste()))));
         // when
         mvc.perform(get("/api/v1/wastes/likes"))
@@ -202,18 +204,19 @@ class WasteApiTest {
     void given_imgFileAndWasteRequest_when_requestUpdateWaste_then_requestValuesEqualsToReturnedWasteValues()
             throws Exception {
         // given
-        Long wasteId = 1L, memberId = 1L;
+        Long wasteId = 1L, memberId = 123L;
+        String fileName = "test.png";
         MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         Waste waste = Waste.fromRequest(wasteRequest, imgFile.getOriginalFilename(), memberId);
         ReflectionTestUtils.setField(waste, "member", Fixture.createMember());
         WasteResponse wasteResponse = WasteResponse.fromEntity(waste);
-        given(wasteService.isWriterOfArticle(anyLong(), anyLong())).willReturn(true);
-        given(wasteService.findFileNameOfWaste(anyLong())).willReturn(new FileNameSummary("test.png"));
+        given(wasteService.isWriterOfArticle(eq(wasteId), eq(memberId))).willReturn(true);
+        given(wasteService.findFileNameOfWaste(eq(wasteId))).willReturn(new FileNameSummary(fileName));
         given(wasteService.updateWaste(
-                        anyLong(), any(MultipartFile.class), any(WasteRequest.class), any(MemberPrincipal.class)))
+                        eq(wasteId), any(MultipartFile.class), any(WasteRequest.class), any(MemberPrincipal.class)))
                 .willReturn(wasteResponse);
-        willDoNothing().given(localFileService).deleteFileIfExists(anyString());
+        willDoNothing().given(localFileService).deleteFileIfExists(eq(fileName));
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/wastes/" + wasteId)
                         .file("imgFile", imgFile.getBytes())
@@ -240,10 +243,12 @@ class WasteApiTest {
     void given_wasteIdAndWriter_when_then_deleteWasteAndFile() throws Exception {
         // given
         Long wasteId = 1L;
-        given(wasteService.isWriterOfArticle(anyLong(), anyLong())).willReturn(true);
-        given(wasteService.findFileNameOfWaste(anyLong())).willReturn(new FileNameSummary("test.png"));
-        willDoNothing().given(localFileService).deleteFileIfExists(anyString());
-        willDoNothing().given(wasteService).deleteWaste(anyLong());
+        Long memberId = 123L;
+        String fileName = "test.png";
+        given(wasteService.isWriterOfArticle(eq(wasteId), eq(memberId))).willReturn(true);
+        given(wasteService.findFileNameOfWaste(eq(wasteId))).willReturn(new FileNameSummary(fileName));
+        willDoNothing().given(localFileService).deleteFileIfExists(eq(fileName));
+        willDoNothing().given(wasteService).deleteWaste(eq(wasteId));
         // when
         mvc.perform(delete("/api/v1/wastes/" + wasteId)).andExpect(status().isNoContent());
         // then

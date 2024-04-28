@@ -50,7 +50,7 @@ class WasteServiceTest {
     void given_wasteId_when_getWaste_then_wasteIsNotNull() {
         // given
         Long wasteId = 1L;
-        given(wasteRepository.findById(anyLong())).willReturn(Optional.of(Fixture.createWaste()));
+        given(wasteRepository.findById(eq(wasteId))).willReturn(Optional.of(Fixture.createWaste()));
         // when
         Waste waste = wasteService.getWaste(wasteId);
         // then
@@ -62,12 +62,13 @@ class WasteServiceTest {
     void given_predicateAndPageable_when_getWastes_then_wastesSizeIsEqualToExpectedSize() {
         // given
         int expectedSize = 1;
+        String district = "";
         Predicate predicate = QWaste.waste.title.equalsIgnoreCase("title");
         Pageable pageable = PageRequest.of(0, 6);
-        given(wasteRepository.findAll(anyString(), any(Predicate.class), any(Pageable.class)))
+        given(wasteRepository.findAll(eq(district), eq(predicate), eq(pageable)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createWaste())));
         // when
-        Page<WasteResponse> wastes = wasteService.getWastes("", predicate, pageable);
+        Page<WasteResponse> wastes = wasteService.getWastes(district, predicate, pageable);
         // then
         assertThat(wastes.getSize()).isEqualTo(expectedSize);
     }
@@ -126,7 +127,7 @@ class WasteServiceTest {
     void given_wasteId_when_then_deleteWasteAndFile() {
         // given
         Long wasteId = 1L;
-        willDoNothing().given(wasteRepository).deleteById(anyLong());
+        willDoNothing().given(wasteRepository).deleteById(eq(wasteId));
         // when
         wasteService.deleteWaste(wasteId);
         // then
@@ -139,7 +140,7 @@ class WasteServiceTest {
         Long memberId = 1L;
         int expectedSize = 1;
         Pageable pageable = PageRequest.of(0, 10);
-        given(wasteLikeRepository.findAllByMember_Id(anyLong(), any(Pageable.class)))
+        given(wasteLikeRepository.findAllByMember_Id(eq(memberId), eq(pageable)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createWasteLike())));
         // when
         Page<WasteResponse> wastes = wasteService.getLikedWastes(memberId, pageable);

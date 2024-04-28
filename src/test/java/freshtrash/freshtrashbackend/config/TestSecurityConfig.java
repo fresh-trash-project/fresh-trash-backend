@@ -39,6 +39,6 @@ public class TestSecurityConfig {
     }
 
     private Member createMember(String email) {
-        return Fixture.createMember(email, "pw", "test", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
+        return Fixture.createMember(123L, email, "pw", "testUser", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
     }
 }
