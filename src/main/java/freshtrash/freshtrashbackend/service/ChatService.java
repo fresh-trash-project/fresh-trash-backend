@@ -18,7 +18,9 @@ import java.util.List;
 public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
 
-    // TODO: 메소드 네이밍 수정
+    /**
+     * wasteId에 해당하며 전달받은 SellStatus가 아닌 채팅방들을 조회
+     */
     public List<ChatRoom> getChatRoomsByWasteId(Long wasteId, SellStatus sellStatus) {
         return chatRoomRepository.findByWaste_IdAndSellStatusNot(wasteId, sellStatus);
     }
