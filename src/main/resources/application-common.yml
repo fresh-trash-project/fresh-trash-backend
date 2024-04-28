@@ -12,3 +12,11 @@ spring:
       hibernate:
         format_sql: true
         metadata_builder_contributor: freshtrash.freshtrashbackend.config.JSONMetadataBuilderContributor
+  rabbitmq:
+    port: ${AMQP_PORT}
+    host: ${AMQP_HOST}
+    username: ${AMQP_USER}
+    password: ${AMQP_PASS}
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}

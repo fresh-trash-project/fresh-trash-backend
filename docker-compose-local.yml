@@ -1,12 +1,23 @@
-version: "1"
+version: "3.8"
 services:
   fresh-trash-rabbitmq:
     container_name: fresh-trash-rabbitmq
     build:
       dockerfile: Dockerfile
       context: ./rabbitmq
-    image: rabbitmq:3
+    healthcheck:
+      # https://www.rabbitmq.com/docs/monitoring#health-checks
+      test: rabbitmq-diagnostics -q ping
+      interval: 40s
+      timeout: 30s
+      retries: 3
+      start_period: 60s
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
+      - RABBITMQ_DEFAULT_PASS=${AMQP_PASS}
     ports:
+      - "15672:15672"
       - "5672:5672"
     networks:
       - docker_app
@@ -16,10 +27,47 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./nginx
+    depends_on:
+      - api
     ports:
       - "8080:8080"
     extra_hosts:
       - "host.docker,internal:host-gateway"
+    networks:
+      - docker_app
+  api:
+    image: api:0.1
+    container_name: api
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    depends_on:
+      fresh-trash-rabbitmq:
+        condition: service_healthy
+    environment:
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - LOCAL_FILE_ABS_PATH=${LOCAL_FILE_ABS_PATH}
+      - TOKEN_SECRET_KEY=${TOKEN_SECRET_KEY}
+      - TOKEN_ACCESS_EXPIRED_MS=${TOKEN_ACCESS_EXPIRED_MS}
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET}
+      - NAVER_OAUTH_CLIENT_ID=${NAVER_OAUTH_CLIENT_ID}
+      - NAVER_OAUTH_CLIENT_SECRET=${NAVER_OAUTH_CLIENT_SECRET}
+      - KAKAO_OAUTH_CLIENT_ID=${KAKAO_OAUTH_CLIENT_ID}
+      - KAKAO_OAUTH_CLIENT_SECRET=${KAKAO_OAUTH_CLIENT_SECRET}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - API_KEY=${API_KEY}
+      - AMQP_PORT=${AMQP_PORT}
+      - AMQP_HOST=${AMQP_HOST}
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASS=${AMQP_PASS}
+    ports:
+      - "80:80"
     networks:
       - docker_app
 
