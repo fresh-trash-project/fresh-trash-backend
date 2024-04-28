@@ -103,7 +103,6 @@ public class AlarmService {
      * SSE 연결 요청
      */
     public SseEmitter connectAlarm(Long memberId) {
-        // 이전에 생성한 SseEmitter가 없을 경우 새로 생성
         log.debug("connect alarm");
         SseEmitter sseEmitter = new SseEmitter(SSE_TIMEOUT);
         emitterRepository.save(memberId, sseEmitter);
