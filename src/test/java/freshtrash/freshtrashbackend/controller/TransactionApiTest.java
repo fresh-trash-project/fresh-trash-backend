@@ -1,9 +1,7 @@
 package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.config.RabbitMQConfig;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.constants.BookingStatus;
 import freshtrash.freshtrashbackend.dto.constants.TransactionMemberType;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
@@ -13,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.ArgumentCaptor;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -72,12 +69,7 @@ class TransactionApiTest {
                 .completeTransaction(eq(wasteId), eq(chatRoomId), eq(sellerId), eq(buyerId), eq(SellStatus.CLOSE));
         given(chatRoomService.getChatRoomsByWasteId(eq(wasteId), eq(SellStatus.CLOSE)))
                 .willReturn(List.of(Fixture.createChatRoom(wasteId, sellerId, notBuyerId, true, SellStatus.ONGOING)));
-        willDoNothing()
-                .given(rabbitTemplate)
-                .convertAndSend(
-                        anyString(),
-                        anyString(),
-                        any(Message.class));
+        willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
         // when
         mvc.perform(post("/api/v1/transactions/" + wasteId + "/chats/" + chatRoomId))
                 .andExpect(status().isOk());
@@ -104,54 +96,18 @@ class TransactionApiTest {
     }
 
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    @DisplayName("예약 신청")
+    @DisplayName("예약중")
     @Test
-    void given_wasteIdAndChatRoomIdAndLoginUser_when_userIsBuyer_then_sendAlarmsToSeller() throws Exception {
+    void given_chatRoomId_when_then_updateSellStatusAndSendAlarmsToSeller() throws Exception {
         // given
-        Long wasteId = 1L;
         Long chatRoomId = 5L;
-        Long sellerId = 3L;
-        Long buyerId = 123L;
-        given(chatRoomService.getChatRoom(eq(chatRoomId)))
-                .willReturn(Fixture.createChatRoom(wasteId, sellerId, buyerId, true, SellStatus.ONGOING));
+
+        given(chatRoomService.getChatRoom(eq(chatRoomId))).willReturn(Fixture.createChatRoom());
+        willDoNothing().given(transactionService).updateSellStatus(eq(1L), eq(chatRoomId), eq(SellStatus.BOOKING));
         willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
 
         // when
-        mvc.perform(post("/api/v1/transactions/" + wasteId + "/chats/" + chatRoomId + "/booking"))
-                .andExpect(status().isOk());
-        // then
-    }
-
-    @DisplayName("예약 신청 응답 - 승낙")
-    @Test
-    void given_wasteIdAndChatRoomIdAndBookingStatus_when_bookingAccept_then_updateSellStatusAndsendAlarmToBuyer()
-            throws Exception {
-        // given
-        Long wasteId = 2L;
-        Long chatRoomId = 4L;
-        given(chatRoomService.getChatRoom(anyLong()))
-                .willReturn(Fixture.createChatRoom(wasteId, 2L, 3L, true, SellStatus.ONGOING));
-        willDoNothing().given(transactionService).updateSellStatus(anyLong(), anyLong(), eq(SellStatus.BOOKING));
-        willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
-        // when
-        mvc.perform(post("/api/v1/transactions/" + wasteId + "/chats/" + chatRoomId)
-                        .queryParam("bookingStatus", BookingStatus.ACCEPT.name()))
-                .andExpect(status().isOk());
-        // then
-    }
-
-    @DisplayName("예약 신청 응답 - 거절")
-    @Test
-    void given_wasteIdAndChatRoomIdAndBookingStatus_when_bookingDecline_then_sendAlarmToBuyer() throws Exception {
-        // given
-        Long wasteId = 1L;
-        Long chatRoomId = 5L;
-        given(chatRoomService.getChatRoom(anyLong()))
-                .willReturn(Fixture.createChatRoom(wasteId, 1L, 2L, true, SellStatus.ONGOING));
-        willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
-        // when
-        mvc.perform(post("/api/v1/transactions/" + wasteId + "/chats/" + chatRoomId)
-                        .queryParam("bookingStatus", BookingStatus.DECLINE.name()))
+        mvc.perform(post("/api/v1/transactions/chats/" + chatRoomId + "/booking"))
                 .andExpect(status().isOk());
         // then
     }
