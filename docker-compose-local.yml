@@ -9,8 +9,20 @@ services:
     ports:
       - "5672:5672"
     networks:
-      - docker-redis
+      - docker_app
+  fresh-trash-nginx:
+    image: fresh-trash-nginx:0.1
+    container_name: fresh-trash-nginx
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker,internal:host-gateway"
+    networks:
+      - docker_app
 
 networks:
-  docker-redis:
+  docker_app:
     driver: bridge

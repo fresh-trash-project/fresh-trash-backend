@@ -11,11 +11,10 @@ spring:
           auth: true
           timeout: 5000
           starttls.enable: true
-
   data:
     redis:
-      host: 127.0.0.1
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
 validation:
   api-key: ${API_KEY}

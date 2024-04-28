@@ -103,21 +103,25 @@ public class AlarmService {
      * SSE 연결 요청
      */
     public SseEmitter connectAlarm(Long memberId) {
-        // 이전에 생성한 SseEmitter가 없을 경우 새로 생성
-        SseEmitter sseEmitter = emitterRepository.findByMemberId(memberId).orElseGet(() -> {
-            SseEmitter newSseEmitter = new SseEmitter(SSE_TIMEOUT);
-            emitterRepository.save(memberId, newSseEmitter);
-            newSseEmitter.onCompletion(() -> emitterRepository.deleteByMemberId(memberId));
-            newSseEmitter.onTimeout(() -> emitterRepository.deleteByMemberId(memberId));
-            newSseEmitter.onError((e) -> {
-                emitterRepository.deleteByMemberId(memberId);
-                log.error("SseEmitter Error: ", e);
-            });
-            return newSseEmitter;
+        log.debug("connect alarm");
+        SseEmitter sseEmitter = new SseEmitter(SSE_TIMEOUT);
+        emitterRepository.save(memberId, sseEmitter);
+        sseEmitter.onCompletion(() -> {
+            emitterRepository.deleteByMemberId(memberId);
+            log.debug("SseEmitter Complete!");
+        });
+        sseEmitter.onTimeout(() -> {
+            emitterRepository.deleteByMemberId(memberId);
+            log.debug("SseEmitter Timeout!");
+        });
+        sseEmitter.onError((e) -> {
+            emitterRepository.deleteByMemberId(memberId);
+            log.error("SseEmitter Error: ", e);
         });
 
         try {
             // 처음 SSE 연결 후 아무런 이벤트도 보내지 않으면 재연결 요청을 보낼때나 연결 요청 자체에서 에러가 발생합니다. 따라서 임의로 데이터를 전송합니다.
+            log.debug("send connected alarm");
             sseEmitter.send(SseEmitter.event().id("").name(CONNECTED_ALARM_NAME).data("connect completed"));
         } catch (IOException e) {
             throw new AlarmException(ErrorCode.ALARM_CONNECT_ERROR, e);
