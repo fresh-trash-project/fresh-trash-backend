@@ -19,10 +19,10 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     List<ChatRoom> findByWaste_IdAndSellStatusNot(Long wasteId, SellStatus sellStatus);
 
-    @EntityGraph(attributePaths = {"buyer", "seller", "chatMessages"})
+    @EntityGraph(attributePaths = {"waste", "buyer", "seller", "chatMessages"})
     Optional<ChatRoom> findById(Long chatRoomId);
 
-    @EntityGraph(attributePaths = {"buyer", "seller"})
+    @EntityGraph(attributePaths = {"waste", "buyer", "seller"})
     @Query("select cr from ChatRoom cr where cr.buyerId = ?1 or cr.sellerId = ?1")
     Page<ChatRoom> findAllBySeller_IdOrBuyer_Id(Long memberId, Pageable pageable);
 

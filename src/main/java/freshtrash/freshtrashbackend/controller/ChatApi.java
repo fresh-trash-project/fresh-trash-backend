@@ -5,6 +5,7 @@ import freshtrash.freshtrashbackend.dto.response.ChatRoomWithMessagesResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.Member;
+import freshtrash.freshtrashbackend.entity.Waste;
 import freshtrash.freshtrashbackend.exception.ChatException;
 import freshtrash.freshtrashbackend.exception.ChatRoomException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -48,13 +49,14 @@ public class ChatApi {
     @PostMapping
     public ResponseEntity<ChatRoomResponse> handleChatRoomRequest(
             @PathVariable Long wasteId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        Member seller = wasteService.getSeller(wasteId);
+        Waste waste = wasteService.getWaste(wasteId);
+        Member seller = waste.getMember();
         checkIfSellerOfWaste(memberPrincipal.id(), seller.getId());
 
         ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(seller.getId(), memberPrincipal.id(), wasteId);
 
         ChatRoomResponse response =
-                ChatRoomResponse.fromEntity(chatRoom, seller.getNickname(), memberPrincipal.nickname());
+                ChatRoomResponse.fromEntity(chatRoom, waste.getTitle(), seller.getNickname(), memberPrincipal.nickname());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

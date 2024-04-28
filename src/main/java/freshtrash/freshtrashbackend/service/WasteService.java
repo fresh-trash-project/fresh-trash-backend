@@ -39,10 +39,6 @@ public class WasteService {
         return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
     }
 
-    public Member getSeller(Long wasteId) {
-        return wasteRepository.findSellerById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
-    }
-
     public Page<WasteResponse> getWastes(String district, Predicate predicate, Pageable pageable) {
         return wasteRepository.findAll(district, predicate, pageable).map(WasteResponse::fromEntity);
     }
