@@ -45,7 +45,7 @@ class AlarmServiceTest {
         Long memberId = 1L;
         int expectedSize = 1;
         Pageable pageable = PageRequest.of(0, 10);
-        given(alarmRepository.findAllByMember_IdAndReadAtIsNull(anyLong(), any(Pageable.class)))
+        given(alarmRepository.findAllByMember_IdAndReadAtIsNull(eq(memberId), eq(pageable)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createAlarm())));
         // when
         Page<AlarmResponse> alarms = alarmService.getAlarms(memberId, pageable);
@@ -58,7 +58,7 @@ class AlarmServiceTest {
     void given_alarmId_when_readAlarm_then_updateReadAtToNow() {
         // given
         Long alarmId = 1L;
-        willDoNothing().given(alarmRepository).updateReadAtById(anyLong());
+        willDoNothing().given(alarmRepository).updateReadAtById(eq(alarmId));
         // when
         alarmService.readAlarm(alarmId);
         // then

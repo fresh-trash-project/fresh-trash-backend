@@ -21,14 +21,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class ChatServiceTest {
+class ChatRoomServiceTest {
     @InjectMocks
-    private ChatService chatService;
+    private ChatRoomService chatRoomService;
 
     @Mock
     private ChatRoomRepository chatRoomRepository;
@@ -40,10 +39,10 @@ class ChatServiceTest {
         Long wasteId = 1L;
         SellStatus sellStatus = SellStatus.CLOSE;
         int expectedSize = 1;
-        given(chatRoomRepository.findByWaste_IdAndSellStatusNot(anyLong(), any(SellStatus.class)))
+        given(chatRoomRepository.findByWaste_IdAndSellStatusNot(eq(wasteId), eq(sellStatus)))
                 .willReturn(List.of(Fixture.createChatRoom()));
         // when
-        List<ChatRoom> chatRooms = chatService.getChatRoomsByWasteId(wasteId, sellStatus);
+        List<ChatRoom> chatRooms = chatRoomService.getChatRoomsByWasteId(wasteId, sellStatus);
         // then
         Assertions.assertThat(chatRooms.size()).isEqualTo(expectedSize);
     }
@@ -55,10 +54,10 @@ class ChatServiceTest {
         Long memberId = 1L;
         int expectedSize = 1;
         Pageable pageable = PageRequest.of(0, 10);
-        given(chatRoomRepository.findAllBySeller_IdOrBuyer_Id(anyLong(), any(Pageable.class)))
+        given(chatRoomRepository.findAllBySeller_IdOrBuyer_Id(eq(memberId), eq(pageable)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createChatRoom())));
         // when
-        Page<ChatRoomResponse> chatRooms = chatService.getChatRoomsWithMemberId(memberId, pageable);
+        Page<ChatRoomResponse> chatRooms = chatRoomService.getChatRoomsWithMemberId(memberId, pageable);
         // then
         assertThat(chatRooms.getSize()).isEqualTo(expectedSize);
     }
@@ -68,9 +67,9 @@ class ChatServiceTest {
     void given_chatRoomId_when_getChatRoom_then_returnChatRoom() {
         // given
         Long chatRoomId = 1L;
-        given(chatRoomRepository.findById(anyLong())).willReturn(Optional.of(Fixture.createChatRoom()));
+        given(chatRoomRepository.findById(eq(chatRoomId))).willReturn(Optional.of(Fixture.createChatRoom()));
         // when
-        ChatRoom chatRoom = chatService.getChatRoom(chatRoomId);
+        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
         // then
         assertThat(chatRoom).isNotNull();
     }

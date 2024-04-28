@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,8 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
@@ -42,7 +42,9 @@ class AlarmApiTest {
     @Test
     void given_loginUserAndPageable_when_then_getPagingNotis() throws Exception {
         // given
-        given(alarmService.getAlarms(anyLong(), any(Pageable.class)))
+        Long memberId = 123L;
+        Pageable pageable = PageRequest.of(0, 10);
+        given(alarmService.getAlarms(eq(memberId), eq(pageable)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createAlarm().toResponse())));
         // when
         mvc.perform(get("/api/v1/notis"))
@@ -56,8 +58,9 @@ class AlarmApiTest {
     @Test
     void given_loginUser_when_connectSse_then_returnSseEmitter() throws Exception {
         // given
+        Long memberId = 123L;
         SseEmitter sseEmitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
-        given(alarmService.connectAlarm(anyLong())).willReturn(sseEmitter);
+        given(alarmService.connectAlarm(eq(memberId))).willReturn(sseEmitter);
         // when
         mvc.perform(get("/api/v1/notis/subscribe")).andExpect(status().isOk());
         // then
@@ -69,8 +72,9 @@ class AlarmApiTest {
     void given_alarmIdAndLoginUser_when_loginUserIsOwnerOfAlarm_then_readAlarm() throws Exception {
         //given
         Long alarmId = 1L;
-        given(alarmService.isOwnerOfAlarm(anyLong(), anyLong())).willReturn(true);
-        willDoNothing().given(alarmService).readAlarm(anyLong());
+        Long memberId = 123L;
+        given(alarmService.isOwnerOfAlarm(eq(alarmId), eq(memberId))).willReturn(true);
+        willDoNothing().given(alarmService).readAlarm(eq(alarmId));
         //when
         mvc.perform(put("/api/v1/notis/" + alarmId))
                 .andExpect(status().isOk());

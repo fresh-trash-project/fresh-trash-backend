@@ -10,7 +10,6 @@ import freshtrash.freshtrashbackend.exception.ChatException;
 import freshtrash.freshtrashbackend.exception.ChatRoomException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
-import freshtrash.freshtrashbackend.service.ChatService;
 import freshtrash.freshtrashbackend.service.WasteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,14 +24,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/wastes/{wasteId}/chats")
 @RequiredArgsConstructor
 public class ChatApi {
-    private final ChatService chatService;
     private final ChatRoomService chatRoomService;
     private final WasteService wasteService;
 
     @GetMapping
     public ResponseEntity<Page<ChatRoomResponse>> getChatRooms(
             @PageableDefault Pageable pageable, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        return ResponseEntity.ok(chatService.getChatRoomsWithMemberId(memberPrincipal.id(), pageable));
+        return ResponseEntity.ok(chatRoomService.getChatRoomsWithMemberId(memberPrincipal.id(), pageable));
     }
 
     @GetMapping("/{chatRoomId}")
@@ -40,7 +38,7 @@ public class ChatApi {
             @PathVariable Long chatRoomId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 
         checkIfSellerOrBuyerOfChatRoom(chatRoomId, memberPrincipal.id());
-        return ResponseEntity.ok(ChatRoomWithMessagesResponse.fromEntity(chatService.getChatRoom(chatRoomId)));
+        return ResponseEntity.ok(ChatRoomWithMessagesResponse.fromEntity(chatRoomService.getChatRoom(chatRoomId)));
     }
 
     /**
@@ -65,7 +63,7 @@ public class ChatApi {
      * 판매자 또는 구매자만이 대상 채팅방을 조회할 수 있습니다
      */
     private void checkIfSellerOrBuyerOfChatRoom(Long chatRoomId, Long memberId) {
-        if (!chatService.isSellerOrBuyerOfChatRoom(chatRoomId, memberId))
+        if (!chatRoomService.isSellerOrBuyerOfChatRoom(chatRoomId, memberId))
             throw new ChatException(ErrorCode.FORBIDDEN_CHAT_ROOM);
     }
 
