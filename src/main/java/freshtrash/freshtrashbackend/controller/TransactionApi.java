@@ -113,10 +113,9 @@ public class TransactionApi {
     public ResponseEntity<ApiResponse<Integer>> flagMember(
             @PathVariable Long chatRoomId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
-        Long targetId = chatRoom.getSellerId();
-        if (Objects.equals(memberPrincipal.id(), chatRoom.getSellerId())) {
-            targetId = chatRoom.getBuyerId();
-        }
+        Long targetId = Objects.equals(memberPrincipal.id(), chatRoom.getSellerId())
+                ? chatRoom.getBuyerId()
+                : chatRoom.getSellerId();
 
         // flag_count + 1
         int flagCount = memberService.updateFlagCount(targetId).flagCount();
