@@ -99,4 +99,11 @@ public class MailService {
             throw new MailException(ErrorCode.MAIL_VALIDATION_FAIL, e);
         }
     }
+
+    @Async
+    public void sendMailWithTemporaryPassword(String email, String temporaryPassword) {
+        String text = "fresh-trash 임시 비밀번호 입니다. <br/>임시 비밀번호: " + temporaryPassword;
+        String subject = "fresh-trash 임시 비밀번호 안내";
+        sendMail(email, subject, text);
+    }
 }

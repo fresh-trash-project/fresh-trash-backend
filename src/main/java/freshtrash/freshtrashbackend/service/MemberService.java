@@ -148,6 +148,12 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
+    public void updatePassword(String email, String temporaryPassword) {
+        Member member = getMemberByEmail(email);
+        member.setPassword(encoder.encode(temporaryPassword));
+        memberRepository.save(member);
+    }
+
     /**
      * 비밀번호 일치 확인
      * @param inputPassword 입력한 비밀번호

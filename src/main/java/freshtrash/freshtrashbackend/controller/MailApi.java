@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.dto.request.EmailRequest;
 import freshtrash.freshtrashbackend.dto.response.EmailResponse;
 import freshtrash.freshtrashbackend.service.MailService;
 import freshtrash.freshtrashbackend.service.MemberService;
+import freshtrash.freshtrashbackend.utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,17 @@ public class MailApi {
     public ResponseEntity<Void> verifyEmail(@RequestBody @Valid EmailRequest request) {
         mailService.verifyEmailCode(request.email(), request.code());
 
+        return ResponseEntity.ok(null);
+    }
+
+    /**
+     * 임시 비밀번호 전송
+     */
+    @PostMapping("/find-pass")
+    public ResponseEntity<Void> sendTemporaryPassword(@RequestBody @Valid EmailRequest request) {
+        String temporaryPassword = PasswordGenerator.generateTemporaryPassword();
+        memberService.updatePassword(request.email(), temporaryPassword);
+        mailService.sendMailWithTemporaryPassword(request.email(), temporaryPassword);
         return ResponseEntity.ok(null);
     }
 }
