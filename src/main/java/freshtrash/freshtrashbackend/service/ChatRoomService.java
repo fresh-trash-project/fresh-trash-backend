@@ -54,4 +54,8 @@ public class ChatRoomService {
     public boolean isSellerOrBuyerOfChatRoom(Long chatRoomId, Long memberId) {
         return chatRoomRepository.existsByIdAndMemberId(chatRoomId, memberId);
     }
+
+    public void closeChatRoom(Long chatRoomId) {
+        chatRoomRepository.updateOpenOrClose(chatRoomId);
+    }
 }

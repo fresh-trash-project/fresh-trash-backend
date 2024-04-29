@@ -53,10 +53,20 @@ public class ChatApi {
 
         ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(seller.getId(), memberPrincipal.id(), wasteId);
 
-        ChatRoomResponse response =
-                ChatRoomResponse.fromEntity(chatRoom, waste.getTitle(), seller.getNickname(), memberPrincipal.nickname());
+        ChatRoomResponse response = ChatRoomResponse.fromEntity(
+                chatRoom, waste.getTitle(), seller.getNickname(), memberPrincipal.nickname());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * 채팅 나가기
+     */
+    @PutMapping("/{chatRoomId}")
+    public ResponseEntity<Void> closeChatRoom(
+            @PathVariable Long chatRoomId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        chatRoomService.closeChatRoom(chatRoomId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     /**
