@@ -23,7 +23,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     Optional<ChatRoom> findById(Long chatRoomId);
 
     @EntityGraph(attributePaths = {"waste", "buyer", "seller"})
-    @Query("select cr from ChatRoom cr where cr.buyerId = ?1 or cr.sellerId = ?1 and (cr.openOrClose = true)")
+    @Query("select cr from ChatRoom cr where (cr.buyerId = ?1 or cr.sellerId = ?1) and cr.openOrClose = true")
     Page<ChatRoom> findAllBySeller_IdOrBuyer_Id(Long memberId, Pageable pageable);
 
     @Query("select (cr is not null) from ChatRoom cr where cr.id = ?1 and (cr.buyerId = ?2 or cr.sellerId = ?2)")
