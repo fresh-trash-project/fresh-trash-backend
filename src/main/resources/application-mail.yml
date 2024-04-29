@@ -12,10 +12,5 @@ spring:
           timeout: 5000
           starttls.enable: true
 
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
-
 validation:
   api-key: ${API_KEY}
