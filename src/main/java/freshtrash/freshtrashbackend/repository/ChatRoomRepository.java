@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.repository;
 
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
+import freshtrash.freshtrashbackend.repository.projections.BuyerIdSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -18,6 +19,8 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     List<ChatRoom> findByWaste_IdAndSellStatusNot(Long wasteId, SellStatus sellStatus);
+
+    List<BuyerIdSummary> findBuyer_IdByWaste_IdAndBuyer_IdNot(Long wasteId, Long buyerId);
 
     @EntityGraph(attributePaths = {"waste", "buyer", "seller", "chatMessages"})
     Optional<ChatRoom> findById(Long chatRoomId);
