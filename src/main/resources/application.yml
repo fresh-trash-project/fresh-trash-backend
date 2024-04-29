@@ -11,6 +11,11 @@ spring:
         - file
         - mail
         - security
+      prod:
+        - common
+        - file
+        - mail
+        - security
 
 ---
 
@@ -39,3 +44,10 @@ spring:
     open-in-view: false
   sql.init.mode: always
 
+---
+
+spring:
+  config.activate.on-profile: prod
+  jpa:
+    hibernate:
+      ddl-auto: validate
