@@ -2,7 +2,7 @@ insert into members(email, password, rating, nickname, address, file_name, login
                     created_at, modified_at)
 values ('abc@never.com', '$2a$10$ZskRs64yZZU9g6blmNdZte7FO6KaMduwlZhk7YkxJX2ZwYLSrPfA.', 5, 'abc',
         json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
-        'test.png', 'GOOGLE', 'USER', 'ACTIVE', now(), null),
+        'test.png', 'OAUTH', 'USER', 'ACTIVE', now(), null),
        ('def@never.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 4, 'def',
         null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null),
        ('user123@never.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 3, 'user123',
