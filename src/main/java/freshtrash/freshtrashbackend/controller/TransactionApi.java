@@ -89,7 +89,7 @@ public class TransactionApi {
      * 판매상태 변경(예약중, 판매중) - 판매자가 변경
      */
     @PostMapping("/chats/{chatRoomId}/status")
-    public ResponseEntity<Void> updateBooking(@PathVariable Long chatRoomId, @RequestParam SellStatus sellStatus) {
+    public ResponseEntity<Void> updateSellStatus(@PathVariable Long chatRoomId, @RequestParam SellStatus sellStatus) {
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
         transactionService.updateSellStatus(chatRoom.getWasteId(), chatRoomId, sellStatus);
         if (sellStatus == SellStatus.BOOKING) {
@@ -103,7 +103,7 @@ public class TransactionApi {
                     .alarmType(AlarmType.TRANSACTION)
                     .build());
         } else if (sellStatus == SellStatus.ONGOING) {
-            // 해당 폐기물에 채팅요청했던 다른 구매자들에게 판매중 알림 보내기
+            // 해당 폐기물에 채팅요청했던 다른 구매자들에게 판매중 알림 보내기(현재 채팅방 구매자는 제외)
             chatRoomService
                     .getBuyerIdByWasteId(chatRoom.getWasteId(), chatRoom.getBuyerId())
                     .forEach(buyerIdSummary -> {
