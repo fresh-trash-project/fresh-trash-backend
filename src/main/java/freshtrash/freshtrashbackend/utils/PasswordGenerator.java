@@ -1,12 +1,15 @@
 package freshtrash.freshtrashbackend.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PasswordGenerator {
-
     // 영어 소문자, 숫자, 특수문자를 포함한 모든 문자들
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
 
