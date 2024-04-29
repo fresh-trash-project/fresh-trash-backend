@@ -49,11 +49,11 @@ public class MemberService {
     /**
      * 회원 가입
      */
-    public void registerMember(Member member) {
+    public Member registerMember(Member member) {
         checkEmailDuplication(member.getEmail());
         checkNicknameDuplication(member.getNickname());
         member.setPassword(encoder.encode(member.getPassword()));
-        memberRepository.save(member);
+        return memberRepository.save(member);
     }
 
     /**
