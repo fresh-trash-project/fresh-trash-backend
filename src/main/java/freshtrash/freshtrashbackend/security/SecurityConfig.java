@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .regexMatchers(
                                 "/oauth2.*", ".*auth/signup", ".*auth/signin", ".*auth/check-nickname", ".*mail.*")
                         .hasAnyRole("ANONYMOUS")
-                        .regexMatchers(".*wastes")
+                        .regexMatchers(".*wastes", "/chat-ws")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
