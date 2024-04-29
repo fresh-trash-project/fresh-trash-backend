@@ -10,6 +10,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @Component
@@ -39,7 +41,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     }
 
     private void addCookie(HttpServletResponse response, String cookieName, String cookieValue) {
-        Cookie cookie = new Cookie(cookieName, cookieValue);
+        Cookie cookie = new Cookie(cookieName, URLEncoder.encode(cookieValue, StandardCharsets.UTF_8));
         cookie.setMaxAge(COOKIE_MAX_AGE);
         cookie.setPath("/");
         response.addCookie(cookie);
