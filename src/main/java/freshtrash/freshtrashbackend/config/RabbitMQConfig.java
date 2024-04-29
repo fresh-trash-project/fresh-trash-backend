@@ -13,6 +13,7 @@ public class RabbitMQConfig {
     public static final String MEMBER_ID_KEY = "memberId";
     public static final String FROM_MEMBER_ID_KEY = "fromMemberId";
     public static final String WASTE_TRANSACTION_ROUTING_KEY = "waste.transaction";
+    public static final String ALARM_TYPE = "alarmType";
     private static final String directExchangeName = "waste-direct-exchange";
 
     private static final String WASTE_QUEUE = "waste-queue";

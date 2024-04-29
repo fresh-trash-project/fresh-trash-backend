@@ -48,6 +48,9 @@ public class Member extends AuditingAt {
     @Column
     private String fileName;
 
+    @Column
+    private int flagCount;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LoginType loginType;

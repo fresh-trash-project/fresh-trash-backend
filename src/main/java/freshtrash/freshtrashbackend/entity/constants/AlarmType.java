@@ -6,5 +6,6 @@ public enum AlarmType {
     BIDDING,
     PAY,
     RECEIVE,
-    NOT_PAY
+    NOT_PAY,
+    FLAG
 }

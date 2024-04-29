@@ -9,6 +9,7 @@ import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.MemberCacheRepository;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
+import freshtrash.freshtrashbackend.repository.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
@@ -29,6 +30,7 @@ public class MemberService {
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
     private final FileService fileService;
+    private final int FLAG_LIMIT = 10;
 
     public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
@@ -60,6 +62,12 @@ public class MemberService {
     public LoginResponse signIn(String email, String password) {
         Member member = getMemberByEmail(email);
         checkPassword(password, member.getPassword());
+
+        // 신고당한 횟수 10이상 -> 로그인 불가
+        if (member.getFlagCount() >= FLAG_LIMIT) {
+            throw new MemberException(ErrorCode.EXCEED_FLAG_COUNT);
+        }
+
         // 토큰 발급
         String accessToken = tokenProvider.generateAccessToken(member.getId());
         memberCacheRepository.save(MemberPrincipal.fromEntity(member));
@@ -130,6 +138,13 @@ public class MemberService {
     public FileNameSummary findFileNameOfMember(Long memberId) {
         return memberRepository
                 .findFileNameById(memberId)
+                .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
+    }
+
+    public FlagCountSummary updateFlagCount(Long memberId) {
+        memberRepository.updateFlagCount(memberId);
+        return memberRepository
+                .findFlagCountById(memberId)
                 .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
