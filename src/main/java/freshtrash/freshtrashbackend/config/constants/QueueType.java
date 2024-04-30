@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum QueueType {
     WASTE_TRANSACTION_COMPLETE("queue.waste.complete", "waste.transaction.complete"),
     WASTE_CHANGE_SELL_STATUS("queue.waste.changeStatus", "waste.change.sellStatus"),
-    WASTE_TRANSACTION_FLAG("queue.waste.flag", "waste.transaction.flag");
+    WASTE_TRANSACTION_FLAG("queue.waste.flag", "waste.transaction.flag"),
+    CHAT("queue.chat", "chats.#");
 
     private final String name;
     private final String routingKey;
