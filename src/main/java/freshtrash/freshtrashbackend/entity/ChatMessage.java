@@ -27,22 +27,19 @@ public class ChatMessage extends CreatedAt {
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId", insertable = false, updatable = false)
+    @JoinColumn(name = "memberId")
     private Member member;
-
-    @Column(nullable = false)
-    private Long memberId;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
 
-    private ChatMessage(Long chatRoomId, Long memberId, String message) {
+    private ChatMessage(Long chatRoomId, Member member, String message) {
         this.chatRoomId = chatRoomId;
-        this.memberId = memberId;
+        this.member = member;
         this.message = message;
     }
 
-    public static ChatMessage of(Long chatRoomId, Long memberId, String message) {
-        return new ChatMessage(chatRoomId, memberId, message);
+    public static ChatMessage of(Long chatRoomId, Member member, String message) {
+        return new ChatMessage(chatRoomId, member, message);
     }
 }

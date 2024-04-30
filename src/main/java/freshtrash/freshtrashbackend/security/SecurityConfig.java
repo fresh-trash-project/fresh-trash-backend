@@ -21,9 +21,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -32,7 +30,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/imgs/**");
+        return (web) -> web.ignoring().antMatchers("/imgs/**", "/chat/**");
     }
 
     @Bean
