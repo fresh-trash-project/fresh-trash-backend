@@ -61,6 +61,6 @@ public class ChatRoomService {
     }
 
     public List<BuyerIdSummary> getBuyerIdByWasteId(Long wasteId, Long buyerId) {
-        return chatRoomRepository.findBuyer_IdByWaste_IdAndBuyer_IdNot(wasteId, buyerId);
+        return chatRoomRepository.findBuyerIdByWasteIdAndBuyerIdNot(wasteId, buyerId);
     }
 }
