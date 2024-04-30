@@ -4,6 +4,7 @@ spring:
     group:
       local:
         - common
+        - amqp
         - file
         - mail
         - security
@@ -13,6 +14,7 @@ spring:
         - security
       prod:
         - common
+        - amqp
         - file
         - mail
         - security
