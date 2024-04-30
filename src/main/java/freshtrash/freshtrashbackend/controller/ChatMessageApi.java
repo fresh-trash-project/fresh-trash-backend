@@ -20,7 +20,7 @@ public class ChatMessageApi {
      * @param memberId 메시지를 전송한 유저 id
      */
     @MessageMapping("/{chatRoomId}/message/{memberId}")
-    @SendTo("/chat/{chatRoomId}/message")
+    @SendTo("/topic/chats.{chatRoomId}")
     public ChatMessageResponse sendChatMessage(
             @DestinationVariable Long chatRoomId,
             @DestinationVariable Long memberId,

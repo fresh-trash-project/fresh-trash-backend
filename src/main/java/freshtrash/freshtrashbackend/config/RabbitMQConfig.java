@@ -1,10 +1,7 @@
 package freshtrash.freshtrashbackend.config;
 
 import freshtrash.freshtrashbackend.config.constants.QueueType;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -17,6 +14,7 @@ import static freshtrash.freshtrashbackend.config.constants.QueueType.*;
 @Configuration
 public class RabbitMQConfig {
     private static final String directExchangeName = "direct-exchange";
+    private static final String topicExchangeName = "amq.topic";
 
     @Bean
     Queue wasteCompleteQueue() {
@@ -31,6 +29,11 @@ public class RabbitMQConfig {
     @Bean
     Queue wasteChangeStatusQueue() {
         return createQueue(WASTE_CHANGE_SELL_STATUS);
+    }
+
+    @Bean
+    Queue chatQueue() {
+        return createQueue(CHAT);
     }
 
     @Bean
@@ -53,8 +56,18 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Binding topicBinding(Queue chatQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(chatQueue).to(topicExchange).with(CHAT.getRoutingKey());
+    }
+
+    @Bean
     DirectExchange directExchange() {
         return new DirectExchange(directExchangeName);
+    }
+
+    @Bean
+    TopicExchange topicExchange() {
+        return new TopicExchange(topicExchangeName);
     }
 
     @Bean
