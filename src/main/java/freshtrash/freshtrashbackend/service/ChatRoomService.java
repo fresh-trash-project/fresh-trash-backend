@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.exception.ChatException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.ChatRoomRepository;
+import freshtrash.freshtrashbackend.repository.projections.BuyerIdSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,5 +58,9 @@ public class ChatRoomService {
 
     public void closeChatRoom(Long chatRoomId) {
         chatRoomRepository.updateOpenOrClose(chatRoomId);
+    }
+
+    public List<BuyerIdSummary> getBuyerIdByWasteId(Long wasteId, Long buyerId) {
+        return chatRoomRepository.findBuyerIdByWasteIdAndBuyerIdNot(wasteId, buyerId);
     }
 }

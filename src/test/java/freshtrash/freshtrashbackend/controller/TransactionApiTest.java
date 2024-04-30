@@ -4,7 +4,9 @@ import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.dto.constants.TransactionMemberType;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
+import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
+import freshtrash.freshtrashbackend.repository.projections.BuyerIdSummary;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.TransactionService;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +27,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -98,7 +101,7 @@ class TransactionApiTest {
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     @DisplayName("예약중")
     @Test
-    void given_chatRoomId_when_then_updateSellStatusAndSendAlarmsToSeller() throws Exception {
+    void given_chatRoomIdAndBookingStatus_when_then_updateSellStatusAndSendAlarmsToSeller() throws Exception {
         // given
         Long chatRoomId = 5L;
 
@@ -107,7 +110,31 @@ class TransactionApiTest {
         willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
 
         // when
-        mvc.perform(post("/api/v1/transactions/chats/" + chatRoomId + "/booking"))
+        mvc.perform(post("/api/v1/transactions/chats/" + chatRoomId + "/status")
+                        .queryParam("sellStatus", SellStatus.BOOKING.name()))
+                .andExpect(status().isOk());
+        // then
+    }
+
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
+    @DisplayName("판매중")
+    @Test
+    void given_chatRoomIdAndOngoingStatus_when_then_updateSellStatusAndSendAlarmsToSeller() throws Exception {
+        // given
+        Long chatRoomId = 5L;
+        List<BuyerIdSummary> buyerIdSummaries = new ArrayList<>();
+        buyerIdSummaries.add(new BuyerIdSummary(111L));
+        buyerIdSummaries.add(new BuyerIdSummary(222L));
+        ChatRoom chatRoom = Fixture.createChatRoom();
+        given(chatRoomService.getChatRoom(eq(chatRoomId))).willReturn(chatRoom);
+        willDoNothing().given(transactionService).updateSellStatus(eq(1L), eq(chatRoomId), eq(SellStatus.ONGOING));
+        willDoNothing().given(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Message.class));
+
+        // when
+        when(chatRoomService.getBuyerIdByWasteId(chatRoom.getWasteId(), chatRoom.getBuyerId()))
+                .thenReturn(buyerIdSummaries);
+        mvc.perform(post("/api/v1/transactions/chats/" + chatRoomId + "/status")
+                        .queryParam("sellStatus", SellStatus.ONGOING.name()))
                 .andExpect(status().isOk());
         // then
     }

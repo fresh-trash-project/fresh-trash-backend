@@ -86,23 +86,38 @@ public class TransactionApi {
     }
 
     /**
-     * 예약중으로 변경(판매자)
+     * 판매상태 변경(예약중, 판매중) - 판매자가 변경
      */
-    @PostMapping("/chats/{chatRoomId}/booking")
-    public ResponseEntity<Void> updateBooking(@PathVariable Long chatRoomId) {
+    @PostMapping("/chats/{chatRoomId}/status")
+    public ResponseEntity<Void> updateSellStatus(@PathVariable Long chatRoomId, @RequestParam SellStatus sellStatus) {
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
-        String message =
-                String.format(BOOKING_MESSAGE.getMessage(), chatRoom.getSeller().getNickname());
-
-        transactionService.updateSellStatus(chatRoom.getWasteId(), chatRoomId, SellStatus.BOOKING);
-        // 구매자에게 알림 보내기
-        sendWasteTransactionMessage(MessageRequest.builder()
-                .message(message)
-                .wasteId(chatRoom.getWasteId())
-                .memberId(chatRoom.getBuyerId())
-                .fromMemberId(chatRoom.getSellerId())
-                .alarmType(AlarmType.TRANSACTION)
-                .build());
+        transactionService.updateSellStatus(chatRoom.getWasteId(), chatRoomId, sellStatus);
+        if (sellStatus == SellStatus.BOOKING) {
+            // 구매자에게 예약중 알림 보내기
+            sendWasteTransactionMessage(MessageRequest.builder()
+                    .message(String.format(
+                            BOOKING_MESSAGE.getMessage(), chatRoom.getSeller().getNickname()))
+                    .wasteId(chatRoom.getWasteId())
+                    .memberId(chatRoom.getBuyerId())
+                    .fromMemberId(chatRoom.getSellerId())
+                    .alarmType(AlarmType.TRANSACTION)
+                    .build());
+        } else if (sellStatus == SellStatus.ONGOING) {
+            // 해당 폐기물에 채팅요청했던 다른 구매자들에게 판매중 알림 보내기(현재 채팅방 구매자는 제외)
+            chatRoomService
+                    .getBuyerIdByWasteId(chatRoom.getWasteId(), chatRoom.getBuyerId())
+                    .forEach(buyerIdSummary -> {
+                        sendWasteTransactionMessage(MessageRequest.builder()
+                                .message(String.format(
+                                        ONGOING_MESSAGE.getMessage(),
+                                        chatRoom.getSeller().getNickname()))
+                                .wasteId(chatRoom.getWasteId())
+                                .memberId(buyerIdSummary.buyerId())
+                                .fromMemberId(chatRoom.getSellerId())
+                                .alarmType(AlarmType.TRANSACTION)
+                                .build());
+                    });
+        }
 
         return ResponseEntity.ok(null);
     }
