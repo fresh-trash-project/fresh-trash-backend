@@ -1,6 +1,6 @@
 package freshtrash.freshtrashbackend.entity;
 
-import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
+import freshtrash.freshtrashbackend.dto.request.MessageRequest;
 import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
 import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -56,7 +56,12 @@ public class Alarm extends CreatedAt {
         this.memberId = memberId;
     }
 
-    public AlarmResponse toResponse() {
-        return AlarmResponse.of(this.id, this.alarmType, this.alarmArgs, this.message);
+    public static Alarm fromMessageRequest(MessageRequest messageRequest) {
+        return Alarm.builder()
+                .message(messageRequest.message())
+                .memberId(messageRequest.memberId())
+                .alarmType(messageRequest.alarmType())
+                .alarmArgs(AlarmArgs.of(messageRequest.fromMemberId(), messageRequest.wasteId()))
+                .build();
     }
 }

@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.controller;
 
-import freshtrash.freshtrashbackend.config.RabbitMQConfig;
 import freshtrash.freshtrashbackend.dto.constants.TransactionMemberType;
+import freshtrash.freshtrashbackend.dto.events.AlarmEvent;
 import freshtrash.freshtrashbackend.dto.request.MessageRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
@@ -13,10 +13,8 @@ import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.MemberService;
 import freshtrash.freshtrashbackend.service.TransactionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageBuilder;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,18 +24,19 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
+import static freshtrash.freshtrashbackend.config.constants.QueueType.*;
 import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.*;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/transactions")
 @RequiredArgsConstructor
 public class TransactionApi {
-    private final RabbitTemplate rabbitTemplate;
-    private final DirectExchange directExchange;
     private final ChatRoomService chatRoomService;
     private final TransactionService transactionService;
     private final MemberService memberService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @GetMapping
     public ResponseEntity<Page<WasteResponse>> getTransactedWastes(
@@ -51,36 +50,48 @@ public class TransactionApi {
 
     @PostMapping("/{wasteId}/chats/{chatRoomId}")
     public ResponseEntity<Void> completeTransaction(@PathVariable Long wasteId, @PathVariable Long chatRoomId) {
+        log.debug("Start complete transaction...");
         ChatRoom closedChatRoom = chatRoomService.getChatRoom(chatRoomId);
+        log.debug("Get closed chat room.");
         transactionService.completeTransaction(
                 wasteId, chatRoomId, closedChatRoom.getSellerId(), closedChatRoom.getBuyerId(), SellStatus.CLOSE);
+        log.debug("Executed complete transaction service");
 
         // 판매자, 구매자에게 알람 전송
-        sendWasteTransactionMessage(MessageRequest.builder()
-                .message(COMPLETED_SELL_MESSAGE.getMessage())
-                .wasteId(wasteId)
-                .memberId(closedChatRoom.getSellerId())
-                .fromMemberId(closedChatRoom.getBuyerId())
-                .alarmType(AlarmType.TRANSACTION)
-                .build());
-        sendWasteTransactionMessage(MessageRequest.builder()
-                .message(REQUEST_REVIEW_MESSAGE.getMessage())
-                .wasteId(wasteId)
-                .memberId(closedChatRoom.getBuyerId())
-                .fromMemberId(closedChatRoom.getSellerId())
-                .alarmType(AlarmType.TRANSACTION)
-                .build());
+        eventPublisher.publishEvent(AlarmEvent.of(
+                WASTE_TRANSACTION_COMPLETE.getRoutingKey(),
+                MessageRequest.builder()
+                        .message(COMPLETED_SELL_MESSAGE.getMessage())
+                        .wasteId(wasteId)
+                        .memberId(closedChatRoom.getSellerId())
+                        .fromMemberId(closedChatRoom.getBuyerId())
+                        .alarmType(AlarmType.TRANSACTION)
+                        .build()));
+        log.debug("Send message to seller.");
+        eventPublisher.publishEvent(AlarmEvent.of(
+                WASTE_TRANSACTION_COMPLETE.getRoutingKey(),
+                MessageRequest.builder()
+                        .message(REQUEST_REVIEW_MESSAGE.getMessage())
+                        .wasteId(wasteId)
+                        .memberId(closedChatRoom.getBuyerId())
+                        .fromMemberId(closedChatRoom.getSellerId())
+                        .alarmType(AlarmType.TRANSACTION)
+                        .build()));
+        log.debug("Send message to buyer.");
 
         // 구매자가 아닌 사용자들에게 알람 전송
         chatRoomService.getChatRoomsByWasteId(wasteId, SellStatus.CLOSE).forEach(chatRoom -> {
-            sendWasteTransactionMessage(MessageRequest.builder()
-                    .message(COMPLETED_SELL_MESSAGE.getMessage())
-                    .wasteId(wasteId)
-                    .memberId(chatRoom.getBuyerId())
-                    .fromMemberId(chatRoom.getSellerId())
-                    .alarmType(AlarmType.TRANSACTION)
-                    .build());
+            eventPublisher.publishEvent(AlarmEvent.of(
+                    WASTE_TRANSACTION_COMPLETE.getRoutingKey(),
+                    MessageRequest.builder()
+                            .message(COMPLETED_SELL_MESSAGE.getMessage())
+                            .wasteId(wasteId)
+                            .memberId(chatRoom.getBuyerId())
+                            .fromMemberId(chatRoom.getSellerId())
+                            .alarmType(AlarmType.TRANSACTION)
+                            .build()));
         });
+        log.debug("Send message to not buyers.\nEnd complete transaction...");
 
         return ResponseEntity.ok(null);
     }
@@ -94,28 +105,33 @@ public class TransactionApi {
         transactionService.updateSellStatus(chatRoom.getWasteId(), chatRoomId, sellStatus);
         if (sellStatus == SellStatus.BOOKING) {
             // 구매자에게 예약중 알림 보내기
-            sendWasteTransactionMessage(MessageRequest.builder()
-                    .message(String.format(
-                            BOOKING_MESSAGE.getMessage(), chatRoom.getSeller().getNickname()))
-                    .wasteId(chatRoom.getWasteId())
-                    .memberId(chatRoom.getBuyerId())
-                    .fromMemberId(chatRoom.getSellerId())
-                    .alarmType(AlarmType.TRANSACTION)
-                    .build());
+            eventPublisher.publishEvent(AlarmEvent.of(
+                    WASTE_CHANGE_SELL_STATUS.getRoutingKey(),
+                    MessageRequest.builder()
+                            .message(String.format(
+                                    BOOKING_MESSAGE.getMessage(),
+                                    chatRoom.getSeller().getNickname()))
+                            .wasteId(chatRoom.getWasteId())
+                            .memberId(chatRoom.getBuyerId())
+                            .fromMemberId(chatRoom.getSellerId())
+                            .alarmType(AlarmType.TRANSACTION)
+                            .build()));
         } else if (sellStatus == SellStatus.ONGOING) {
             // 해당 폐기물에 채팅요청했던 다른 구매자들에게 판매중 알림 보내기(현재 채팅방 구매자는 제외)
             chatRoomService
                     .getBuyerIdByWasteId(chatRoom.getWasteId(), chatRoom.getBuyerId())
                     .forEach(buyerIdSummary -> {
-                        sendWasteTransactionMessage(MessageRequest.builder()
-                                .message(String.format(
-                                        ONGOING_MESSAGE.getMessage(),
-                                        chatRoom.getSeller().getNickname()))
-                                .wasteId(chatRoom.getWasteId())
-                                .memberId(buyerIdSummary.buyerId())
-                                .fromMemberId(chatRoom.getSellerId())
-                                .alarmType(AlarmType.TRANSACTION)
-                                .build());
+                        eventPublisher.publishEvent(AlarmEvent.of(
+                                WASTE_CHANGE_SELL_STATUS.getRoutingKey(),
+                                MessageRequest.builder()
+                                        .message(String.format(
+                                                ONGOING_MESSAGE.getMessage(),
+                                                chatRoom.getSeller().getNickname()))
+                                        .wasteId(chatRoom.getWasteId())
+                                        .memberId(buyerIdSummary.buyerId())
+                                        .fromMemberId(chatRoom.getSellerId())
+                                        .alarmType(AlarmType.TRANSACTION)
+                                        .build()));
                     });
         }
 
@@ -143,28 +159,16 @@ public class TransactionApi {
             message = EXCEED_FLAG_MESSAGE.getMessage();
         }
         // 신고받은 유저에게 알림 보내기
-        sendWasteTransactionMessage(MessageRequest.builder()
-                .message(message)
-                .wasteId(chatRoom.getWasteId())
-                .memberId(targetId)
-                .fromMemberId(memberPrincipal.id())
-                .alarmType(AlarmType.FLAG)
-                .build());
+        eventPublisher.publishEvent(AlarmEvent.of(
+                WASTE_TRANSACTION_FLAG.getRoutingKey(),
+                MessageRequest.builder()
+                        .message(message)
+                        .wasteId(chatRoom.getWasteId())
+                        .memberId(targetId)
+                        .fromMemberId(memberPrincipal.id())
+                        .alarmType(AlarmType.FLAG)
+                        .build()));
 
         return ResponseEntity.ok(ApiResponse.of(flagCount));
-    }
-
-    private Message buildMessage(MessageRequest messageRequest) {
-        return MessageBuilder.withBody(messageRequest.message().getBytes())
-                .setHeader(RabbitMQConfig.WASTE_ID_KEY, messageRequest.wasteId())
-                .setHeader(RabbitMQConfig.MEMBER_ID_KEY, messageRequest.memberId())
-                .setHeader(RabbitMQConfig.FROM_MEMBER_ID_KEY, messageRequest.fromMemberId())
-                .setHeader(RabbitMQConfig.ALARM_TYPE, messageRequest.alarmType())
-                .build();
-    }
-
-    private void sendWasteTransactionMessage(MessageRequest messageRequest) {
-        rabbitTemplate.convertAndSend(
-                directExchange.getName(), RabbitMQConfig.WASTE_TRANSACTION_ROUTING_KEY, buildMessage(messageRequest));
     }
 }
