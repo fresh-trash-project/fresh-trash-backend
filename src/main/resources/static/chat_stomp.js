@@ -8,6 +8,7 @@ stompClient.onConnect = (frame) => {
     stompClient.subscribe('/chat/1/message', (greeting) => {
         console.log('subscribe: ' + JSON.stringify(greeting.body));
         showGreeting(JSON.parse(greeting.body).message);
+        showGreeting(JSON.parse(greeting.body).sentMemberId);
         showGreeting(JSON.parse(greeting.body).createdAt);
     });
 };
