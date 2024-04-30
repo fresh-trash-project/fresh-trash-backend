@@ -57,7 +57,7 @@ public class SecurityConfig {
                                 PathRequest.toStaticResources().atCommonLocations())
                         .permitAll()
                         .regexMatchers(
-                                "/oauth2.*", ".*auth/signup", ".*auth/signin", ".*auth/check-nickname", ".*mail.*")
+                                "/oauth2.*", ".*auth/signup", ".*auth/signin", ".*auth/check-nickname.*", ".*mail.*")
                         .hasAnyRole("ANONYMOUS")
                         .regexMatchers(".*wastes", "/chat-ws")
                         .permitAll()

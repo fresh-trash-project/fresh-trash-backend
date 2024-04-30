@@ -34,7 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String accessToken = parseBearerToken(request);
         try {
-            if (!StringUtils.hasText(accessToken)) {
+            if (!StringUtils.hasText(accessToken) || accessToken.equals("null")) {
                 filterChain.doFilter(request, response);
                 return;
             }
