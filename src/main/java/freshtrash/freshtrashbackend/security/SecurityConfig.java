@@ -56,10 +56,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
                                 PathRequest.toStaticResources().atCommonLocations())
                         .permitAll()
-                        .regexMatchers(
-                                "/oauth2.*", ".*auth/signup", ".*auth/signin", ".*auth/check-nickname.*", ".*mail.*")
+                        .regexMatchers("/oauth2.*", ".*auth/signup", ".*auth/signin", ".*mail.*")
                         .hasAnyRole("ANONYMOUS")
-                        .regexMatchers(".*wastes", "/chat-ws")
+                        .regexMatchers(".*wastes", "/chat-ws", ".*auth/check-nickname.*")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
