@@ -140,10 +140,10 @@ values (5, 1, 2, now()),
        (20, 1, 2, now());
 
 insert into alarms(member_id, alarm_type, alarm_args, message, created_at, read_at)
-values (1, 'CHAT', json_object('fromMemberId', '2', 'targetId', '1'), '거래 완료되었습니다.', now(), null),
-       (1, 'CHAT', json_object('fromMemberId', '1', 'targetId', '2'), '알람 테스트', now(), null),
-       (1, 'TRANSACTION', json_object('fromMemberId', '3', 'targetId', '1'), '예약 요청이 왔습니다. 수락 또는 거절 해주세요', now(), null),
-       (3, 'TRANSACTION', json_object('fromMemberId', '1', 'targetId', '1'), '예약이 거절되었습니다.', now(), null),
-       (2, 'TRANSACTION', json_object('fromMemberId', '3', 'targetId', '1'), '판매 완료되었습니다.', now(), null),
-       (3, 'TRANSACTION', json_object('fromMemberId', '2', 'targetId', '1'), '판매 완료되었습니다.', now(), null);
+values (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 1), '거래 완료되었습니다.', now(), null),
+       (1, 'CHAT', json_object('fromMemberId', 1, 'targetId', 2), '알람 테스트', now(), null),
+       (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), '예약 요청이 왔습니다. 수락 또는 거절 해주세요', now(), null),
+       (3, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), '예약이 거절되었습니다.', now(), null),
+       (2, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), '판매 완료되었습니다.', now(), null),
+       (3, 'TRANSACTION', json_object('fromMemberId', 2, 'targetId', 1), '판매 완료되었습니다.', now(), null);
 
