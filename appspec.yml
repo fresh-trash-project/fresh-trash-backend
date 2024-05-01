@@ -1,0 +1,19 @@
+# https://docs.aws.amazon.com/ko_kr/codedeploy/latest/userguide/reference-appspec-file-structure.html#server-appspec-structure
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/fresh-trash-backend
+    overwrite: yes
+
+permissions:
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+
+hooks:
+  ApplicationStart:
+    - location: deploy_scripts/deploy_script.sh
+      timeout: 60
+      runas: ubuntu
