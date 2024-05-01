@@ -4,6 +4,7 @@ import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.response.ReviewResponse;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
@@ -138,19 +139,19 @@ public class WasteApi {
      * 폐기물 관심 추가 또는 삭제
      */
     @PostMapping("/{wasteId}/likes")
-    public ResponseEntity<Void> addOrDeleteWasteLike(
+    public ResponseEntity<ApiResponse<Boolean>> addOrDeleteWasteLike(
             @RequestParam LikeStatus likeStatus,
             @PathVariable Long wasteId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfNotWriter(memberPrincipal, wasteId);
-
+        Boolean isLike = likeStatus == LikeStatus.LIKE;
         if (likeStatus == LikeStatus.LIKE) {
             wasteService.addWasteLike(memberPrincipal.id(), wasteId);
         } else if (likeStatus == LikeStatus.UNLIKE) {
             wasteService.deleteWasteLike(memberPrincipal.id(), wasteId);
         }
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.of(isLike));
     }
 
     /**
