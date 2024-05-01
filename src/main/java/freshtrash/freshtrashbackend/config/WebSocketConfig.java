@@ -22,6 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableStompBrokerRelay("/topic")
+                .setRelayHost(rabbitProperties.getHost())
                 .setSystemLogin(rabbitProperties.getUsername())
                 .setSystemPasscode(rabbitProperties.getPassword())
                 .setClientLogin(rabbitProperties.getUsername())
