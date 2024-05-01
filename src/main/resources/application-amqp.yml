@@ -1,6 +1,10 @@
 spring:
   config.activate.on-profile: amqp
   rabbitmq:
+    host: ${AMQP_HOST}
+    port: ${AMQP_PORT}
+    username: ${AMQP_USER}
+    password: ${AMQP_PASS}
     listener:
       simple:
         retry:

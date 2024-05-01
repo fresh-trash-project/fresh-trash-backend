@@ -53,3 +53,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  rabbitmq:
+    ssl:
+      enabled: true

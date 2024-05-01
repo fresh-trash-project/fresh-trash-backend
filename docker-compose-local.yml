@@ -6,6 +6,9 @@ services:
       dockerfile: Dockerfile
       context: ./rabbitmq
     image: fresh-trash-rabbitmq:0.1
+    environment:
+      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
+      - RABBITMQ_DEFAULT_PASS=${AMQP_PASS}
     ports:
       - "15672:15672"
       - "61613:61613"
