@@ -42,7 +42,7 @@ public class AlarmService {
     }
 
     /**
-     * 거래 완료 메시지 전송 Listener
+     * 알람 메시지 전송 Listener
      */
     @RabbitListener(queues = {"#{wasteCompleteQueue.name}", "#{wasteFlagQueue.name}", "#{wasteChangeStatusQueue.name}"})
     public void receiveWasteTransaction(@Payload MessageRequest messageRequest) {
