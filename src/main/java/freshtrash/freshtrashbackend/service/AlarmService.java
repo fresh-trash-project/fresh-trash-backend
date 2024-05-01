@@ -1,6 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
-import freshtrash.freshtrashbackend.config.RabbitMQConfig;
+import freshtrash.freshtrashbackend.dto.request.MessageRequest;
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.entity.Alarm;
 import freshtrash.freshtrashbackend.entity.AlarmArgs;
@@ -11,18 +11,15 @@ import freshtrash.freshtrashbackend.repository.AlarmRepository;
 import freshtrash.freshtrashbackend.repository.EmitterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
 @Service
@@ -41,58 +38,33 @@ public class AlarmService {
     public Page<AlarmResponse> getAlarms(Long memberId, Pageable pageable) {
         return alarmRepository
                 .findAllByMember_IdAndReadAtIsNull(memberId, pageable)
-                .map(Alarm::toResponse);
+                .map(AlarmResponse::fromEntity);
     }
 
     /**
-     * 알람 저장
-     * - 폐기물 거래 완료 알람
-     * @param memberId 알람을 받는 사용자 id
-     * @param targetId 폐기물 id
-     * @param fromMemberId 알람을 보내는 사용자 id
-     * @param alarmType 알람 종류
+     * 알람 메시지 전송 Listener
      */
-    public Alarm saveAlarm(String message, Long memberId, Long targetId, Long fromMemberId, AlarmType alarmType) {
-        return alarmRepository.save(Alarm.builder()
-                .alarmType(alarmType)
-                .alarmArgs(AlarmArgs.of(fromMemberId, targetId))
-                .message(message)
-                .memberId(memberId)
-                .build());
-    }
-
-    /**
-     * 거래 완료 메시지 전송 Listener
-     */
-    @RabbitListener(queues = "#{wasteQueue.name}")
-    public void receiveWasteTransaction(Message message) {
-        MessageProperties messageProperties = message.getMessageProperties();
-        receive(
-                new String(message.getBody(), UTF_8),
-                messageProperties.getHeader(RabbitMQConfig.MEMBER_ID_KEY),
-                messageProperties.getHeader(RabbitMQConfig.WASTE_ID_KEY),
-                messageProperties.getHeader(RabbitMQConfig.FROM_MEMBER_ID_KEY),
-                AlarmType.valueOf(messageProperties.getHeader(RabbitMQConfig.ALARM_TYPE)));
+    @RabbitListener(queues = {"#{wasteCompleteQueue.name}", "#{wasteFlagQueue.name}", "#{wasteChangeStatusQueue.name}"})
+    public void receiveWasteTransaction(@Payload MessageRequest messageRequest) {
+        log.debug("receive complete transaction message: {}", messageRequest);
+        Alarm alarm = saveAlarm(messageRequest);
+        receive(messageRequest.memberId(), AlarmResponse.fromEntity(alarm));
     }
 
     /**
      * SSE 알람 전송
      * @param memberId 알람을 받는 사용자 id
-     * @param targetId 폐기물 id
-     * @param fromMemberId 알람을 보내는 사용자 id
-     * @param alarmType 알람 종류
      */
-    private void receive(String message, Long memberId, Long targetId, Long fromMemberId, AlarmType alarmType) {
-        Alarm alarm = saveAlarm(message, memberId, targetId, fromMemberId, alarmType);
+    private void receive(Long memberId, AlarmResponse alarmResponse) {
         emitterRepository
                 .findByMemberId(memberId)
                 .ifPresentOrElse(
                         sseEmitter -> {
                             try {
                                 sseEmitter.send(SseEmitter.event()
-                                        .id(String.valueOf(alarm.getId()))
+                                        .id(String.valueOf(alarmResponse.id()))
                                         .name(WASTE_TRANSACTION_ALARM_NAME)
-                                        .data(alarm.toResponse()));
+                                        .data(alarmResponse));
                             } catch (IOException e) {
                                 emitterRepository.deleteByMemberId(memberId);
                                 throw new AlarmException(ErrorCode.ALARM_CONNECT_ERROR, e);
@@ -138,5 +110,27 @@ public class AlarmService {
 
     public boolean isOwnerOfAlarm(Long alarmId, Long memberId) {
         return alarmRepository.existsByIdAndMember_Id(alarmId, memberId);
+    }
+
+    private Alarm saveAlarm(MessageRequest messageRequest) {
+        return alarmRepository.save(Alarm.fromMessageRequest(messageRequest));
+    }
+
+    /**
+     * 알람 저장
+     * - 폐기물 거래 완료 알람
+     * @param memberId 알람을 받는 사용자 id
+     * @param targetId 폐기물 id
+     * @param fromMemberId 알람을 보내는 사용자 id
+     * @param alarmType 알람 종류
+     */
+    @Deprecated
+    private Alarm saveAlarm(String message, Long memberId, Long targetId, Long fromMemberId, AlarmType alarmType) {
+        return alarmRepository.save(Alarm.builder()
+                .alarmType(alarmType)
+                .alarmArgs(AlarmArgs.of(fromMemberId, targetId))
+                .message(message)
+                .memberId(memberId)
+                .build());
     }
 }

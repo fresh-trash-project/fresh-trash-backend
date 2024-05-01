@@ -1,0 +1,90 @@
+name: CI-CD
+
+on:
+  push:
+    branches:
+      - main
+
+# 워크플로의 모든 작업 단계에서 사용할 수 있는 변수
+env:
+  S3_BUCKET_NAME: fresh-trash-s3
+  YAML_PATH: ./src/main/resources/application-common.yml, ./src/main/resources/application-file.yml,  ./src/main/resources/application-mail.yml, ./src/main/resources/application-security.yml
+  CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-FRESH-TRASH
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP-FRESH-TRASH
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    # https://docs.github.com/ko/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_iduses
+    # uses: 작업으로 실행할 재사용 가능한 워크플로 파일의 위치 및 버전
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Set yaml file
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.YAML_PATH }}
+        env:
+          spring.datasource.url: ${{ secrets.DB_URL }}
+          spring.datasource.username: ${{ secrets.DB_USERNAME }}
+          spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+          spring.redis.port: ${{ secrets.REDIS_PORT }}
+          spring.redis.host: ${{ secrets.REDIS_HOST }}
+          local-file.absolute-path: ${{ secrets.LOCAL_FILE_ABS_PATH }}
+          aws.s3.bucket-name: ${{ secrets.S3_BUCKET_NAME }}
+          aws.s3.access-key: ${{ secrets.S3_ACCESS_KEY }}
+          aws.s3.secret-key: ${{ secrets.S3_SECRET_KEY }}
+          spring.mail.username: ${{ secrets.MAIL_USERNAME }}
+          spring.mail.password: ${{ secrets.MAIL_PASSWORD }}
+          validation.api-key: ${{ secrets.API_KEY }}
+          jwt.token.secret-key: ${{ secrets.TOKEN_SECRET_KEY }}
+          jwt.token.access-expired-ms: ${{ secrets.TOKEN_ACCESS_EXPIRED_MS }}
+          spring.security.oauth2.client.registration.google.client-id: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+          spring.security.oauth2.client.registration.google.client-secret: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+          spring.security.oauth2.client.registration.naver.client-id: ${{ secrets.NAVER_OAUTH_CLIENT_ID }}
+          spring.security.oauth2.client.registration.naver.client-secret: ${{ secrets.NAVER_OAUTH_CLIENT_SECRET }}
+          spring.security.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_OAUTH_CLIENT_ID }}
+          spring.security.oauth2.client.registration.kakao.client-secret: ${{ secrets.KAKAO_OAUTH_CLIENT_SECRET }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+        shell: bash
+
+      # https://docs.github.com/ko/actions/learn-github-actions/variables#default-environment-variables
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA .
+        shell: bash
+      
+      # https://github.com/aws-actions/configure-aws-credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      
+      # https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/cli-services-s3-commands.html
+      # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+      
+      # https://docs.aws.amazon.com/ko_kr/codedeploy/latest/userguide/tutorials-github-deploy-application.html
+      # https://docs.aws.amazon.com/cli/latest/reference/deploy/create-deployment.html
+      - name: Code Deploy
+        run: |
+          aws deploy create-deployment \
+          --application-name ${{env.CODE_DEPLOY_APPLICATION_NAME}} \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name ${{env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME}} \
+          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip

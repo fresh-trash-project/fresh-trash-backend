@@ -1,0 +1,8 @@
+spring:
+  config.activate.on-profile: amqp
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
