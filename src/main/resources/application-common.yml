@@ -12,3 +12,6 @@ spring:
       hibernate:
         format_sql: true
         metadata_builder_contributor: freshtrash.freshtrashbackend.config.JSONMetadataBuilderContributor
+  redis:
+    port: ${REDIS_PORT}
+    host: ${REDIS_HOST}
