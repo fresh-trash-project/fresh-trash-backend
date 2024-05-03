@@ -16,7 +16,6 @@ import java.util.Arrays;
 
 @Configuration
 public class AppConfig {
-
     @Bean
     public S3Client s3Client(S3Properties s3Properties) {
         return S3Client.builder()
@@ -28,12 +27,16 @@ public class AppConfig {
 
     @Bean
     public FileService fileService(Environment env, S3Service s3Service, LocalFileService localFileService) {
+        return selectBean(env, s3Service, localFileService);
+    }
+
+    private <T> T selectBean(Environment env, T localBean, T prodBean) {
         String activatedProfile =
                 Arrays.stream(env.getActiveProfiles()).findFirst().orElse("local");
         if (activatedProfile.startsWith("prod")) {
-            return s3Service;
+            return prodBean;
         } else {
-            return localFileService;
+            return localBean;
         }
     }
 }

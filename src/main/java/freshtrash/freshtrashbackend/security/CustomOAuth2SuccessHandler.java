@@ -7,6 +7,7 @@ import freshtrash.freshtrashbackend.entity.constants.LoginType;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -25,9 +26,11 @@ import java.util.UUID;
 public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final TokenProvider tokenProvider;
     private final MemberService memberService;
-    private static final String REDIRECT_URI = "http://localhost:5173/";
     private static final String TOKEN_COOKIE_NAME = "accessToken";
     private static final int COOKIE_MAX_AGE = 10 * 60; // 10분
+
+    @Value("${oauth2.redirect-uri}")
+    private String REDIRECT_URI;
 
     @Override
     public void onAuthenticationSuccess(

@@ -56,6 +56,7 @@ jobs:
           spring.security.oauth2.client.registration.naver.client-secret: ${{ secrets.NAVER_OAUTH_CLIENT_SECRET }}
           spring.security.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_OAUTH_CLIENT_ID }}
           spring.security.oauth2.client.registration.kakao.client-secret: ${{ secrets.KAKAO_OAUTH_CLIENT_SECRET }}
+          oauth2.redirect-uri: ${{ secrets.OAUTH2_REDIRECT_URI }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew

@@ -50,3 +50,5 @@ jwt:
   token:
     secret-key: ${TOKEN_SECRET_KEY}
     access-expired-ms: ${TOKEN_ACCESS_EXPIRED_MS}
+
+oauth2.redirect-uri: ${OAUTH2_REDIRECT_URI}
