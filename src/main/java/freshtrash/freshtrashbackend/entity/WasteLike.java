@@ -6,12 +6,12 @@ import lombok.*;
 import javax.persistence.*;
 
 @Getter
+@Entity
 @ToString(callSuper = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         name = "waste_likes",
         indexes = @Index(name = "member_id_and_waste_id", columnList = "memberId, wasteId", unique = true))
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WasteLike extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

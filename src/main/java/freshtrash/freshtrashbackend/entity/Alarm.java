@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
-@ToString(callSuper = true)
-@Table(name = "alarms")
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "alarms")
+@ToString(callSuper = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Alarm extends CreatedAt {
     @Id

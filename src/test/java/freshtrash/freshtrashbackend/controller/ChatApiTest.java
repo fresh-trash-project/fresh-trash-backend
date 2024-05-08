@@ -53,9 +53,9 @@ class ChatApiTest {
         // then
     }
 
-    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    @DisplayName("채팅방 + 채팅 메시지 조회")
     @Test
+    @DisplayName("채팅방 + 채팅 메시지 조회")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void given_chatRoomIdAndMemberId_when_ifSellerOrBuyerOfChatRoom_then_getChatRoomWithMessages() throws Exception {
         // given
         Long wasteId = 1L;

@@ -6,8 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
+@AllArgsConstructor
 public class Address {
     private String zipcode;
     private String state;

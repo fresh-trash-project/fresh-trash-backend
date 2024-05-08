@@ -9,11 +9,11 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
+@Entity
 @ToString(callSuper = true)
 @Table(name = "waste_reviews")
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WasteReview extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

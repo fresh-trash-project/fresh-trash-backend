@@ -56,8 +56,8 @@ class TransactionApiTest {
     @MockBean
     private TransactionService transactionService;
 
-    @DisplayName("거래 완료 후 알람 전송 + 거래 내역 저장")
     @Test
+    @DisplayName("거래 완료 후 알람 전송 + 거래 내역 저장")
     void given_wasteId_when_getChatRooms_then_sendAlarmsToSellerAndBuyerAndNotBuyers() throws Exception {
         // given
         Long wasteId = 1L;
@@ -79,10 +79,10 @@ class TransactionApiTest {
         // then
     }
 
-    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    @DisplayName("판매/구매 폐기물 목록 조회")
     @ParameterizedTest
+    @DisplayName("판매/구매 폐기물 목록 조회")
     @CsvSource(value = {"SELLER_ONGOING", "SELLER_CLOSE", "BUYER"})
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     void given_memberTypeAndLoginUserAndPageable_when_then_getPagingWasteData(TransactionMemberType memberType)
             throws Exception {
         // given
@@ -98,9 +98,9 @@ class TransactionApiTest {
         // then
     }
 
-    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    @DisplayName("예약중")
     @Test
+    @DisplayName("예약중")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     void given_chatRoomIdAndBookingStatus_when_then_updateSellStatusAndSendAlarmsToSeller() throws Exception {
         // given
         Long chatRoomId = 5L;
@@ -116,9 +116,9 @@ class TransactionApiTest {
         // then
     }
 
-    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    @DisplayName("판매중")
     @Test
+    @DisplayName("판매중")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     void given_chatRoomIdAndOngoingStatus_when_then_updateSellStatusAndSendAlarmsToSeller() throws Exception {
         // given
         Long chatRoomId = 5L;

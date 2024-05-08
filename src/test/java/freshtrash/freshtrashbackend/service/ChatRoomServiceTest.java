@@ -32,8 +32,8 @@ class ChatRoomServiceTest {
     @Mock
     private ChatRoomRepository chatRoomRepository;
 
-    @DisplayName("Waste id에 해당하는 채팅방 중 SellStatus와 일치하지 않는 채팅방 조회")
     @Test
+    @DisplayName("Waste id에 해당하는 채팅방 중 SellStatus와 일치하지 않는 채팅방 조회")
     void given_wasteIdAndSellStatus_when_then_getChatRoomList() {
         // given
         Long wasteId = 1L;
@@ -47,8 +47,8 @@ class ChatRoomServiceTest {
         Assertions.assertThat(chatRooms.size()).isEqualTo(expectedSize);
     }
 
-    @DisplayName("채팅방 목록 조회")
     @Test
+    @DisplayName("채팅방 목록 조회")
     void given_memberIdAndPageable_when_getChatRooms_then_returnPagingChatRoomsResponse() {
         // given
         Long memberId = 1L;
@@ -62,8 +62,8 @@ class ChatRoomServiceTest {
         assertThat(chatRooms.getSize()).isEqualTo(expectedSize);
     }
 
-    @DisplayName("채팅방 단일 조회")
     @Test
+    @DisplayName("채팅방 단일 조회")
     void given_chatRoomId_when_getChatRoom_then_returnChatRoom() {
         // given
         Long chatRoomId = 1L;

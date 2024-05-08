@@ -15,8 +15,8 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "members")
 @Getter
+@Table(name = "members")
 @ToString(callSuper = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
