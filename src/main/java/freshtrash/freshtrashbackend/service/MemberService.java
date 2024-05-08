@@ -9,15 +9,14 @@ import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.MemberCacheRepository;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
-import freshtrash.freshtrashbackend.repository.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
+import freshtrash.freshtrashbackend.repository.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
@@ -124,15 +123,6 @@ public class MemberService {
         memberCacheRepository.save(MemberPrincipal.fromEntity(member));
 
         return member;
-    }
-
-    /**
-     * 이전 파일 삭제
-     */
-    public void deleteOldFile(String fileName) {
-        if (StringUtils.hasText(fileName)) {
-            fileService.deleteFileIfExists(fileName);
-        }
     }
 
     public FileNameSummary findFileNameOfMember(Long memberId) {
