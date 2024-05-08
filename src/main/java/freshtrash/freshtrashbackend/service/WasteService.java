@@ -1,21 +1,14 @@
 package freshtrash.freshtrashbackend.service;
 
 import com.querydsl.core.types.Predicate;
-import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.Waste;
-import freshtrash.freshtrashbackend.entity.WasteLike;
-import freshtrash.freshtrashbackend.entity.WasteReview;
 import freshtrash.freshtrashbackend.exception.FileException;
-import freshtrash.freshtrashbackend.exception.ReviewException;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
 import freshtrash.freshtrashbackend.repository.WasteRepository;
-import freshtrash.freshtrashbackend.repository.WasteReviewRepository;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +25,6 @@ import java.util.Objects;
 public class WasteService {
     private final WasteRepository wasteRepository;
     private final FileService fileService;
-    private final WasteReviewRepository wasteReviewRepository;
-    private final WasteLikeRepository wasteLikeRepository;
 
     public Waste getWaste(Long wasteId) {
         return wasteRepository.findById(wasteId).orElseThrow(() -> new WasteException(ErrorCode.NOT_FOUND_WASTE));
@@ -90,47 +81,6 @@ public class WasteService {
      */
     public boolean isWriterOfArticle(Long wasteId, Long memberId) {
         return wasteRepository.existsByIdAndMember_Id(wasteId, memberId);
-    }
-
-    /**
-     * 폐기물 리뷰 작성
-     */
-    public WasteReview insertWasteReview(ReviewRequest reviewRequest, Long wasteId, Long memberId) {
-        // 이미 리뷰가 등록되있는지 확인
-        boolean exists = wasteReviewRepository.existsByWasteId(wasteId);
-        if (exists) {
-            throw new ReviewException(ErrorCode.ALREADY_EXISTS_REVIEW);
-        }
-
-        WasteReview wasteReview = WasteReview.fromRequest(reviewRequest, wasteId, memberId);
-        return wasteReviewRepository.save(wasteReview);
-    }
-
-    @Transactional
-    public void addWasteLike(Long memberId, Long wasteId) {
-        if (wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId)) {
-            throw new WasteException(ErrorCode.ALREADY_EXISTS_LIKE);
-        }
-
-        wasteLikeRepository.save(WasteLike.of(memberId, wasteId));
-        wasteRepository.updateLikeCount(wasteId, 1);
-    }
-
-    @Transactional
-    public void deleteWasteLike(Long memberId, Long wasteId) {
-        if (!wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId)) {
-            throw new WasteException(ErrorCode.NOT_FOUND_LIKE);
-        }
-
-        wasteLikeRepository.deleteByMemberIdAndWasteId(memberId, wasteId);
-        wasteRepository.updateLikeCount(wasteId, -1);
-    }
-
-    public Page<WasteResponse> getLikedWastes(Long memberId, Pageable pageable) {
-        return wasteLikeRepository
-                .findAllByMember_Id(memberId, pageable)
-                .map(WasteLike::getWaste)
-                .map(WasteResponse::fromEntity);
     }
 
     public void updateViewCount(Long wasteId) {
