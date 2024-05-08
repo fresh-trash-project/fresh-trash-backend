@@ -22,20 +22,20 @@ public class TransactionService {
 
     public Page<WasteResponse> getTransactedWastes(Long memberId, TransactionMemberType memberType, Pageable pageable) {
         switch (memberType) {
-            // 판매 완료 wastes
+                // 판매 완료 wastes
             case SELLER_CLOSE -> {
                 return transactionLogRepository
-                    .findAllBySeller_Id(memberId, pageable)
-                    .map(TransactionLog::getWaste)
-                    .map(WasteResponse::fromEntity);
+                        .findAllBySeller_Id(memberId, pageable)
+                        .map(TransactionLog::getWaste)
+                        .map(WasteResponse::fromEntity);
             }
-            // 판매 중 또는 예약 중 wastes
+                // 판매 중 또는 예약 중 wastes
             case SELLER_ONGOING -> {
                 return wasteRepository
                         .findAllByMemberIdAndSellStatusNot(memberId, SellStatus.CLOSE, pageable)
                         .map(WasteResponse::fromEntity);
             }
-            // 구매 wastes
+                // 구매 wastes
             default -> {
                 return transactionLogRepository
                         .findAllByBuyer_Id(memberId, pageable)
@@ -55,17 +55,17 @@ public class TransactionService {
         saveTransactionLog(wasteId, sellerId, buyerId);
     }
 
-    public void saveTransactionLog(Long wasteId, Long sellerId, Long buyerId) {
+    @Transactional
+    public void updateSellStatus(Long wasteId, Long chatRoomId, SellStatus sellStatus) {
+        wasteRepository.updateSellStatus(wasteId, sellStatus);
+        chatRoomRepository.updateSellStatus(chatRoomId, sellStatus);
+    }
+
+    private void saveTransactionLog(Long wasteId, Long sellerId, Long buyerId) {
         transactionLogRepository.save(TransactionLog.builder()
                 .wasteId(wasteId)
                 .sellerId(sellerId)
                 .buyerId(buyerId)
                 .build());
-    }
-
-    @Transactional
-    public void updateSellStatus(Long wasteId, Long chatRoomId, SellStatus sellStatus) {
-        wasteRepository.updateSellStatus(wasteId, sellStatus);
-        chatRoomRepository.updateSellStatus(chatRoomId, sellStatus);
     }
 }
