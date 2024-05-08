@@ -3,8 +3,6 @@ package freshtrash.freshtrashbackend.service;
 import freshtrash.freshtrashbackend.dto.request.MessageRequest;
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.entity.Alarm;
-import freshtrash.freshtrashbackend.entity.AlarmArgs;
-import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.exception.AlarmException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.AlarmRepository;
@@ -114,23 +112,5 @@ public class AlarmService {
 
     private Alarm saveAlarm(MessageRequest messageRequest) {
         return alarmRepository.save(Alarm.fromMessageRequest(messageRequest));
-    }
-
-    /**
-     * 알람 저장
-     * - 폐기물 거래 완료 알람
-     * @param memberId 알람을 받는 사용자 id
-     * @param targetId 폐기물 id
-     * @param fromMemberId 알람을 보내는 사용자 id
-     * @param alarmType 알람 종류
-     */
-    @Deprecated
-    private Alarm saveAlarm(String message, Long memberId, Long targetId, Long fromMemberId, AlarmType alarmType) {
-        return alarmRepository.save(Alarm.builder()
-                .alarmType(alarmType)
-                .alarmArgs(AlarmArgs.of(fromMemberId, targetId))
-                .message(message)
-                .memberId(memberId)
-                .build());
     }
 }
