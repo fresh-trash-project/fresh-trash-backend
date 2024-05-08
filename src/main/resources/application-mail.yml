@@ -13,4 +13,5 @@ spring:
           starttls.enable: true
 
 validation:
-  api-key: ${API_KEY}
+  api-url: ${VALIDATION_API_URL}
+  api-key: ${VALIDATION_API_KEY}
