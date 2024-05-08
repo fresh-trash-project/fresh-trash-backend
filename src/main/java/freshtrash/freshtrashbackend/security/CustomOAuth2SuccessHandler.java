@@ -39,14 +39,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         MemberPrincipal principal = (MemberPrincipal) authentication.getPrincipal();
         // 회원가입되지 않았을 경우 회원가입 처리
         Long memberId = Optional.ofNullable(principal.id()).orElseGet(() -> memberService
-                .registerMember(Member.builder()
-                        .email(principal.email())
-                        .password(UUID.randomUUID().toString())
-                        .nickname(principal.nickname())
-                        .loginType(LoginType.OAUTH)
-                        .userRole(UserRole.USER)
-                        .accountStatus(AccountStatus.ACTIVE)
-                        .build())
+                .registerMember(Member.fromPrincipalWithOauth(principal))
                 .getId());
         String accessToken = tokenProvider.generateAccessToken(memberId);
         addCookie(response, accessToken);

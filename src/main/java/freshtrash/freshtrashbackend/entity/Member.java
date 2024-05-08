@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.entity;
 
 import freshtrash.freshtrashbackend.dto.request.SignUpRequest;
+import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.audit.AuditingAt;
 import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.entity.constants.LoginType;
@@ -11,13 +12,14 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "members")
 @Getter
 @ToString(callSuper = true)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Member extends AuditingAt {
     @Id
@@ -89,6 +91,17 @@ public class Member extends AuditingAt {
                 .password(signUpRequest.password())
                 .nickname(signUpRequest.nickname())
                 .loginType(LoginType.EMAIL)
+                .userRole(UserRole.USER)
+                .accountStatus(AccountStatus.ACTIVE)
+                .build();
+    }
+
+    public static Member fromPrincipalWithOauth(MemberPrincipal principal) {
+        return Member.builder()
+                .email(principal.email())
+                .password(UUID.randomUUID().toString())
+                .nickname(principal.nickname())
+                .loginType(LoginType.OAUTH)
                 .userRole(UserRole.USER)
                 .accountStatus(AccountStatus.ACTIVE)
                 .build();
