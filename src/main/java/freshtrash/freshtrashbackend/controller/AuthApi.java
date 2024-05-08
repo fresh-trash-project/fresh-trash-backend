@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/auth")
 public class AuthApi {
     private final MemberService memberService;
 
@@ -23,10 +23,9 @@ public class AuthApi {
      * 회원가입
      */
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<String>> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
+    public ResponseEntity<Void> signup(@RequestBody @Valid SignUpRequest signUpRequest) {
         memberService.registerMember(Member.fromSignUpRequest(signUpRequest));
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.of("you're successfully sign up. you can be login."));
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
     /**
