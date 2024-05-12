@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
+import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.service.AlarmService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
@@ -45,7 +46,7 @@ class AlarmApiTest {
         Long memberId = 123L;
         Pageable pageable = PageRequest.of(0, 10);
         given(alarmService.getAlarms(eq(memberId), eq(pageable)))
-                .willReturn(new PageImpl<>(List.of(Fixture.createAlarm().toResponse())));
+                .willReturn(new PageImpl<>(List.of(AlarmResponse.fromEntity(Fixture.createAlarm()))));
         // when
         mvc.perform(get("/api/v1/notis"))
                 .andExpect(status().isOk())
@@ -70,14 +71,13 @@ class AlarmApiTest {
     @DisplayName("알람 읽음 처리 요청")
     @Test
     void given_alarmIdAndLoginUser_when_loginUserIsOwnerOfAlarm_then_readAlarm() throws Exception {
-        //given
+        // given
         Long alarmId = 1L;
         Long memberId = 123L;
         given(alarmService.isOwnerOfAlarm(eq(alarmId), eq(memberId))).willReturn(true);
         willDoNothing().given(alarmService).readAlarm(eq(alarmId));
-        //when
-        mvc.perform(put("/api/v1/notis/" + alarmId))
-                .andExpect(status().isOk());
-        //then
+        // when
+        mvc.perform(put("/api/v1/notis/" + alarmId)).andExpect(status().isOk());
+        // then
     }
 }

@@ -106,17 +106,31 @@ public class Fixture {
         ReflectionTestUtils.setField(
                 chatRoom,
                 "seller",
-                createMember(sellerId, "seller@gmail.com", "pw", "seller", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE));
+                createMember(
+                        sellerId,
+                        "seller@gmail.com",
+                        "pw",
+                        "seller",
+                        LoginType.EMAIL,
+                        UserRole.USER,
+                        AccountStatus.ACTIVE));
         ReflectionTestUtils.setField(
                 chatRoom,
                 "buyer",
-                createMember(buyerId, "buyer@gmail.com", "pw", "buyer", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE));
+                createMember(
+                        buyerId,
+                        "buyer@gmail.com",
+                        "pw",
+                        "buyer",
+                        LoginType.EMAIL,
+                        UserRole.USER,
+                        AccountStatus.ACTIVE));
         ReflectionTestUtils.setField(chatRoom, "chatMessages", Set.of(createChatMessage()));
         return chatRoom;
     }
 
     public static ChatMessage createChatMessage() {
-        return ChatMessage.of(1L, 2L, "message");
+        return ChatMessage.of(1L, createMember(), "message");
     }
 
     public static TransactionLog createTransactionLog(Long wasteId, Long sellerId, Long buyerId) {
