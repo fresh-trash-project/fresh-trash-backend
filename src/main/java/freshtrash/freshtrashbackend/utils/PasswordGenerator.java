@@ -10,7 +10,7 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PasswordGenerator {
-    private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
+    private static final String ALL_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
     private static final String NUMBER = "0123456789";
     private static final String SPECIAL_CHARACTER = "!@#$%^&*()-_=+";
@@ -27,7 +27,7 @@ public class PasswordGenerator {
         passwordChars.add(getRandomCharacter(SPECIAL_CHARACTER, random));
 
         for (int i = 3; i < PASSWORD_LENGTH; i++) {
-            passwordChars.add(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+            passwordChars.add(ALL_CHARACTERS.charAt(random.nextInt(ALL_CHARACTERS.length())));
         }
 
         Collections.shuffle(passwordChars, new SecureRandom());
