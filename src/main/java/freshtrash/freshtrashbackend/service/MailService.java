@@ -30,6 +30,9 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final MailProperties mailProperties;
     private final EmailCodeCacheRepository emailCodeCacheRepository;
+    private static final String CHECK_KEY_1 = "deliverability";
+    private static final String CHECK_KEY_2 = "is_free_email";
+    private static final String DELIVERABLE = "DELIVERABLE";
 
     @Async
     @Transactional
@@ -75,9 +78,6 @@ public class MailService {
      * 메일 유효성 검증
      */
     public void isValidMail(String email) {
-        final String CHECK_KEY_1 = "deliverability";
-        final String CHECK_KEY_2 = "is_free_email";
-        final String DELIVERABLE = "DELIVERABLE";
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(mailProperties.apiUrl() + "?api_key=" + mailProperties.apiKey() + "&email=" + email))
