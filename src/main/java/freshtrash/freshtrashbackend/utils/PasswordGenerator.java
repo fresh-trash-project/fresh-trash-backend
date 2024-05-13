@@ -10,10 +10,10 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PasswordGenerator {
-    private static final String ALL_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
     private static final String NUMBER = "0123456789";
     private static final String SPECIAL_CHARACTER = "!@#$%^&*()-_=+";
+    private static final String ALL_CHARACTERS = ALPHABET + NUMBER + SPECIAL_CHARACTER;
     private static final int PASSWORD_LENGTH = 8;
 
     public static String generateTemporaryPassword() {
