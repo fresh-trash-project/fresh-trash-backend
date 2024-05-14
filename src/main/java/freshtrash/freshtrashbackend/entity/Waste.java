@@ -16,11 +16,11 @@ import java.time.LocalDateTime;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
-@ToString(callSuper = true)
-@Table(name = "wastes")
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "wastes")
+@ToString(callSuper = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Waste extends AuditingAt {
     @Id

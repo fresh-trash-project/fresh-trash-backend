@@ -18,8 +18,8 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/mail")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/mail")
 public class MailApi {
     private final MailService mailService;
     private final MemberService memberService;

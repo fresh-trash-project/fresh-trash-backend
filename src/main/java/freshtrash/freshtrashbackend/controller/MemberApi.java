@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.response.MemberResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.service.FileService;
 import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/members")
 public class MemberApi {
     private final MemberService memberService;
+    private final FileService fileService;
 
     /**
      * 유저 정보 조회
@@ -41,11 +43,14 @@ public class MemberApi {
                 memberService.findFileNameOfMember(memberPrincipal.id()).fileName();
         MemberResponse memberResponse =
                 MemberResponse.fromEntity(memberService.updateMember(memberPrincipal, memberRequest, imgFile));
+        deleteOrNotOldFile(oldFile, memberResponse);
+        return ResponseEntity.ok(memberResponse);
+    }
 
+    private void deleteOrNotOldFile(String oldFile, MemberResponse memberResponse) {
         // 파일이 수정된 경우 -> 이전 파일 삭제
         if (StringUtils.hasText(oldFile) && !oldFile.equals(memberResponse.fileName())) {
-            memberService.deleteOldFile(oldFile);
+            fileService.deleteFileIfExists(oldFile);
         }
-        return ResponseEntity.ok(memberResponse);
     }
 }

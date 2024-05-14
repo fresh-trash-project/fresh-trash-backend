@@ -13,6 +13,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.mail.internet.MimeMessage;
@@ -29,12 +30,16 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final MailProperties mailProperties;
     private final EmailCodeCacheRepository emailCodeCacheRepository;
+    private static final String CHECK_KEY_1 = "deliverability";
+    private static final String CHECK_KEY_2 = "is_free_email";
+    private static final String DELIVERABLE = "DELIVERABLE";
 
     @Async
+    @Transactional
     public void sendMailWithCode(String email, String subject, String code) {
         String text = "fresh-trash 메일 인증 코드입니다. <br/>인증코드:" + code;
-        sendMail(email, subject, text);
         emailCodeCacheRepository.save(EmailCodeCache.of(email, code));
+        sendMail(email, subject, text);
         log.debug("--reids에 code 저장");
     }
 
@@ -55,7 +60,7 @@ public class MailService {
         }
     }
 
-    public void sendMail(String toMail, String subject, String text) {
+    private void sendMail(String toMail, String subject, String text) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
 
         try {
@@ -75,23 +80,19 @@ public class MailService {
     public void isValidMail(String email) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://emailvalidation.abstractapi.com/v1/?api_key=" + mailProperties.apiKey()
-                        + "&email=" + email))
+                .uri(URI.create(mailProperties.apiUrl() + "?api_key=" + mailProperties.apiKey() + "&email=" + email))
                 .build();
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String result = response.body();
             JsonObject jsonObject = JsonParser.parseString(result).getAsJsonObject();
-            String deliverable = jsonObject.get("deliverability").getAsString();
+            String deliverable = jsonObject.get(CHECK_KEY_1).getAsString();
 
-            boolean isFree = jsonObject
-                    .get("is_free_email")
-                    .getAsJsonObject()
-                    .get("value")
-                    .getAsBoolean();
+            boolean isFree =
+                    jsonObject.get(CHECK_KEY_2).getAsJsonObject().get("value").getAsBoolean();
 
-            if (!deliverable.equals("DELIVERABLE") || !isFree) {
+            if (!deliverable.equals(DELIVERABLE) || !isFree) {
                 throw new MailException(ErrorCode.MAIL_NOT_VALID);
             }
 

@@ -6,11 +6,11 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "chat_messages")
 @Getter
 @ToString(callSuper = true)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "chat_messages")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessage extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -38,8 +38,8 @@ class AlarmServiceTest {
     @Mock
     private EmitterRepository emitterRepository;
 
-    @DisplayName("전체 알람 조회")
     @Test
+    @DisplayName("전체 알람 조회")
     void given_memberIdAndPageable_when_then_getPagingAlarms() {
         // given
         Long memberId = 1L;
@@ -53,8 +53,8 @@ class AlarmServiceTest {
         assertThat(alarms.getSize()).isEqualTo(expectedSize);
     }
 
-    @DisplayName("알람 읽음 처리")
     @Test
+    @DisplayName("알람 읽음 처리")
     void given_alarmId_when_readAlarm_then_updateReadAtToNow() {
         // given
         Long alarmId = 1L;

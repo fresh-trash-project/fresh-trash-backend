@@ -2,9 +2,6 @@ package freshtrash.freshtrashbackend.security;
 
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
-import freshtrash.freshtrashbackend.entity.constants.LoginType;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +16,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -39,14 +35,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         MemberPrincipal principal = (MemberPrincipal) authentication.getPrincipal();
         // 회원가입되지 않았을 경우 회원가입 처리
         Long memberId = Optional.ofNullable(principal.id()).orElseGet(() -> memberService
-                .registerMember(Member.builder()
-                        .email(principal.email())
-                        .password(UUID.randomUUID().toString())
-                        .nickname(principal.nickname())
-                        .loginType(LoginType.OAUTH)
-                        .userRole(UserRole.USER)
-                        .accountStatus(AccountStatus.ACTIVE)
-                        .build())
+                .registerMember(Member.fromPrincipalWithOauth(principal))
                 .getId());
         String accessToken = tokenProvider.generateAccessToken(memberId);
         addCookie(response, accessToken);

@@ -6,4 +6,4 @@ import javax.validation.constraints.NotBlank;
 
 @Validated
 @ConfigurationProperties(prefix = "validation")
-public record MailProperties(@NotBlank String apiKey) {}
+public record MailProperties(@NotBlank String apiUrl, @NotBlank String apiKey) {}

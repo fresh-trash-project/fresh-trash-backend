@@ -29,8 +29,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(TestSecurityConfig.class)
 @WebMvcTest(AlarmApi.class)
+@Import(TestSecurityConfig.class)
 class AlarmApiTest {
     @Autowired
     private MockMvc mvc;
@@ -38,9 +38,9 @@ class AlarmApiTest {
     @MockBean
     private AlarmService alarmService;
 
-    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    @DisplayName("알람 목록 조회")
     @Test
+    @DisplayName("알람 목록 조회")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     void given_loginUserAndPageable_when_then_getPagingNotis() throws Exception {
         // given
         Long memberId = 123L;
@@ -54,9 +54,9 @@ class AlarmApiTest {
         // then
     }
 
-    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    @DisplayName("알람 SSE 연결 요청")
     @Test
+    @DisplayName("알람 SSE 연결 요청")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     void given_loginUser_when_connectSse_then_returnSseEmitter() throws Exception {
         // given
         Long memberId = 123L;
@@ -67,9 +67,9 @@ class AlarmApiTest {
         // then
     }
 
-    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    @DisplayName("알람 읽음 처리 요청")
     @Test
+    @DisplayName("알람 읽음 처리 요청")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     void given_alarmIdAndLoginUser_when_loginUserIsOwnerOfAlarm_then_readAlarm() throws Exception {
         // given
         Long alarmId = 1L;

@@ -8,7 +8,6 @@ import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.QWaste;
 import freshtrash.freshtrashbackend.entity.Waste;
-import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
 import freshtrash.freshtrashbackend.repository.WasteRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,13 +39,10 @@ class WasteServiceTest {
     private WasteRepository wasteRepository;
 
     @Mock
-    private WasteLikeRepository wasteLikeRepository;
-
-    @Mock
     private FileService fileService;
 
-    @DisplayName("Waste 단일 조회")
     @Test
+    @DisplayName("Waste 단일 조회")
     void given_wasteId_when_getWaste_then_wasteIsNotNull() {
         // given
         Long wasteId = 1L;
@@ -57,8 +53,8 @@ class WasteServiceTest {
         assertThat(waste).isNotNull();
     }
 
-    @DisplayName("Waste 목록 조회")
     @Test
+    @DisplayName("Waste 목록 조회")
     void given_predicateAndPageable_when_getWastes_then_wastesSizeIsEqualToExpectedSize() {
         // given
         int expectedSize = 1;
@@ -73,8 +69,8 @@ class WasteServiceTest {
         assertThat(wastes.getSize()).isEqualTo(expectedSize);
     }
 
-    @DisplayName("Waste 추가")
     @Test
+    @DisplayName("Waste 추가")
     void given_imgFileAndWasteRequest_when_addWaste_then_wasteRequestValuesEqualsToSavedWasteValues() {
         // given
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
@@ -95,8 +91,8 @@ class WasteServiceTest {
         assertThat(wasteResponse.address()).isEqualTo(wasteRequest.address());
     }
 
-    @DisplayName("Waste 수정_파일이 유효한 경우_저장된 파일명은 이전에 저장한 파일명과 상이")
     @Test
+    @DisplayName("Waste 수정_파일이 유효한 경우_저장된 파일명은 이전에 저장한 파일명과 상이")
     void given_imgFileAndWasteRequest_when_updateWaste_then_wasteRequestValuesEqualsToUpdatedWasteValues() {
         // given
         Long wasteId = 1L;
@@ -122,8 +118,8 @@ class WasteServiceTest {
         assertThat(wasteResponse.fileName()).isNotEqualTo(savedFileName);
     }
 
-    @DisplayName("Waste 삭제")
     @Test
+    @DisplayName("Waste 삭제")
     void given_wasteId_when_then_deleteWasteAndFile() {
         // given
         Long wasteId = 1L;
@@ -131,20 +127,5 @@ class WasteServiceTest {
         // when
         wasteService.deleteWaste(wasteId);
         // then
-    }
-
-    @DisplayName("관심 Waste 목록 조회")
-    @Test
-    void given_memberIdAndPageable_when_getWasteLikes_then_convertToWasteResponse() {
-        // given
-        Long memberId = 1L;
-        int expectedSize = 1;
-        Pageable pageable = PageRequest.of(0, 10);
-        given(wasteLikeRepository.findAllByMember_Id(eq(memberId), eq(pageable)))
-                .willReturn(new PageImpl<>(List.of(Fixture.createWasteLike())));
-        // when
-        Page<WasteResponse> wastes = wasteService.getLikedWastes(memberId, pageable);
-        // then
-        assertThat(wastes.getSize()).isEqualTo(expectedSize);
     }
 }

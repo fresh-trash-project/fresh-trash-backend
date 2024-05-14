@@ -25,9 +25,9 @@ public class TransactionService {
             // 판매 완료 wastes
             case SELLER_CLOSE -> {
                 return transactionLogRepository
-                    .findAllBySeller_Id(memberId, pageable)
-                    .map(TransactionLog::getWaste)
-                    .map(WasteResponse::fromEntity);
+                        .findAllBySeller_Id(memberId, pageable)
+                        .map(TransactionLog::getWaste)
+                        .map(WasteResponse::fromEntity);
             }
             // 판매 중 또는 예약 중 wastes
             case SELLER_ONGOING -> {
@@ -55,17 +55,17 @@ public class TransactionService {
         saveTransactionLog(wasteId, sellerId, buyerId);
     }
 
-    public void saveTransactionLog(Long wasteId, Long sellerId, Long buyerId) {
+    @Transactional
+    public void updateSellStatus(Long wasteId, Long chatRoomId, SellStatus sellStatus) {
+        wasteRepository.updateSellStatus(wasteId, sellStatus);
+        chatRoomRepository.updateSellStatus(chatRoomId, sellStatus);
+    }
+
+    private void saveTransactionLog(Long wasteId, Long sellerId, Long buyerId) {
         transactionLogRepository.save(TransactionLog.builder()
                 .wasteId(wasteId)
                 .sellerId(sellerId)
                 .buyerId(buyerId)
                 .build());
-    }
-
-    @Transactional
-    public void updateSellStatus(Long wasteId, Long chatRoomId, SellStatus sellStatus) {
-        wasteRepository.updateSellStatus(wasteId, sellStatus);
-        chatRoomRepository.updateSellStatus(chatRoomId, sellStatus);
     }
 }

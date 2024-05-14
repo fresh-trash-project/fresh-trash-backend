@@ -30,8 +30,8 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/transactions")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/transactions")
 public class TransactionApi {
     private final ChatRoomService chatRoomService;
     private final TransactionService transactionService;

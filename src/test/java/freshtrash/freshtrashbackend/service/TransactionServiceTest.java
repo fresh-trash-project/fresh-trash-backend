@@ -45,8 +45,8 @@ class TransactionServiceTest {
     @Mock
     private ChatRoomRepository chatRoomRepository;
 
-    @DisplayName("거래 내역 저장")
     @Test
+    @DisplayName("거래 내역 저장")
     void given_wasteAndChatRoomAndSellerAndBuyerAndSellStatus_when_then_updateSellStatusAndSaveLog() {
         // given
         Long wasteId = 1L;
@@ -68,8 +68,8 @@ class TransactionServiceTest {
         assertThat(captor.getValue().getBuyerId()).isEqualTo(buyerId);
     }
 
-    @DisplayName("거래한 폐기물 목록 조회")
     @ParameterizedTest
+    @DisplayName("거래한 폐기물 목록 조회")
     @CsvSource(value = {"SELLER_CLOSE", "SELLER_ONGOING", "BUYER"})
     void given_memberIdAndMemberTypeAndPageable_when_getTransactionLogs_then_convertToWastes(
             TransactionMemberType memberType) {

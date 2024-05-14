@@ -2,6 +2,8 @@ package freshtrash.freshtrashbackend.utils;
 
 import freshtrash.freshtrashbackend.exception.FileException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,6 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileUtils {
     private static final String EXTENSION_SEPARATOR = ".";
     private static final Set<String> IMAGE_EXTENSIONS = Set.of("jpeg", "jpg", "png");
