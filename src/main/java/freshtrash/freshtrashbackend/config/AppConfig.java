@@ -30,7 +30,7 @@ public class AppConfig {
         return selectBean(env, s3Service, localFileService);
     }
 
-    private <T> T selectBean(Environment env, T localBean, T prodBean) {
+    private <T> T selectBean(Environment env, T prodBean, T localBean) {
         String activatedProfile =
                 Arrays.stream(env.getActiveProfiles()).findFirst().orElse("local");
         if (activatedProfile.startsWith("prod")) {
