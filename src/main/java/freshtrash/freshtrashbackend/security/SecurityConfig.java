@@ -43,14 +43,6 @@ public class SecurityConfig {
             throws Exception {
         return http.csrf()
                 .disable()
-                .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
-                    config.setAllowedMethods(Collections.singletonList("*"));
-                    config.setAllowCredentials(true);
-                    config.setAllowedHeaders(Collections.singletonList("*"));
-                    return config;
-                }))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
                                 PathRequest.toStaticResources().atCommonLocations())
                         .permitAll()
