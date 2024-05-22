@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   fresh-trash-database:
     container_name: fresh-trash-database

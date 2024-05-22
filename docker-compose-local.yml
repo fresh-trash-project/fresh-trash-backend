@@ -1,4 +1,3 @@
-version: "1"
 services:
   fresh-trash-rabbitmq:
     container_name: fresh-trash-rabbitmq
