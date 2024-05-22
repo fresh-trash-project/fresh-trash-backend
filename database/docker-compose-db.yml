@@ -20,7 +20,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./redis
-    image: redis:latest
+    image: fresh-trash-redis:0.1
     ports:
       - "6379:6379"
     networks:
