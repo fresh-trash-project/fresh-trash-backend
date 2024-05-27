@@ -1,19 +1,19 @@
-package freshtrash.freshtrashbackend.service;
+package freshtrash.freshtrashbackend.service.producer.publisher;
 
 import freshtrash.freshtrashbackend.dto.events.BaseEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
-public class RabbitMqProducer {
+public class RabbitMQPublisher implements MQPublisher {
     private final RabbitTemplate rabbitTemplate;
 
     public void publish(BaseEvent<?> event) {
-        log.debug("rabbitmq publish: {}", event);
+        log.debug("rabbitmq publish");
         rabbitTemplate.convertAndSend(event.getRoutingKey(), event.getPayload());
     }
 }

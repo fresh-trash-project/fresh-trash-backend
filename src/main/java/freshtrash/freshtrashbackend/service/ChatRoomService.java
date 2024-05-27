@@ -20,10 +20,10 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
 
     /**
-     * wasteId에 해당하며 전달받은 SellStatus가 아닌 채팅방들을 조회
+     * WasteId에 속한 Close 되지 않은 채팅방 모두 조회
      */
-    public List<ChatRoom> getChatRoomsByWasteId(Long wasteId, SellStatus sellStatus) {
-        return chatRoomRepository.findByWaste_IdAndSellStatusNot(wasteId, sellStatus);
+    public List<ChatRoom> getNotClosedChatRoomsByWasteId(Long wasteId) {
+        return getChatRoomsByWasteIdAndNotSellStatus(wasteId, SellStatus.CLOSE);
     }
 
     public Page<ChatRoomResponse> getChatRoomsWithMemberId(Long memberId, Pageable pageable) {
@@ -60,7 +60,10 @@ public class ChatRoomService {
         chatRoomRepository.updateOpenOrClose(chatRoomId);
     }
 
-    public List<BuyerIdSummary> getBuyerIdByWasteId(Long wasteId, Long buyerId) {
-        return chatRoomRepository.findBuyerIdByWasteIdAndBuyerIdNot(wasteId, buyerId);
+    /**
+     * wasteId에 해당하며 전달받은 SellStatus가 아닌 채팅방들을 조회
+     */
+    private List<ChatRoom> getChatRoomsByWasteIdAndNotSellStatus(Long wasteId, SellStatus sellStatus) {
+        return chatRoomRepository.findByWaste_IdAndSellStatusNot(wasteId, sellStatus);
     }
 }

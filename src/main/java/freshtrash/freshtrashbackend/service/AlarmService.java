@@ -1,6 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
-import freshtrash.freshtrashbackend.dto.request.MessageRequest;
+import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.entity.Alarm;
 import freshtrash.freshtrashbackend.exception.AlarmException;
@@ -43,10 +43,10 @@ public class AlarmService {
      * 알람 메시지 전송 Listener
      */
     @RabbitListener(queues = {"#{wasteCompleteQueue.name}", "#{wasteFlagQueue.name}", "#{wasteChangeStatusQueue.name}"})
-    public void receiveWasteTransaction(@Payload MessageRequest messageRequest) {
-        log.debug("receive complete transaction message: {}", messageRequest);
-        Alarm alarm = saveAlarm(messageRequest);
-        receive(messageRequest.memberId(), AlarmResponse.fromEntity(alarm));
+    public void receiveWasteTransaction(@Payload AlarmPayload alarmPayload) {
+        log.debug("receive complete transaction message: {}", alarmPayload);
+        Alarm alarm = saveAlarm(alarmPayload);
+        receive(alarmPayload.memberId(), AlarmResponse.fromEntity(alarm));
     }
 
     /**
@@ -110,7 +110,7 @@ public class AlarmService {
         return alarmRepository.existsByIdAndMember_Id(alarmId, memberId);
     }
 
-    private Alarm saveAlarm(MessageRequest messageRequest) {
-        return alarmRepository.save(Alarm.fromMessageRequest(messageRequest));
+    private Alarm saveAlarm(AlarmPayload alarmPayload) {
+        return alarmRepository.save(Alarm.fromMessageRequest(alarmPayload));
     }
 }
