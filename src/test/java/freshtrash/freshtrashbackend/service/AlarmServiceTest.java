@@ -1,11 +1,12 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
+import freshtrash.freshtrashbackend.Fixture.FixtureDto;
+import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.entity.Alarm;
 import freshtrash.freshtrashbackend.repository.AlarmRepository;
 import freshtrash.freshtrashbackend.repository.EmitterRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,16 +18,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class AlarmServiceTest {
     @InjectMocks
@@ -63,5 +68,23 @@ class AlarmServiceTest {
         alarmService.readAlarm(alarmId);
         // then
         then(alarmRepository).should(times(1)).updateReadAtById(anyLong());
+    }
+
+    @Test
+    @DisplayName("알람 메시지 전송")
+    void given_alarmPayload_when_listenMessage_then_saveAlarmAndSendAlarm() {
+        // given
+        AlarmPayload alarmPayload = FixtureDto.createAlarmPayload();
+        Long memberId = alarmPayload.memberId();
+        Alarm alarm = Alarm.fromMessageRequest(alarmPayload);
+        SseEmitter sseEmitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
+        given(alarmRepository.save(eq(alarm))).willReturn(alarm);
+        given(emitterRepository.findByMemberId(eq(memberId))).willReturn(Optional.of(sseEmitter));
+        // whenxp
+        alarmService.receiveWasteTransaction(alarmPayload);
+        ArgumentCaptor<Alarm> alarmCaptor = ArgumentCaptor.forClass(Alarm.class);
+        // then
+        verify(alarmRepository, times(1)).save(alarmCaptor.capture());
+        verify(emitterRepository, times(1)).findByMemberId(eq(memberId));
     }
 }

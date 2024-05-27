@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +33,7 @@ class ChatRoomServiceTest {
     private ChatRoomRepository chatRoomRepository;
 
     @Test
-    @DisplayName("Waste id에 해당하는 채팅방 중 SellStatus와 일치하지 않는 채팅방 조회")
+    @DisplayName("Waste id에 해당하는 채팅방 중 Close 되지 않은 채팅방 조회")
     void given_wasteIdAndSellStatus_when_then_getChatRoomList() {
         // given
         Long wasteId = 1L;
@@ -42,7 +42,7 @@ class ChatRoomServiceTest {
         given(chatRoomRepository.findByWaste_IdAndSellStatusNot(eq(wasteId), eq(sellStatus)))
                 .willReturn(List.of(Fixture.createChatRoom()));
         // when
-        List<ChatRoom> chatRooms = chatRoomService.getChatRoomsByWasteId(wasteId, sellStatus);
+        List<ChatRoom> chatRooms = chatRoomService.getNotClosedChatRoomsByWasteId(wasteId);
         // then
         Assertions.assertThat(chatRooms.size()).isEqualTo(expectedSize);
     }
