@@ -5,7 +5,9 @@ import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.QWasteLike;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
+import freshtrash.freshtrashbackend.entity.WasteLike;
 import freshtrash.freshtrashbackend.repository.WasteLikeRepository;
+import freshtrash.freshtrashbackend.repository.WasteRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +20,10 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -30,6 +34,9 @@ class WasteLikeServiceTest {
 
     @Mock
     private WasteLikeRepository wasteLikeRepository;
+
+    @Mock
+    private WasteRepository wasteRepository;
 
     @Test
     @DisplayName("관심 Waste 목록 조회")
@@ -47,5 +54,35 @@ class WasteLikeServiceTest {
         Page<WasteResponse> wastes = wasteLikeService.getLikedWastes(predicate, pageable);
         // then
         assertThat(wastes.getSize()).isEqualTo(expectedSize);
+    }
+
+    @Test
+    @DisplayName("관심 폐기물 추가")
+    void given_memberIdAndWasteId_when_addWasteLike_then_saveWasteLikeAndUpdateLikeCount() {
+        // given
+        Long memberId = 123L;
+        Long wasteId = 1L;
+        WasteLike wasteLike = WasteLike.of(memberId, wasteId);
+        given(wasteLikeRepository.save(any(WasteLike.class))).willReturn(wasteLike);
+        willDoNothing().given(wasteRepository).updateLikeCount(wasteId, 1);
+
+        // when
+        wasteLikeService.addWasteLike(memberId, wasteId);
+        // then
+    }
+
+    @Test
+    @DisplayName("관심 폐기물 삭제")
+    void given_memberIdAndWasteId_when_deleteWasteLike_then_deleteWasteLikeAndUpdateLikeCount() {
+        // given
+        Long memberId = 123L;
+        Long wasteId = 1L;
+        given(wasteLikeRepository.existsByMemberIdAndWasteId(memberId, wasteId)).willReturn(true);
+        willDoNothing().given(wasteLikeRepository).deleteByMemberIdAndWasteId(memberId, wasteId);
+        willDoNothing().given(wasteRepository).updateLikeCount(wasteId, -1);
+
+        // when
+        wasteLikeService.deleteWasteLike(memberId, wasteId);
+        // then
     }
 }

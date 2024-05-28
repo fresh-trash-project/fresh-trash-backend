@@ -3,6 +3,7 @@ package freshtrash.freshtrashbackend.controller;
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
+import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
 import freshtrash.freshtrashbackend.service.WasteLikeService;
@@ -26,8 +27,10 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,6 +60,36 @@ class WasteLikeApiTest {
         mvc.perform(get("/api/v1/wastes/likes").queryParam("category", category.name()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements").value(1));
+        // then
+    }
+
+    @Test
+    @DisplayName("관심 폐기물 추가")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
+    void given_likeStatusAndWasteIdAndLoginUser_when_addWasteLike_then_returnTrue() throws Exception {
+        // given
+        Long wasteId = 1L;
+        Long memberId = 123L;
+        willDoNothing().given(wasteLikeService).addWasteLike(memberId, wasteId);
+        // when
+        mvc.perform(post("/api/v1/wastes/" + wasteId + "/likes").queryParam("likeStatus", LikeStatus.LIKE.name()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").value(true));
+        // then
+    }
+
+    @Test
+    @DisplayName("관심 폐기물 삭제")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
+    void given_likeStatusAndWasteIdAndLoginUser_when_deleteWasteLike_then_returnFalse() throws Exception {
+        // given
+        Long wasteId = 1L;
+        Long memberId = 123L;
+        willDoNothing().given(wasteLikeService).deleteWasteLike(memberId, wasteId);
+        // when
+        mvc.perform(post("/api/v1/wastes/" + wasteId + "/likes").queryParam("likeStatus", LikeStatus.UNLIKE.name()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").value(false));
         // then
     }
 }

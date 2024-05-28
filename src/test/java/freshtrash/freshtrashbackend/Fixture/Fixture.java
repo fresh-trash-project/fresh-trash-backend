@@ -64,6 +64,10 @@ public class Fixture {
         return createMember(1L, "test@gmail.com", "pw", "test", LoginType.EMAIL, AccountStatus.ACTIVE);
     }
 
+    public static Member createLoginMember() {
+        return createMember(123L, "testUser@gmail.com", "pw", "testUser", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
+    }
+
     public static ChatRoom createChatRoom(
             Long wasteId, Long sellerId, Long buyerId, boolean openOrClose, SellStatus sellStatus) {
         ChatRoom chatRoom = ChatRoom.builder()
