@@ -10,3 +10,5 @@ spring:
         retry:
           enabled: true
           max-attempts: 3
+        concurrency: 5
+        max-concurrency: 10
