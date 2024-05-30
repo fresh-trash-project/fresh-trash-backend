@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.config;
 
 import freshtrash.freshtrashbackend.config.constants.QueueType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import static freshtrash.freshtrashbackend.config.constants.QueueType.*;
 
+@Slf4j
 @Configuration
 public class RabbitMQConfig {
     private static final String directExchangeName = "direct-exchange";
@@ -78,6 +80,11 @@ public class RabbitMQConfig {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setExchange(directExchangeName);
         rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter);
+        rabbitTemplate.setMandatory(true);
+        // 메시지가 브로커에 도착했지만 지정된 큐로 라우팅되지 못한 경우
+        rabbitTemplate.setReturnsCallback((returnedMessage) -> {
+            log.info("routingKey: {}, replyText: {}", returnedMessage.getRoutingKey(), returnedMessage.getReplyText());
+        });
         return rabbitTemplate;
     }
 
