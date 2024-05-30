@@ -1,6 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
-import freshtrash.freshtrashbackend.dto.constants.TransactionMemberType;
+import freshtrash.freshtrashbackend.controller.constants.TransactionMemberType;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.TransactionLog;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
@@ -22,20 +22,17 @@ public class TransactionService {
 
     public Page<WasteResponse> getTransactedWastes(Long memberId, TransactionMemberType memberType, Pageable pageable) {
         switch (memberType) {
-            // 판매 완료 wastes
             case SELLER_CLOSE -> {
                 return transactionLogRepository
                         .findAllBySeller_Id(memberId, pageable)
                         .map(TransactionLog::getWaste)
                         .map(WasteResponse::fromEntity);
             }
-            // 판매 중 또는 예약 중 wastes
             case SELLER_ONGOING -> {
                 return wasteRepository
                         .findAllByMemberIdAndSellStatusNot(memberId, SellStatus.CLOSE, pageable)
                         .map(WasteResponse::fromEntity);
             }
-            // 구매 wastes
             default -> {
                 return transactionLogRepository
                         .findAllByBuyer_Id(memberId, pageable)

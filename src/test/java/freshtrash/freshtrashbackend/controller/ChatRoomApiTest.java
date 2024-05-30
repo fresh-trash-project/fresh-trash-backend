@@ -16,19 +16,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ChatApi.class)
+@ActiveProfiles("test")
+@WebMvcTest(ChatRoomApi.class)
 @Import(TestSecurityConfig.class)
-class ChatApiTest {
+class ChatRoomApiTest {
     @Autowired
     private MockMvc mvc;
 
@@ -40,14 +44,13 @@ class ChatApiTest {
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void given_memberIdAndPageable_when_getChatRooms_then_returnPagingChatRoomsResponse() throws Exception {
         // given
-        Long wasteId = 1L;
         Long memberId = 123L;
         int expectedSize = 1;
         Pageable pageable = PageRequest.of(0, 10);
         given(chatRoomService.getChatRoomsWithMemberId(eq(memberId), eq(pageable)))
                 .willReturn(new PageImpl<>(List.of(ChatRoomResponse.fromEntity(Fixture.createChatRoom()))));
         // when
-        mvc.perform(get("/api/v1/wastes/" + wasteId + "/chats"))
+        mvc.perform(get("/api/v1/chats"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size").value(expectedSize));
         // then
@@ -58,7 +61,6 @@ class ChatApiTest {
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void given_chatRoomIdAndMemberId_when_ifSellerOrBuyerOfChatRoom_then_getChatRoomWithMessages() throws Exception {
         // given
-        Long wasteId = 1L;
         Long memberId = 123L;
         Long chatRoomId = 2L;
         ChatRoom chatRoom = Fixture.createChatRoom();
@@ -66,7 +68,7 @@ class ChatApiTest {
                 .willReturn(true);
         given(chatRoomService.getChatRoom(eq(chatRoomId))).willReturn(chatRoom);
         // when
-        mvc.perform(get("/api/v1/wastes/" + wasteId + "/chats/" + chatRoomId))
+        mvc.perform(get("/api/v1/chats/" + chatRoomId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.chatRoom.wasteTitle")
                         .value(chatRoom.getWaste().getTitle()))
@@ -76,6 +78,18 @@ class ChatApiTest {
                         .value(chatRoom.getBuyer().getNickname()))
                 .andExpect(jsonPath("$.messages.size()")
                         .value(chatRoom.getChatMessages().size()));
+        // then
+    }
+
+    @Test
+    @DisplayName("채팅 나가기")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    void given_chatRoomId_when_then_closeChatRoom() throws Exception {
+        // given
+        Long chatRoomId = 2L;
+        willDoNothing().given(chatRoomService).closeChatRoom(eq(chatRoomId));
+        // when
+        mvc.perform(put("/api/v1/chats/" + chatRoomId)).andExpect(status().isNoContent());
         // then
     }
 }

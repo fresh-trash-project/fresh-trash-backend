@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.dto.constants.TransactionMemberType;
+import freshtrash.freshtrashbackend.controller.constants.TransactionMemberType;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.TransactionLog;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;

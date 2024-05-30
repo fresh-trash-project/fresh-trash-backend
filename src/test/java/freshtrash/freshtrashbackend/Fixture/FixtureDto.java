@@ -1,12 +1,10 @@
 package freshtrash.freshtrashbackend.Fixture;
 
+import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
-import freshtrash.freshtrashbackend.entity.constants.SellStatus;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
-import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
-import freshtrash.freshtrashbackend.entity.constants.WasteStatus;
+import freshtrash.freshtrashbackend.entity.constants.*;
 
 public class FixtureDto {
 
@@ -48,6 +46,16 @@ public class FixtureDto {
                 .email("test@gmail.com")
                 .address(Fixture.createAddress())
                 .rating(4)
+                .build();
+    }
+
+    public static AlarmPayload createAlarmPayload() {
+        return AlarmPayload.builder()
+                .message("test message")
+                .wasteId(1L)
+                .memberId(123L)
+                .fromMemberId(3L)
+                .alarmType(AlarmType.TRANSACTION)
                 .build();
     }
 }

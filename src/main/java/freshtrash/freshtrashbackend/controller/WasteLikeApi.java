@@ -1,6 +1,6 @@
 package freshtrash.freshtrashbackend.controller;
 
-import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
+import freshtrash.freshtrashbackend.controller.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
