@@ -12,3 +12,4 @@ spring:
           max-attempts: 3
         concurrency: 5
         max-concurrency: 10
+        acknowledge-mode: manual # default: auto
