@@ -9,6 +9,9 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static freshtrash.freshtrashbackend.config.constants.QueueType.*;
 
 @Configuration
@@ -84,6 +87,8 @@ public class RabbitMQConfig {
     }
 
     private Queue createQueue(QueueType queueType) {
-        return new Queue(queueType.getName(), false);
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("x-queue-version", 2);
+        return new Queue(queueType.getName(), true, false, false, args);
     }
 }
