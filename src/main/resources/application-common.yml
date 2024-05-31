@@ -1,5 +1,7 @@
 spring:
   config.activate.on-profile: common
+  web:
+    locale: ko_KR
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${DB_URL}
