@@ -36,9 +36,6 @@ public interface WasteRepository
     @EntityGraph(attributePaths = "member")
     Optional<Waste> findById(Long wasteId);
 
-    @Query("select w.member from Waste w where w.id = ?1")
-    Optional<Member> findSellerById(Long wasteId);
-
     Optional<FileNameSummary> findFileNameById(Long wasteId);
 
     boolean existsByIdAndMember_Id(Long wasteId, Long memberId);
