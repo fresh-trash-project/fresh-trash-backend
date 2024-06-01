@@ -137,4 +137,10 @@ public class Fixture {
         ReflectionTestUtils.setField(transactionLog, "waste", createWaste());
         return transactionLog;
     }
+
+    public static MockMultipartFile createMultipartFileWithName(String fileName, String content) {
+        return new MockMultipartFile(
+                fileName, "", "application/json", content.getBytes(StandardCharsets.UTF_8));
+    }
+
 }

@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
+import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.entity.WasteReview;
 import freshtrash.freshtrashbackend.repository.WasteReviewRepository;
@@ -26,7 +27,7 @@ class WasteReviewServiceTest {
     @DisplayName("리뷰(평점) 작성")
     void given_reviewRequestAndWasteIdAndMemberId_when_insertWasteReview_then_returnWasteReview() {
         // given
-        ReviewRequest reviewRequest = new ReviewRequest(4);
+        ReviewRequest reviewRequest = FixtureDto.createReviewRequest(4);
         Long wasteId = 1L;
         Long memberId = 123L;
         WasteReview wasteReview = WasteReview.fromRequest(reviewRequest, wasteId, memberId);

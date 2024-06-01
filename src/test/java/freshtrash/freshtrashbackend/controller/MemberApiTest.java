@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
+import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
@@ -81,7 +82,7 @@ class MemberApiTest {
         Long memberId = 123L;
         String oldFile = "oldFile.png";
         MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
-        MemberRequest memberRequest = new MemberRequest("user111", Fixture.createAddress());
+        MemberRequest memberRequest = FixtureDto.createMemberRequest();
         Member member = Fixture.createLoginMember();
         member.setNickname(memberRequest.nickname());
         member.setAddress(memberRequest.address());
@@ -94,8 +95,7 @@ class MemberApiTest {
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/members")
                         .file("imgFile", imgFile.getBytes())
-                        .file(new MockMultipartFile(
-                                "memberRequest", "", "application/json", objectMapper.writeValueAsBytes(memberRequest)))
+                        .file(Fixture.createMultipartFileWithName("memberRequest", objectMapper.writeValueAsString(memberRequest)))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nickname").value(memberRequest.nickname()))

@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.entity.WasteReview;
@@ -38,7 +39,7 @@ class WasteReviewApiTest {
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     void given_reviewRequestAndWasteIdAndLoginUser_when_addWasteReview_then_returnReviewResponse() throws Exception {
         // given
-        ReviewRequest reviewRequest = new ReviewRequest(4);
+        ReviewRequest reviewRequest = FixtureDto.createReviewRequest(4);
         Long wasteId = 1L;
         Long memberId = 123L;
         WasteReview wasteReview = WasteReview.fromRequest(reviewRequest, wasteId, memberId);

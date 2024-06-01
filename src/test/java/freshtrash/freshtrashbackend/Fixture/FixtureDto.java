@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.Fixture;
 
 import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
+import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
@@ -62,6 +63,10 @@ public class FixtureDto {
 
     public static MemberRequest createMemberRequest() {
         return new MemberRequest("user111", Fixture.createAddress());
+    }
+
+    public static ReviewRequest createReviewRequest(int rate) {
+        return new ReviewRequest(rate);
     }
 }
 
