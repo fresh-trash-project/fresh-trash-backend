@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
+import com.rabbitmq.client.Channel;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
@@ -78,10 +79,12 @@ class AlarmServiceTest {
         Long memberId = alarmPayload.memberId();
         Alarm alarm = Alarm.fromMessageRequest(alarmPayload);
         SseEmitter sseEmitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
+        Channel channel = mock(Channel.class);
+        long deliveryTag = 3;
         given(alarmRepository.save(eq(alarm))).willReturn(alarm);
         given(emitterRepository.findByMemberId(eq(memberId))).willReturn(Optional.of(sseEmitter));
         // whenxp
-        alarmService.receiveWasteTransaction(alarmPayload);
+        alarmService.receiveWasteTransaction(channel, deliveryTag, alarmPayload);
         ArgumentCaptor<Alarm> alarmCaptor = ArgumentCaptor.forClass(Alarm.class);
         // then
         verify(alarmRepository, times(1)).save(alarmCaptor.capture());

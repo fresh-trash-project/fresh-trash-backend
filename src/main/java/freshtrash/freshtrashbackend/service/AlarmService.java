@@ -1,5 +1,7 @@
 package freshtrash.freshtrashbackend.service;
 
+import com.rabbitmq.client.Channel;
+import freshtrash.freshtrashbackend.aspect.annotation.ManualAcknowledge;
 import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.entity.Alarm;
@@ -10,8 +12,10 @@ import freshtrash.freshtrashbackend.repository.EmitterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -42,8 +46,10 @@ public class AlarmService {
     /**
      * 알람 메시지 전송 Listener
      */
+    @ManualAcknowledge
     @RabbitListener(queues = {"#{wasteCompleteQueue.name}", "#{wasteFlagQueue.name}", "#{wasteChangeStatusQueue.name}"})
-    public void receiveWasteTransaction(@Payload AlarmPayload alarmPayload) {
+    public void receiveWasteTransaction(
+            Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload AlarmPayload alarmPayload) {
         log.debug("receive complete transaction message: {}", alarmPayload);
         Alarm alarm = saveAlarm(alarmPayload);
         receive(alarmPayload.memberId(), AlarmResponse.fromEntity(alarm));
