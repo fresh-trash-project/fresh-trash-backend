@@ -5,7 +5,6 @@ import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.repository.MemberCacheRepository;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -55,20 +54,10 @@ class MemberServiceTest {
         // given
         Long memberId = 1L;
         MemberPrincipal memberPrincipal = FixtureDto.createMemberPrincipal();
-
         MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
-        MemberRequest memberRequest = new MemberRequest("user111", Fixture.createAddress());
-        MemberPrincipal updatedMemberPrincipal = MemberPrincipal.builder()
-                .id(1L)
-                .authorities(UserRole.USER)
-                .nickname(memberRequest.nickname())
-                .password("pw")
-                .email("test@gmail.com")
-                .address(memberRequest.address())
-                .rating(4)
-                .build();
+        MemberRequest memberRequest = FixtureDto.createMemberRequest();
         given(memberRepository.findById(memberId)).willReturn(Optional.of(Fixture.createMember()));
-        given(memberCacheRepository.save(any(MemberPrincipal.class))).willReturn(updatedMemberPrincipal);
+        given(memberCacheRepository.save(any(MemberPrincipal.class))).willReturn(memberPrincipal);
         // when
         Member member = memberService.updateMember(memberPrincipal, memberRequest, imgFile);
         // then

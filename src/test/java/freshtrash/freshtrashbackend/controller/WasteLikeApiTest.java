@@ -3,13 +3,15 @@ package freshtrash.freshtrashbackend.controller;
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.constants.LikeStatus;
+import freshtrash.freshtrashbackend.controller.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
 import freshtrash.freshtrashbackend.service.WasteLikeService;
 import freshtrash.freshtrashbackend.service.WasteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -63,33 +65,20 @@ class WasteLikeApiTest {
         // then
     }
 
-    @Test
-    @DisplayName("관심 폐기물 추가")
+    @ParameterizedTest
+    @DisplayName("관심 폐기물 추가/삭제")
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    void given_likeStatusAndWasteIdAndLoginUser_when_addWasteLike_then_returnTrue() throws Exception {
+    @CsvSource(value = {"LIKE", "UNLIKE"})
+    void given_likeStatusAndWasteIdAndLoginUser_when_addOrDeleteWasteLike_then_returnBoolean(LikeStatus likeStatus) throws Exception {
         // given
         Long wasteId = 1L;
         Long memberId = 123L;
         willDoNothing().given(wasteLikeService).addWasteLike(memberId, wasteId);
-        // when
-        mvc.perform(post("/api/v1/wastes/" + wasteId + "/likes").queryParam("likeStatus", LikeStatus.LIKE.name()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value(true));
-        // then
-    }
-
-    @Test
-    @DisplayName("관심 폐기물 삭제")
-    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    void given_likeStatusAndWasteIdAndLoginUser_when_deleteWasteLike_then_returnFalse() throws Exception {
-        // given
-        Long wasteId = 1L;
-        Long memberId = 123L;
         willDoNothing().given(wasteLikeService).deleteWasteLike(memberId, wasteId);
         // when
-        mvc.perform(post("/api/v1/wastes/" + wasteId + "/likes").queryParam("likeStatus", LikeStatus.UNLIKE.name()))
+        mvc.perform(post("/api/v1/wastes/" + wasteId + "/likes").queryParam("likeStatus", String.valueOf(likeStatus)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value(false));
+                .andExpect(jsonPath("$.data").value(likeStatus==LikeStatus.LIKE));
         // then
     }
 }

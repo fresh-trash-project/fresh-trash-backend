@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.Fixture;
 
 import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
+import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.request.WasteRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
@@ -58,4 +59,9 @@ public class FixtureDto {
                 .alarmType(AlarmType.TRANSACTION)
                 .build();
     }
+
+    public static MemberRequest createMemberRequest() {
+        return new MemberRequest("user111", Fixture.createAddress());
+    }
 }
+

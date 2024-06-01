@@ -5,7 +5,6 @@ import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.service.LocalFileService;
@@ -23,7 +22,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
@@ -81,15 +81,7 @@ class MemberApiTest {
         Long memberId = 123L;
         String oldFile = "oldFile.png";
         MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
-        MemberRequest memberRequest = new MemberRequest(
-                "user111",
-                Address.builder()
-                        .zipcode("55040")
-                        .state("seoul")
-                        .city("suseo")
-                        .district("district11")
-                        .detail("110")
-                        .build());
+        MemberRequest memberRequest = new MemberRequest("user111", Fixture.createAddress());
         Member member = Fixture.createLoginMember();
         member.setNickname(memberRequest.nickname());
         member.setAddress(memberRequest.address());
@@ -98,7 +90,7 @@ class MemberApiTest {
         given(memberService.updateMember(
                         any(MemberPrincipal.class), any(MemberRequest.class), any(MultipartFile.class)))
                 .willReturn(member);
-        willDoNothing().given(localFileService).deleteFileIfExists(anyString());
+        willDoNothing().given(localFileService).deleteFileIfExists(eq(oldFile));
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/members")
                         .file("imgFile", imgFile.getBytes())
