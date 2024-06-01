@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
+import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.WasteLike;
 import freshtrash.freshtrashbackend.exception.WasteException;
@@ -18,9 +19,9 @@ public class WasteLikeService {
     private final WasteLikeRepository wasteLikeRepository;
     private final WasteRepository wasteRepository;
 
-    public Page<WasteResponse> getLikedWastes(Long memberId, Pageable pageable) {
+    public Page<WasteResponse> getLikedWastes(Predicate predicate, Pageable pageable) {
         return wasteLikeRepository
-                .findAllByMember_Id(memberId, pageable)
+                .findAll(predicate, pageable)
                 .map(WasteLike::getWaste)
                 .map(WasteResponse::fromEntity);
     }

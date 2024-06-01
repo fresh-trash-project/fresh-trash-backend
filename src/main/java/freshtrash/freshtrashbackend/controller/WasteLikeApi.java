@@ -1,9 +1,12 @@
 package freshtrash.freshtrashbackend.controller;
 
+import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.controller.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.entity.QWasteLike;
+import freshtrash.freshtrashbackend.entity.WasteLike;
 import freshtrash.freshtrashbackend.exception.WasteException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.service.WasteLikeService;
@@ -11,6 +14,7 @@ import freshtrash.freshtrashbackend.service.WasteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +32,12 @@ public class WasteLikeApi {
 
     @GetMapping("/likes")
     public ResponseEntity<Page<WasteResponse>> getLikedWastes(
+            @QuerydslPredicate(root = WasteLike.class) Predicate predicate,
             @PageableDefault(size = 6, sort = "createdAt", direction = DESC) Pageable pageable,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        Page<WasteResponse> wastes = wasteLikeService.getLikedWastes(memberPrincipal.id(), pageable);
+
+        predicate = QWasteLike.wasteLike.memberId.eq(memberPrincipal.id()).and(predicate);
+        Page<WasteResponse> wastes = wasteLikeService.getLikedWastes(predicate, pageable);
         return ResponseEntity.ok(wastes);
     }
 
