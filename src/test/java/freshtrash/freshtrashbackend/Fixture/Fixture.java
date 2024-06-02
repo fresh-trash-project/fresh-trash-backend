@@ -43,19 +43,13 @@ public class Fixture {
     }
 
     public static Member createMember(
-            Long id,
-            String email,
-            String password,
-            String nickname,
-            LoginType loginType,
-            UserRole userRole,
-            AccountStatus accountStatus) {
+            Long id, String email, String password, String nickname, LoginType loginType, AccountStatus accountStatus) {
         Member member = Member.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
                 .loginType(loginType)
-                .userRole(userRole)
+                .userRole(UserRole.USER)
                 .accountStatus(accountStatus)
                 .build();
 
@@ -67,7 +61,7 @@ public class Fixture {
     }
 
     public static Member createMember() {
-        return createMember(1L, "test@gmail.com", "pw", "test", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
+        return createMember(1L, "test@gmail.com", "pw", "test", LoginType.EMAIL, AccountStatus.ACTIVE);
     }
 
     public static ChatRoom createChatRoom(
@@ -106,25 +100,11 @@ public class Fixture {
         ReflectionTestUtils.setField(
                 chatRoom,
                 "seller",
-                createMember(
-                        sellerId,
-                        "seller@gmail.com",
-                        "pw",
-                        "seller",
-                        LoginType.EMAIL,
-                        UserRole.USER,
-                        AccountStatus.ACTIVE));
+                createMember(sellerId, "seller@gmail.com", "pw", "seller", LoginType.EMAIL, AccountStatus.ACTIVE));
         ReflectionTestUtils.setField(
                 chatRoom,
                 "buyer",
-                createMember(
-                        buyerId,
-                        "buyer@gmail.com",
-                        "pw",
-                        "buyer",
-                        LoginType.EMAIL,
-                        UserRole.USER,
-                        AccountStatus.ACTIVE));
+                createMember(buyerId, "buyer@gmail.com", "pw", "buyer", LoginType.EMAIL, AccountStatus.ACTIVE));
         ReflectionTestUtils.setField(chatRoom, "chatMessages", Set.of(createChatMessage()));
         return chatRoom;
     }

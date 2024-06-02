@@ -10,6 +10,8 @@ import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.FLAG_MESSA
 @Component
 public class UserFlagChatAlarm extends ChatAlarmTemplate {
 
+    private static final int FLAG_LIMIT = 10;
+
     public UserFlagChatAlarm(MemberService memberService, ChatProducer producer) {
         super(memberService, producer);
     }
@@ -19,7 +21,7 @@ public class UserFlagChatAlarm extends ChatAlarmTemplate {
      */
     @Override
     int update(Long targetMemberId) {
-        return this.memberService.updateFlagCount(targetMemberId).flagCount();
+        return this.memberService.updateFlagCount(targetMemberId, FLAG_LIMIT).flagCount();
     }
 
     @Override
@@ -29,6 +31,8 @@ public class UserFlagChatAlarm extends ChatAlarmTemplate {
     }
 
     private String generateMessage(int flagCount) {
-        return flagCount >= 10 ? EXCEED_FLAG_MESSAGE.getMessage() : String.format(FLAG_MESSAGE.getMessage(), flagCount);
+        return flagCount >= FLAG_LIMIT
+                ? EXCEED_FLAG_MESSAGE.getMessage()
+                : String.format(FLAG_MESSAGE.getMessage(), flagCount);
     }
 }

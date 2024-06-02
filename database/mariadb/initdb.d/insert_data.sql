@@ -1,16 +1,18 @@
 insert into members(email, password, rating, nickname, address, file_name, login_type, user_role, account_status,
-                    created_at, modified_at)
+                    created_at, modified_at, flag_count)
 values ('abc@never.com', '$2a$10$ZskRs64yZZU9g6blmNdZte7FO6KaMduwlZhk7YkxJX2ZwYLSrPfA.', 5, 'abc',
         json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
-        'test.png', 'EMAIL', 'USER', 'ACTIVE', now(), null),
+        'test.png', 'EMAIL', 'USER', 'ACTIVE', now(), null, 0),
        ('def@never.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 4, 'def',
-        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null),
+        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null, 0),
        ('user123@never.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 3, 'user123',
-        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null),
+        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null, 0),
        ('user456@never.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 2, 'user456',
-        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null),
+        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null, 0),
        ('user777@never.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 2, 'user777',
-        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null);
+        null, null, 'EMAIL', 'USER', 'ACTIVE', now(), null, 0),
+       ('blackUser@gmail.com', '$2a$10$6UF8CDeP2A7ACjMVE/cpS.DlgRw/ZRA0NuHFnpziEpbasOhS6EGq.', 2, 'blackUser',
+        null, null, 'EMAIL', 'BLACK_USER', 'ACTIVE', now(), null, 10);
 
 
 insert into wastes(member_id, title, content, waste_price, like_count, view_count, file_name, waste_category,
@@ -151,11 +153,13 @@ values (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 1), '거래 완료
        (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), '거래 완료되었습니다.', now(), null),
        (1, 'TRANSACTION', json_object('fromMemberId', 4, 'targetId', 4), '예약중으로 변경하였습니다.', now(), null),
        (1, 'TRANSACTION', json_object('fromMemberId', 4, 'targetId', 4), '거래 완료되었습니다.', now(), null),
-       (1, 'FLAG', json_object('fromMemberId', 1, 'targetId', 1), '1번 신고받은 내역이 있습니다. 신고받은 횟수가 10번이상 되면 서비스를 이용하실 수 없습니다.', now(), null),
+       (1, 'FLAG', json_object('fromMemberId', 1, 'targetId', 1),
+        '1번 신고받은 내역이 있습니다. 신고받은 횟수가 10번이상 되면 서비스를 이용하실 수 없습니다.', now(), null),
        (2, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), 'abc님이 판매중으로 변경하였습니다.', now(), null),
        (2, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), '판매 완료되었습니다.', now(), null),
        (2, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), '판매 완료되었습니다.', now(), null),
-       (2, 'FLAG', json_object('fromMemberId', 1, 'targetId', 1), '1번 신고받은 내역이 있습니다. 신고받은 횟수가 10번이상 되면 서비스를 이용하실 수 없습니다.', now(), null),
+       (2, 'FLAG', json_object('fromMemberId', 1, 'targetId', 1),
+        '1번 신고받은 내역이 있습니다. 신고받은 횟수가 10번이상 되면 서비스를 이용하실 수 없습니다.', now(), null),
        (2, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 2), 'user123님이 예약중으로 변경했습니다.', now(), null),
        (2, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 2), '판매 완료되었습니다.', now(), null),
        (2, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), '판매 완료되었습니다.', now(), null),

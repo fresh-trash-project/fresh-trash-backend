@@ -20,9 +20,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.Collections;
 import java.util.UUID;
 
 @Configuration
@@ -51,7 +49,7 @@ public class SecurityConfig {
                         .regexMatchers(".*wastes", "/chat-ws", ".*auth/check-nickname.*")
                         .permitAll()
                         .anyRequest()
-                        .authenticated())
+                        .hasAnyRole("USER", "ADMIN"))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

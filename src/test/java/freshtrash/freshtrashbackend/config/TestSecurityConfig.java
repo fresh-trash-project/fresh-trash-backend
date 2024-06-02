@@ -4,7 +4,6 @@ import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.entity.constants.LoginType;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.security.CustomOAuth2SuccessHandler;
 import freshtrash.freshtrashbackend.security.Http401UnauthorizedAuthenticationEntryPoint;
 import freshtrash.freshtrashbackend.security.SecurityConfig;
@@ -31,14 +30,13 @@ public class TestSecurityConfig {
     @MockBean
     private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
-
     @BeforeTestMethod
     void securitySetUp() {
         String userEmail = "testUser@gmail.com";
-        given(memberService.getMemberByEmail(eq(userEmail))).willReturn(createMember(userEmail));
+        given(memberService.getMemberByEmail(eq(userEmail))).willReturn(createMember(123L, userEmail));
     }
 
-    private Member createMember(String email) {
-        return Fixture.createMember(123L, email, "pw", "testUser", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
+    private Member createMember(Long id, String email) {
+        return Fixture.createMember(id, email, "pw", email.split("@")[0], LoginType.EMAIL, AccountStatus.ACTIVE);
     }
 }

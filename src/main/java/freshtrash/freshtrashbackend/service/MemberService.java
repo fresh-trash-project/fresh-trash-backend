@@ -29,7 +29,6 @@ public class MemberService {
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
     private final FileService fileService;
-    private final int FLAG_LIMIT = 10;
 
     public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
@@ -61,11 +60,6 @@ public class MemberService {
     public LoginResponse signIn(String email, String password) {
         Member member = getMemberByEmail(email);
         checkPassword(password, member.getPassword());
-
-        // 신고당한 횟수 10이상 -> 로그인 불가
-        if (member.getFlagCount() >= FLAG_LIMIT) {
-            throw new MemberException(ErrorCode.EXCEED_FLAG_COUNT);
-        }
 
         // 토큰 발급
         String accessToken = tokenProvider.generateAccessToken(member.getId());
@@ -131,8 +125,8 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
-    public FlagCountSummary updateFlagCount(Long memberId) {
-        memberRepository.updateFlagCount(memberId);
+    public FlagCountSummary updateFlagCount(Long memberId, int flagLimit) {
+        memberRepository.updateFlagCount(memberId, flagLimit);
         return memberRepository
                 .findFlagCountById(memberId)
                 .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
