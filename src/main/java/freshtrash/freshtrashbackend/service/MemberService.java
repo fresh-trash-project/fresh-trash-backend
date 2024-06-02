@@ -4,7 +4,6 @@ import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.AuthException;
 import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -126,8 +125,8 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
-    public FlagCountSummary updateFlagCount(Long memberId) {
-        memberRepository.updateFlagCount(memberId);
+    public FlagCountSummary updateFlagCount(Long memberId, int flagLimit) {
+        memberRepository.updateFlagCount(memberId, flagLimit);
         return memberRepository
                 .findFlagCountById(memberId)
                 .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
@@ -148,12 +147,5 @@ public class MemberService {
         if (!encoder.matches(inputPassword, existPassword)) {
             throw new AuthException("not matched password");
         }
-    }
-
-    /**
-     * 대상 유저의 UserRole 변경
-     */
-    public void updateMemberRole(Long targetMemberId, UserRole userRole) {
-        memberRepository.updateUserRoleById(targetMemberId, userRole);
     }
 }

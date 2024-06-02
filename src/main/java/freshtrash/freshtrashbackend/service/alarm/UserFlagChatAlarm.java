@@ -1,6 +1,5 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.service.MemberService;
 import freshtrash.freshtrashbackend.service.producer.ChatProducer;
 import org.springframework.stereotype.Component;
@@ -22,9 +21,7 @@ public class UserFlagChatAlarm extends ChatAlarmTemplate {
      */
     @Override
     int update(Long targetMemberId) {
-        int flagCount = this.memberService.updateFlagCount(targetMemberId).flagCount();
-        if (flagCount >= FLAG_LIMIT) this.memberService.updateMemberRole(targetMemberId, UserRole.BLACK_USER);
-        return flagCount;
+        return this.memberService.updateFlagCount(targetMemberId, FLAG_LIMIT).flagCount();
     }
 
     @Override

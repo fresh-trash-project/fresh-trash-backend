@@ -25,8 +25,16 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByNickname(String nickname);
 
-    @Query(nativeQuery = true, value = "update members m set m.flag_count = m.flag_count + 1 where m.id = ?1")
-    void updateFlagCount(Long memberId);
+    @Query(nativeQuery = true, value = """
+            update members m 
+            set m.flag_count = m.flag_count + 1, 
+                m.user_role = case 
+                    when m.flag_count >= ?2 then 'BLACK_USER' 
+                    else m.user_role 
+                end 
+            where m.id = ?1
+            """)
+    void updateFlagCount(Long memberId, int flagLimit);
 
     @Query(nativeQuery = true, value = "update members m set m.user_role = ?2 where m.id = ?1")
     void updateUserRoleById(Long targetMemberId, UserRole userRole);
