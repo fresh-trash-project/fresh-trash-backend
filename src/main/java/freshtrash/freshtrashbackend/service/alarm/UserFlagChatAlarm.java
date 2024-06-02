@@ -10,7 +10,7 @@ import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.FLAG_MESSA
 @Component
 public class UserFlagChatAlarm extends ChatAlarmTemplate {
 
-    private static int FLAG_LIMIT = 10;
+    private static final int FLAG_LIMIT = 10;
 
     public UserFlagChatAlarm(MemberService memberService, ChatProducer producer) {
         super(memberService, producer);
