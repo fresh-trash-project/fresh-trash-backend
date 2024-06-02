@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Member;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.AuthException;
 import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -29,7 +30,6 @@ public class MemberService {
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
     private final FileService fileService;
-    private final int FLAG_LIMIT = 10;
 
     public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
@@ -61,11 +61,6 @@ public class MemberService {
     public LoginResponse signIn(String email, String password) {
         Member member = getMemberByEmail(email);
         checkPassword(password, member.getPassword());
-
-        // 신고당한 횟수 10이상 -> 로그인 불가
-        if (member.getFlagCount() >= FLAG_LIMIT) {
-            throw new MemberException(ErrorCode.EXCEED_FLAG_COUNT);
-        }
 
         // 토큰 발급
         String accessToken = tokenProvider.generateAccessToken(member.getId());
@@ -153,5 +148,12 @@ public class MemberService {
         if (!encoder.matches(inputPassword, existPassword)) {
             throw new AuthException("not matched password");
         }
+    }
+
+    /**
+     * 대상 유저의 UserRole 변경
+     */
+    public void updateMemberRole(Long targetMemberId, UserRole userRole) {
+        memberRepository.updateUserRoleById(targetMemberId, userRole);
     }
 }

@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.service.MemberService;
 import freshtrash.freshtrashbackend.service.producer.ChatProducer;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,8 @@ import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.FLAG_MESSA
 @Component
 public class UserFlagChatAlarm extends ChatAlarmTemplate {
 
+    private static int FLAG_LIMIT = 10;
+
     public UserFlagChatAlarm(MemberService memberService, ChatProducer producer) {
         super(memberService, producer);
     }
@@ -19,7 +22,9 @@ public class UserFlagChatAlarm extends ChatAlarmTemplate {
      */
     @Override
     int update(Long targetMemberId) {
-        return this.memberService.updateFlagCount(targetMemberId).flagCount();
+        int flagCount = this.memberService.updateFlagCount(targetMemberId).flagCount();
+        if (flagCount >= FLAG_LIMIT) this.memberService.updateMemberRole(targetMemberId, UserRole.BLACK_USER);
+        return flagCount;
     }
 
     @Override
@@ -29,6 +34,8 @@ public class UserFlagChatAlarm extends ChatAlarmTemplate {
     }
 
     private String generateMessage(int flagCount) {
-        return flagCount >= 10 ? EXCEED_FLAG_MESSAGE.getMessage() : String.format(FLAG_MESSAGE.getMessage(), flagCount);
+        return flagCount >= FLAG_LIMIT
+                ? EXCEED_FLAG_MESSAGE.getMessage()
+                : String.format(FLAG_MESSAGE.getMessage(), flagCount);
     }
 }
