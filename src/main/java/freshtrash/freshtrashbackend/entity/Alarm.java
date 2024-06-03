@@ -5,8 +5,10 @@ import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
 import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,6 +22,8 @@ import static javax.persistence.FetchType.LAZY;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @TypeDef(name = "json", typeClass = JsonType.class)
+@SQLDelete(sql = "update alarms set deleted_at = now() where id=?")
+@Where(clause = "deleted_at is NULL")
 public class Alarm extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +41,9 @@ public class Alarm extends CreatedAt {
     @Column(nullable = false)
     private String message;
 
-    @Setter
     private LocalDateTime readAt;
+
+    private LocalDateTime deletedAt;
 
     @ToString.Exclude
     @ManyToOne(optional = false, fetch = LAZY)

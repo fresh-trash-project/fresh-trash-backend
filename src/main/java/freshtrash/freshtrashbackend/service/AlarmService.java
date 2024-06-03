@@ -17,10 +17,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -29,18 +32,15 @@ import java.util.concurrent.TimeUnit;
 public class AlarmService {
     private static final Long SSE_TIMEOUT = TimeUnit.MINUTES.toMillis(30);
     private static final String CONNECTED_ALARM_NAME = "connected";
-    private static final String WASTE_TRANSACTION_ALARM_NAME = "waste-transaction-alarm";
     private final EmitterRepository emitterRepository;
     private final AlarmRepository alarmRepository;
 
     /**
      * 전체 알람 조회
-     * - 읽지 않은 알람(readAt == null)만 조회
+     * - 읽지 않은 알람도 같이 조회
      */
     public Page<AlarmResponse> getAlarms(Long memberId, Pageable pageable) {
-        return alarmRepository
-                .findAllByMember_IdAndReadAtIsNull(memberId, pageable)
-                .map(AlarmResponse::fromEntity);
+        return alarmRepository.findAllByMember_Id(memberId, pageable).map(AlarmResponse::fromEntity);
     }
 
     /**
@@ -67,7 +67,7 @@ public class AlarmService {
                             try {
                                 sseEmitter.send(SseEmitter.event()
                                         .id(String.valueOf(alarmResponse.id()))
-                                        .name(WASTE_TRANSACTION_ALARM_NAME)
+                                        .name(alarmResponse.alarmType().name())
                                         .data(alarmResponse));
                             } catch (IOException e) {
                                 emitterRepository.deleteByMemberId(memberId);
@@ -110,6 +110,19 @@ public class AlarmService {
 
     public void readAlarm(Long alarmId) {
         alarmRepository.updateReadAtById(alarmId);
+    }
+
+    /**
+     * 1개월이 지난 알람 모두 삭제
+     * - 매달 0시에 수행
+     */
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * *")
+    public void deleteAlarms() {
+        log.debug("delete alarms!!");
+        alarmRepository.deleteAllInBatchByReadAtNotNullAndCreatedAtBefore(
+                LocalDateTime.now().minusMonths(1));
+        log.debug("successfully deleted alarms!!");
     }
 
     public boolean isOwnerOfAlarm(Long alarmId, Long memberId) {

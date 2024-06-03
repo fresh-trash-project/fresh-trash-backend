@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.entity.ChatRoom;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.TransactionService;
@@ -28,7 +29,7 @@ public class RequestBookingProductAlarm extends ProductAlarmTemplate {
         chatRoomService
                 .getNotClosedChatRoomsByWasteId(ongoingChatRoom.getWasteId())
                 .forEach(chatRoom -> {
-                    this.producer.updateSellStatus(chatRoom, message);
+                    this.producer.updateSellStatus(chatRoom, message, AlarmType.BOOKING_REQUEST);
                 });
     }
 
