@@ -84,7 +84,7 @@ class AlarmServiceTest {
         given(alarmRepository.save(eq(alarm))).willReturn(alarm);
         given(emitterRepository.findByMemberId(eq(memberId))).willReturn(Optional.of(sseEmitter));
         // whenxp
-        alarmService.receiveWasteTransaction(channel, deliveryTag, alarmPayload);
+        alarmService.receiveProductProductDeal(channel, deliveryTag, alarmPayload);
         ArgumentCaptor<Alarm> alarmCaptor = ArgumentCaptor.forClass(Alarm.class);
         // then
         verify(alarmRepository, times(1)).save(alarmCaptor.capture());

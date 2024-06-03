@@ -70,8 +70,8 @@ class ChatRoomApiTest {
         // when
         mvc.perform(get("/api/v1/chats/" + chatRoomId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.chatRoom.wasteTitle")
-                        .value(chatRoom.getWaste().getTitle()))
+                .andExpect(jsonPath("$.chatRoom.productTitle")
+                        .value(chatRoom.getProduct().getTitle()))
                 .andExpect(jsonPath("$.chatRoom.sellerNickname")
                         .value(chatRoom.getSeller().getNickname()))
                 .andExpect(jsonPath("$.chatRoom.buyerNickname")

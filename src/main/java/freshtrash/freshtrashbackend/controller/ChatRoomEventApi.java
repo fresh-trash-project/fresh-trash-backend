@@ -37,8 +37,8 @@ public class ChatRoomEventApi {
     /**
      * 거래 처리 (판매 중, 예약 중, 판매 완료)
      */
-    @PostMapping("/{chatRoomId}/transaction")
-    public ResponseEntity<Void> handleTransaction(
+    @PostMapping("/{chatRoomId}/productDeal")
+    public ResponseEntity<Void> handleProductDeal(
             @PathVariable Long chatRoomId, @RequestParam ProductEventType productEventType) {
         switch (productEventType) {
             case CANCEL_BOOKING -> cancelBookingProductAlarm.sendAlarm(chatRoomId);

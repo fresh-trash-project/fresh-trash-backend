@@ -25,9 +25,9 @@ public class UserFlagChatAlarm extends ChatAlarmTemplate {
     }
 
     @Override
-    void publishEvent(int flagCount, Long wasteId, Long targetMemberId, Long currentMemberId) {
+    void publishEvent(int flagCount, Long productId, Long targetMemberId, Long currentMemberId) {
         String message = generateMessage(flagCount);
-        this.producer.occurredUserFlag(wasteId, targetMemberId, currentMemberId, message);
+        this.producer.occurredUserFlag(productId, targetMemberId, currentMemberId, message);
     }
 
     private String generateMessage(int flagCount) {

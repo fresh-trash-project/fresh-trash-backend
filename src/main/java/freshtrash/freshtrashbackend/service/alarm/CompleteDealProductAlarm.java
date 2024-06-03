@@ -3,7 +3,7 @@ package freshtrash.freshtrashbackend.service.alarm;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
-import freshtrash.freshtrashbackend.service.TransactionService;
+import freshtrash.freshtrashbackend.service.ProductDealService;
 import freshtrash.freshtrashbackend.service.producer.ProductDealProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 public class CompleteDealProductAlarm extends ProductAlarmTemplate {
 
     public CompleteDealProductAlarm(
-            ChatRoomService chatRoomService, TransactionService transactionService, ProductDealProducer producer) {
-        super(chatRoomService, transactionService, producer);
+            ChatRoomService chatRoomService, ProductDealService productDealService, ProductDealProducer producer) {
+        super(chatRoomService, productDealService, producer);
     }
 
     @Override
     void update(ChatRoom closedChatRoom) {
-        this.transactionService.completeTransaction(
-                closedChatRoom.getWasteId(),
+        this.productDealService.completeProductDeal(
+                closedChatRoom.getProductId(),
                 closedChatRoom.getId(),
                 closedChatRoom.getSellerId(),
                 closedChatRoom.getBuyerId(),
@@ -37,7 +37,7 @@ public class CompleteDealProductAlarm extends ProductAlarmTemplate {
 
         // 그 밖의 채팅 요청한 사용자들에게 알람 전송
         chatRoomService
-                .getNotClosedChatRoomsByWasteId(closedChatRoom.getWasteId())
+                .getNotClosedChatRoomsByProductId(closedChatRoom.getProductId())
                 .forEach(this.producer::completeDeal);
         log.debug("Send message to others.");
     }

@@ -15,9 +15,9 @@ values ('abc@never.com', '$2a$10$ZskRs64yZZU9g6blmNdZte7FO6KaMduwlZhk7YkxJX2ZwYL
         null, null, 'EMAIL', 'BLACK_USER', 'ACTIVE', now(), null, 10);
 
 
-insert into wastes(member_id, title, content, waste_price, like_count, view_count, file_name, waste_category,
-                   waste_status,
-                   sell_status, address, created_at, modified_at, transaction_at)
+insert into products(member_id, title, content, product_price, like_count, view_count, file_name, product_category,
+                   product_status,
+                   sell_status, address, created_at, modified_at, productDeal_at)
 values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING',
         json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
         now(), null, null),
@@ -101,7 +101,7 @@ values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING
         now(), null, null);
 
 
-insert into waste_likes(member_id, waste_id, created_at)
+insert into product_likes(member_id, product_id, created_at)
 values (1, 1, now()),
        (1, 2, now()),
        (1, 3, now()),
@@ -116,7 +116,7 @@ values (1, 1, now()),
        (2, 7, now()),
        (3, 8, now());
 
-INSERT INTO chat_rooms(waste_id, seller_id, buyer_id, sell_status, open_or_close, created_at)
+INSERT INTO chat_rooms(product_id, seller_id, buyer_id, sell_status, open_or_close, created_at)
 VALUES (1, 1, 2, 'ONGOING', 1, now()),
        (1, 1, 3, 'CLOSE', 1, now()),
        (1, 1, 4, 'ONGOING', 1, now());
@@ -125,7 +125,7 @@ VALUES (1, 1, 2, 'ONGOING', 1, now()),
 INSERT INTO chat_messages(chat_room_id, member_id, message, created_at)
 VALUES (1, 1, '첫 번째 메세지입니다.', now());
 
-insert into transaction_logs(waste_id, seller_id, buyer_id, created_at)
+insert into productDeal_logs(product_id, seller_id, buyer_id, created_at)
 values (5, 1, 2, now()),
        (6, 2, 1, now()),
        (7, 3, 1, now()),

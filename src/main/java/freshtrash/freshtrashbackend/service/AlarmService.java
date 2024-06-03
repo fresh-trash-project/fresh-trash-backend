@@ -47,10 +47,10 @@ public class AlarmService {
      * 알람 메시지 전송 Listener
      */
     @ManualAcknowledge
-    @RabbitListener(queues = {"#{wasteCompleteQueue.name}", "#{wasteFlagQueue.name}", "#{wasteChangeStatusQueue.name}"})
-    public void receiveWasteTransaction(
+    @RabbitListener(queues = {"#{productCompleteQueue.name}", "#{productFlagQueue.name}", "#{productChangeStatusQueue.name}"})
+    public void receiveProductProductDeal(
             Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload AlarmPayload alarmPayload) {
-        log.debug("receive complete transaction message: {}", alarmPayload);
+        log.debug("receive complete productDeal message: {}", alarmPayload);
         Alarm alarm = saveAlarm(alarmPayload);
         receive(alarmPayload.memberId(), AlarmResponse.fromEntity(alarm));
     }

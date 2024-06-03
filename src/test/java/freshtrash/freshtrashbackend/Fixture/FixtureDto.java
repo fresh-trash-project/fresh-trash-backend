@@ -3,37 +3,37 @@ package freshtrash.freshtrashbackend.Fixture;
 import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
-import freshtrash.freshtrashbackend.dto.request.WasteRequest;
+import freshtrash.freshtrashbackend.dto.request.ProductRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.constants.*;
 
 public class FixtureDto {
 
-    public static WasteRequest createWasteRequest(
+    public static ProductRequest createProductRequest(
             String title,
             String content,
-            WasteCategory wasteCategory,
-            WasteStatus wasteStatus,
+            ProductCategory productCategory,
+            ProductStatus productStatus,
             SellStatus sellStatus,
-            Integer wastePrice,
+            Integer productPrice,
             Address address) {
-        return new WasteRequest(
+        return new ProductRequest(
                 title,
                 content,
-                wasteCategory,
-                wasteStatus,
+                productCategory,
+                productStatus,
                 sellStatus,
-                wastePrice,
+                productPrice,
                 address.allBlank() ? null : address);
     }
 
-    public static WasteRequest createWasteRequest() {
-        return new WasteRequest(
+    public static ProductRequest createProductRequest() {
+        return new ProductRequest(
                 "title",
                 "content",
-                WasteCategory.BEAUTY,
-                WasteStatus.BEST,
+                ProductCategory.BEAUTY,
+                ProductStatus.BEST,
                 SellStatus.CLOSE,
                 0,
                 Fixture.createAddress());
@@ -54,7 +54,7 @@ public class FixtureDto {
     public static AlarmPayload createAlarmPayload() {
         return AlarmPayload.builder()
                 .message("test message")
-                .wasteId(1L)
+                .productId(1L)
                 .memberId(123L)
                 .fromMemberId(3L)
                 .alarmType(AlarmType.TRANSACTION)

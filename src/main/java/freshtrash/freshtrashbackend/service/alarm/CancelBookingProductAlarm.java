@@ -4,7 +4,7 @@ import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
-import freshtrash.freshtrashbackend.service.TransactionService;
+import freshtrash.freshtrashbackend.service.ProductDealService;
 import freshtrash.freshtrashbackend.service.producer.ProductDealProducer;
 import org.springframework.stereotype.Component;
 
@@ -14,20 +14,20 @@ import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.UPDATED_ON
 public class CancelBookingProductAlarm extends ProductAlarmTemplate {
 
     public CancelBookingProductAlarm(
-            ChatRoomService chatRoomService, TransactionService transactionService, ProductDealProducer producer) {
-        super(chatRoomService, transactionService, producer);
+            ChatRoomService chatRoomService, ProductDealService productDealService, ProductDealProducer producer) {
+        super(chatRoomService, productDealService, producer);
     }
 
     @Override
     void update(ChatRoom chatRoom) {
-        this.transactionService.updateSellStatus(chatRoom.getWasteId(), chatRoom.getId(), SellStatus.ONGOING);
+        this.productDealService.updateSellStatus(chatRoom.getProductId(), chatRoom.getId(), SellStatus.ONGOING);
     }
 
     @Override
     void publishEvent(ChatRoom bookedChatRoom) {
         String message = generateMessage(bookedChatRoom.getSeller().getNickname());
         this.chatRoomService
-                .getNotClosedChatRoomsByWasteId(bookedChatRoom.getWasteId())
+                .getNotClosedChatRoomsByProductId(bookedChatRoom.getProductId())
                 .forEach(chatRoom -> {
                     this.producer.updateSellStatus(chatRoom, message, AlarmType.TRANSACTION);
                 });
