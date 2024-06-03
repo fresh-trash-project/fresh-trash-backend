@@ -51,9 +51,9 @@ public class WasteLikeApi {
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         checkIfNotWriter(memberPrincipal, wasteId);
         Boolean isLike = likeStatus == LikeStatus.LIKE;
-        if (likeStatus == LikeStatus.LIKE) {
+        if (isLike) {
             wasteLikeService.addWasteLike(memberPrincipal.id(), wasteId);
-        } else if (likeStatus == LikeStatus.UNLIKE) {
+        } else {
             wasteLikeService.deleteWasteLike(memberPrincipal.id(), wasteId);
         }
 

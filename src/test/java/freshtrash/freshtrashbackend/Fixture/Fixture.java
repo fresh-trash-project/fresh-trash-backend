@@ -27,9 +27,13 @@ public class Fixture {
         return waste;
     }
 
-    public static MockMultipartFile createMultipartFile(String content) {
+    public static MockMultipartFile createMultipartFileOfImage(String content) {
         String fileName = "test.png";
         return new MockMultipartFile("modelFile", fileName, "text/plain", content.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static MockMultipartFile createMultipartFileOfJson(String name, String content) {
+        return new MockMultipartFile(name, "", "application/json", content.getBytes(StandardCharsets.UTF_8));
     }
 
     public static Address createAddress() {
@@ -62,6 +66,11 @@ public class Fixture {
 
     public static Member createMember() {
         return createMember(1L, "test@gmail.com", "pw", "test", LoginType.EMAIL, AccountStatus.ACTIVE);
+    }
+
+    public static Member createLoginMember() {
+        return createMember(
+                123L, "testUser@gmail.com", "pw", "testUser", LoginType.EMAIL, UserRole.USER, AccountStatus.ACTIVE);
     }
 
     public static ChatRoom createChatRoom(

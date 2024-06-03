@@ -3,12 +3,15 @@ package freshtrash.freshtrashbackend.controller;
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
+import freshtrash.freshtrashbackend.controller.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.response.WasteResponse;
 import freshtrash.freshtrashbackend.entity.constants.WasteCategory;
 import freshtrash.freshtrashbackend.service.WasteLikeService;
 import freshtrash.freshtrashbackend.service.WasteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,8 +29,10 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,6 +62,23 @@ class WasteLikeApiTest {
         mvc.perform(get("/api/v1/wastes/likes").queryParam("category", category.name()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements").value(1));
+        // then
+    }
+
+    @ParameterizedTest
+    @DisplayName("관심 폐기물 추가/삭제")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
+    @CsvSource(value = {"LIKE", "UNLIKE"})
+    void given_likeStatusAndWasteIdAndLoginUser_when_addOrDeleteWasteLike_then_returnBoolean(LikeStatus likeStatus) throws Exception {
+        // given
+        Long wasteId = 1L;
+        Long memberId = 123L;
+        willDoNothing().given(wasteLikeService).addWasteLike(memberId, wasteId);
+        willDoNothing().given(wasteLikeService).deleteWasteLike(memberId, wasteId);
+        // when
+        mvc.perform(post("/api/v1/wastes/" + wasteId + "/likes").queryParam("likeStatus", String.valueOf(likeStatus)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").value(likeStatus==LikeStatus.LIKE));
         // then
     }
 }
