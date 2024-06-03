@@ -19,34 +19,22 @@ public class ProductDealProducer {
     private final MQPublisher mqPublisher;
 
     public void completeDeal(ChatRoom chatRoom) {
-        mqPublisher.publish(generateCompleteDealEvent(chatRoom));
+        mqPublisher.publish(AlarmEvent.of(
+                WASTE_TRANSACTION_COMPLETE.getRoutingKey(),
+                AlarmPayload.ofProductDealBySeller(
+                        COMPLETED_SELL_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION)));
     }
 
     public void requestReview(ChatRoom chatRoom) {
-        mqPublisher.publish(generateRequestReviewEvent(chatRoom));
+        mqPublisher.publish(AlarmEvent.of(
+                WASTE_TRANSACTION_COMPLETE.getRoutingKey(),
+                AlarmPayload.ofProductDealByBuyer(
+                        REQUEST_REVIEW_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION)));
     }
 
     public void updateSellStatus(ChatRoom chatRoom, String message, AlarmType alarmType) {
-        mqPublisher.publish(generateUpdateSellStatusEvent(chatRoom, message, alarmType));
-    }
-
-    private AlarmEvent generateUpdateSellStatusEvent(ChatRoom chatRoom, String message, AlarmType alarmType) {
-        return AlarmEvent.of(
+        mqPublisher.publish(AlarmEvent.of(
                 WASTE_CHANGE_SELL_STATUS.getRoutingKey(),
-                AlarmPayload.ofProductDealBySeller(message, chatRoom, alarmType));
-    }
-
-    private AlarmEvent generateCompleteDealEvent(ChatRoom chatRoom) {
-        return AlarmEvent.of(
-                WASTE_TRANSACTION_COMPLETE.getRoutingKey(),
-                AlarmPayload.ofProductDealBySeller(
-                        COMPLETED_SELL_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION));
-    }
-
-    private AlarmEvent generateRequestReviewEvent(ChatRoom chatRoom) {
-        return AlarmEvent.of(
-                WASTE_TRANSACTION_COMPLETE.getRoutingKey(),
-                AlarmPayload.ofProductDealByBuyer(
-                        REQUEST_REVIEW_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION));
+                AlarmPayload.ofProductDealBySeller(message, chatRoom, alarmType)));
     }
 }

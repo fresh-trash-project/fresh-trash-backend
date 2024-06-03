@@ -14,12 +14,8 @@ public class ChatProducer {
     private final MQPublisher mqPublisher;
 
     public void occurredUserFlag(Long wasteId, Long targetMemberId, Long currentMemberId, String message) {
-        mqPublisher.publish(generateUserFlagEvent(wasteId, targetMemberId, currentMemberId, message));
-    }
-
-    private AlarmEvent generateUserFlagEvent(Long wasteId, Long targetMemberId, Long currentMemberId, String message) {
-        return AlarmEvent.of(
+        mqPublisher.publish(AlarmEvent.of(
                 WASTE_TRANSACTION_FLAG.getRoutingKey(),
-                AlarmPayload.ofUserFlag(message, wasteId, targetMemberId, currentMemberId));
+                AlarmPayload.ofUserFlag(message, wasteId, targetMemberId, currentMemberId)));
     }
 }
