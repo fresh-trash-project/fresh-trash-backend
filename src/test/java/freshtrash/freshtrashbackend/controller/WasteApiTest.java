@@ -111,7 +111,7 @@ class WasteApiTest {
             throws Exception {
         Long memberId = 1L;
         // given
-        MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
+        MockMultipartFile imgFile = Fixture.createMultipartFileOfImage("test_image");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         Waste waste = Waste.fromRequest(wasteRequest, imgFile.getOriginalFilename(), memberId);
         ReflectionTestUtils.setField(waste, "member", Fixture.createMember());
@@ -165,7 +165,7 @@ class WasteApiTest {
             String detail)
             throws Exception {
         // given
-        MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
+        MockMultipartFile imgFile = Fixture.createMultipartFileOfImage("test_image");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest(
                 title,
                 content,
@@ -198,7 +198,7 @@ class WasteApiTest {
         // given
         Long wasteId = 1L, memberId = 123L;
         String fileName = "test.png";
-        MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
+        MockMultipartFile imgFile = Fixture.createMultipartFileOfImage("test_image");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         Waste waste = Waste.fromRequest(wasteRequest, imgFile.getOriginalFilename(), memberId);
         ReflectionTestUtils.setField(waste, "member", Fixture.createMember());

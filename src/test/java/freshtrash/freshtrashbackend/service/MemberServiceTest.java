@@ -54,7 +54,7 @@ class MemberServiceTest {
         // given
         Long memberId = 1L;
         MemberPrincipal memberPrincipal = FixtureDto.createMemberPrincipal();
-        MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
+        MockMultipartFile imgFile = Fixture.createMultipartFileOfImage("test_image");
         MemberRequest memberRequest = FixtureDto.createMemberRequest();
         given(memberRepository.findById(memberId)).willReturn(Optional.of(Fixture.createMember()));
         given(memberCacheRepository.save(any(MemberPrincipal.class))).willReturn(memberPrincipal);

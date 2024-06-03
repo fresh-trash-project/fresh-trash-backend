@@ -80,7 +80,7 @@ class WasteServiceTest {
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
         // when
         WasteResponse wasteResponse =
-                wasteService.addWaste(Fixture.createMultipartFile("image"), wasteRequest, memberPrincipal);
+                wasteService.addWaste(Fixture.createMultipartFileOfImage("image"), wasteRequest, memberPrincipal);
         // then
         assertThat(wasteResponse.title()).isEqualTo(wasteRequest.title());
         assertThat(wasteResponse.content()).isEqualTo(wasteRequest.content());
@@ -96,7 +96,7 @@ class WasteServiceTest {
     void given_imgFileAndWasteRequest_when_updateWaste_then_wasteRequestValuesEqualsToUpdatedWasteValues() {
         // given
         Long wasteId = 1L;
-        MockMultipartFile multipartFile = Fixture.createMultipartFile("test content");
+        MockMultipartFile multipartFile = Fixture.createMultipartFileOfImage("test content");
         WasteRequest wasteRequest = FixtureDto.createWasteRequest();
         String savedFileName = "saved.png";
         String updatedFileName = "updated.png";

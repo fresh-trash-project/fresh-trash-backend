@@ -81,7 +81,7 @@ class MemberApiTest {
         // given
         Long memberId = 123L;
         String oldFile = "oldFile.png";
-        MockMultipartFile imgFile = Fixture.createMultipartFile("test_image");
+        MockMultipartFile imgFile = Fixture.createMultipartFileOfImage("test_image");
         MemberRequest memberRequest = FixtureDto.createMemberRequest();
         Member member = Fixture.createLoginMember();
         member.setNickname(memberRequest.nickname());
@@ -95,7 +95,7 @@ class MemberApiTest {
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/members")
                         .file("imgFile", imgFile.getBytes())
-                        .file(Fixture.createMultipartFileWithName("memberRequest", objectMapper.writeValueAsString(memberRequest)))
+                        .file(Fixture.createMultipartFileOfJson("memberRequest", objectMapper.writeValueAsString(memberRequest)))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nickname").value(memberRequest.nickname()))
