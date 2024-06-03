@@ -17,10 +17,10 @@ public abstract class ChatAlarmTemplate {
         Long targetMemberId = Objects.equals(currentMemberId, chatRoom.getSellerId())
                 ? chatRoom.getBuyerId()
                 : chatRoom.getSellerId();
-        publishEvent(update(targetMemberId), chatRoom.getWasteId(), targetMemberId, currentMemberId);
+        publishEvent(update(targetMemberId), chatRoom.getProductId(), targetMemberId, currentMemberId);
     }
 
     abstract int update(Long targetId);
 
-    abstract void publishEvent(int updatedValue, Long wasteId, Long targetMemberId, Long currentMemberId);
+    abstract void publishEvent(int updatedValue, Long productId, Long targetMemberId, Long currentMemberId);
 }

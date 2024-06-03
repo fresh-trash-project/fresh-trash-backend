@@ -57,8 +57,8 @@ class ChatRoomEventApiTest {
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void given_chatRoomIdAndMemberId_when_then_calledSendAlarmOfChatAlarm() throws Exception {
         // given
-        Long currentMemberId = 123L, chatRoomId = 2L, wasteId = 1L, targetMemberId = 321L;
-        ChatRoom chatRoom = Fixture.createChatRoom(wasteId, targetMemberId, currentMemberId, true, SellStatus.ONGOING);
+        Long currentMemberId = 123L, chatRoomId = 2L, productId = 1L, targetMemberId = 321L;
+        ChatRoom chatRoom = Fixture.createChatRoom(productId, targetMemberId, currentMemberId, true, SellStatus.ONGOING);
         given(chatRoomService.getChatRoom(eq(chatRoomId))).willReturn(chatRoom);
         willDoNothing().given(userFlagChatAlarm).sendAlarm(eq(chatRoom), eq(currentMemberId));
         // when
@@ -84,7 +84,7 @@ class ChatRoomEventApiTest {
             default -> willDoNothing().given(completeDealProductAlarm).sendAlarm(chatRoomId);
         }
         // when
-        mvc.perform(post("/api/v1/chats/" + chatRoomId + "/transaction")
+        mvc.perform(post("/api/v1/chats/" + chatRoomId + "/productDeal")
                         .param("productEventType", productEventType.name()))
                 .andExpect(status().isOk());
         // then

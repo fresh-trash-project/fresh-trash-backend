@@ -22,18 +22,18 @@ public class RabbitMQConfig {
     private static final String topicExchangeName = "amq.topic";
 
     @Bean
-    Queue wasteCompleteQueue() {
-        return createQueue(WASTE_TRANSACTION_COMPLETE);
+    Queue productCompleteQueue() {
+        return createQueue(PRODUCT_TRANSACTION_COMPLETE);
     }
 
     @Bean
-    Queue wasteFlagQueue() {
-        return createQueue(WASTE_TRANSACTION_FLAG);
+    Queue productFlagQueue() {
+        return createQueue(PRODUCT_TRANSACTION_FLAG);
     }
 
     @Bean
-    Queue wasteChangeStatusQueue() {
-        return createQueue(WASTE_CHANGE_SELL_STATUS);
+    Queue productChangeStatusQueue() {
+        return createQueue(PRODUCT_CHANGE_SELL_STATUS);
     }
 
     @Bean
@@ -42,22 +42,22 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding wasteCompleteBinding(Queue wasteCompleteQueue, DirectExchange directExchange) {
-        return BindingBuilder.bind(wasteCompleteQueue)
+    Binding productCompleteBinding(Queue productCompleteQueue, DirectExchange directExchange) {
+        return BindingBuilder.bind(productCompleteQueue)
                 .to(directExchange)
-                .with(WASTE_TRANSACTION_COMPLETE.getRoutingKey());
+                .with(PRODUCT_TRANSACTION_COMPLETE.getRoutingKey());
     }
 
     @Bean
-    Binding wasteCancelBinding(Queue wasteFlagQueue, DirectExchange directExchange) {
-        return BindingBuilder.bind(wasteFlagQueue).to(directExchange).with(WASTE_TRANSACTION_FLAG.getRoutingKey());
+    Binding productCancelBinding(Queue productFlagQueue, DirectExchange directExchange) {
+        return BindingBuilder.bind(productFlagQueue).to(directExchange).with(PRODUCT_TRANSACTION_FLAG.getRoutingKey());
     }
 
     @Bean
-    Binding wasteChangeStatusBinding(Queue wasteChangeStatusQueue, DirectExchange directExchange) {
-        return BindingBuilder.bind(wasteChangeStatusQueue)
+    Binding productChangeStatusBinding(Queue productChangeStatusQueue, DirectExchange directExchange) {
+        return BindingBuilder.bind(productChangeStatusQueue)
                 .to(directExchange)
-                .with(WASTE_CHANGE_SELL_STATUS.getRoutingKey());
+                .with(PRODUCT_CHANGE_SELL_STATUS.getRoutingKey());
     }
 
     @Bean

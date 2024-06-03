@@ -33,16 +33,16 @@ class ChatRoomServiceTest {
     private ChatRoomRepository chatRoomRepository;
 
     @Test
-    @DisplayName("Waste id에 해당하는 채팅방 중 Close 되지 않은 채팅방 조회")
-    void given_wasteIdAndSellStatus_when_then_getChatRoomList() {
+    @DisplayName("Product id에 해당하는 채팅방 중 Close 되지 않은 채팅방 조회")
+    void given_productIdAndSellStatus_when_then_getChatRoomList() {
         // given
-        Long wasteId = 1L;
+        Long productId = 1L;
         SellStatus sellStatus = SellStatus.CLOSE;
         int expectedSize = 1;
-        given(chatRoomRepository.findByWaste_IdAndSellStatusNot(eq(wasteId), eq(sellStatus)))
+        given(chatRoomRepository.findByProduct_IdAndSellStatusNot(eq(productId), eq(sellStatus)))
                 .willReturn(List.of(Fixture.createChatRoom()));
         // when
-        List<ChatRoom> chatRooms = chatRoomService.getNotClosedChatRoomsByWasteId(wasteId);
+        List<ChatRoom> chatRooms = chatRoomService.getNotClosedChatRoomsByProductId(productId);
         // then
         Assertions.assertThat(chatRooms.size()).isEqualTo(expectedSize);
     }

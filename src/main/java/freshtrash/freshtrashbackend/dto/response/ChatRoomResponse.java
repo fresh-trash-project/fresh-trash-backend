@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Builder
 public record ChatRoomResponse(
         Long id,
-        Long wasteId,
-        String wasteTitle,
+        Long productId,
+        String productTitle,
         SellStatus sellStatus,
         boolean openOrClose,
         LocalDateTime createdAt,
@@ -22,8 +22,8 @@ public record ChatRoomResponse(
     public static ChatRoomResponse fromEntity(ChatRoom chatRoom) {
         return ChatRoomResponse.builder()
                 .id(chatRoom.getId())
-                .wasteId(chatRoom.getWasteId())
-                .wasteTitle(chatRoom.getWaste().getTitle())
+                .productId(chatRoom.getProductId())
+                .productTitle(chatRoom.getProduct().getTitle())
                 .sellStatus(chatRoom.getSellStatus())
                 .openOrClose(chatRoom.isOpenOrClose())
                 .createdAt(chatRoom.getCreatedAt())
@@ -34,11 +34,11 @@ public record ChatRoomResponse(
                 .build();
     }
 
-    public static ChatRoomResponse fromEntity(ChatRoom chatRoom, String wasteTitle, String sellerNickname, String buyerNickname) {
+    public static ChatRoomResponse fromEntity(ChatRoom chatRoom, String productTitle, String sellerNickname, String buyerNickname) {
         return ChatRoomResponse.builder()
                 .id(chatRoom.getId())
-                .wasteId(chatRoom.getWasteId())
-                .wasteTitle(wasteTitle)
+                .productId(chatRoom.getProductId())
+                .productTitle(productTitle)
                 .sellStatus(chatRoom.getSellStatus())
                 .openOrClose(chatRoom.isOpenOrClose())
                 .createdAt(chatRoom.getCreatedAt())

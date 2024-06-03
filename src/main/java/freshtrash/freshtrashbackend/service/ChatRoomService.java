@@ -19,10 +19,10 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
 
     /**
-     * WasteId에 속한 Close 되지 않은 채팅방 모두 조회
+     * ProductId에 속한 Close 되지 않은 채팅방 모두 조회
      */
-    public List<ChatRoom> getNotClosedChatRoomsByWasteId(Long wasteId) {
-        return getChatRoomsByWasteIdAndNotSellStatus(wasteId, SellStatus.CLOSE);
+    public List<ChatRoom> getNotClosedChatRoomsByProductId(Long productId) {
+        return getChatRoomsByProductIdAndNotSellStatus(productId, SellStatus.CLOSE);
     }
 
     public Page<ChatRoomResponse> getChatRoomsWithMemberId(Long memberId, Pageable pageable) {
@@ -37,13 +37,13 @@ public class ChatRoomService {
                 .orElseThrow(() -> new ChatException(ErrorCode.NOT_FOUND_CHAT_ROOM));
     }
 
-    public ChatRoom getOrCreateChatRoom(Long sellerId, Long buyerId, Long wasteId) {
+    public ChatRoom getOrCreateChatRoom(Long sellerId, Long buyerId, Long productId) {
 
         // 기존 채팅방 검색
         return chatRoomRepository
-                .findBySellerIdAndBuyerIdAndWasteId(sellerId, buyerId, wasteId)
+                .findBySellerIdAndBuyerIdAndProductId(sellerId, buyerId, productId)
                 .orElseGet(() -> chatRoomRepository.save(ChatRoom.builder()
-                        .wasteId(wasteId)
+                        .productId(productId)
                         .sellerId(sellerId)
                         .buyerId(buyerId)
                         .sellStatus(SellStatus.ONGOING)
@@ -60,9 +60,9 @@ public class ChatRoomService {
     }
 
     /**
-     * wasteId에 해당하며 전달받은 SellStatus가 아닌 채팅방들을 조회
+     * productId에 해당하며 전달받은 SellStatus가 아닌 채팅방들을 조회
      */
-    private List<ChatRoom> getChatRoomsByWasteIdAndNotSellStatus(Long wasteId, SellStatus sellStatus) {
-        return chatRoomRepository.findByWaste_IdAndSellStatusNot(wasteId, sellStatus);
+    private List<ChatRoom> getChatRoomsByProductIdAndNotSellStatus(Long productId, SellStatus sellStatus) {
+        return chatRoomRepository.findByProduct_IdAndSellStatusNot(productId, sellStatus);
     }
 }

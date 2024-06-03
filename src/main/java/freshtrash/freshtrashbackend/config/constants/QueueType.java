@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum QueueType {
-    WASTE_TRANSACTION_COMPLETE("queue.waste.complete", "waste.transaction.complete"),
-    WASTE_CHANGE_SELL_STATUS("queue.waste.changeStatus", "waste.change.sellStatus"),
-    WASTE_TRANSACTION_FLAG("queue.waste.flag", "waste.transaction.flag"),
+    PRODUCT_TRANSACTION_COMPLETE("queue.product.complete", "product.productDeal.complete"),
+    PRODUCT_CHANGE_SELL_STATUS("queue.product.changeStatus", "product.change.sellStatus"),
+    PRODUCT_TRANSACTION_FLAG("queue.product.flag", "product.productDeal.flag"),
     CHAT("queue.chat", "chats.#");
 
     private final String name;

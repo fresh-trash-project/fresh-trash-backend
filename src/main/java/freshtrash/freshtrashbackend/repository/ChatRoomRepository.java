@@ -18,22 +18,22 @@ import java.util.Optional;
 @Transactional(propagation = Propagation.SUPPORTS)
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
-    List<ChatRoom> findByWaste_IdAndSellStatusNot(Long wasteId, SellStatus sellStatus);
+    List<ChatRoom> findByProduct_IdAndSellStatusNot(Long productId, SellStatus sellStatus);
 
-    List<BuyerIdSummary> findBuyerIdByWasteIdAndBuyerIdNot(Long wasteId, Long buyerId);
+    List<BuyerIdSummary> findBuyerIdByProductIdAndBuyerIdNot(Long productId, Long buyerId);
 
-    @EntityGraph(attributePaths = {"waste", "buyer", "seller", "chatMessages"})
+    @EntityGraph(attributePaths = {"product", "buyer", "seller", "chatMessages"})
     Optional<ChatRoom> findById(Long chatRoomId);
 
-    @EntityGraph(attributePaths = {"waste", "buyer", "seller"})
+    @EntityGraph(attributePaths = {"product", "buyer", "seller"})
     @Query("select cr from ChatRoom cr where (cr.buyerId = ?1 or cr.sellerId = ?1) and cr.openOrClose = true")
     Page<ChatRoom> findAllBySeller_IdOrBuyer_Id(Long memberId, Pageable pageable);
 
     @Query("select (cr is not null) from ChatRoom cr where cr.id = ?1 and (cr.buyerId = ?2 or cr.sellerId = ?2)")
     boolean existsByIdAndMemberId(Long chatRoomId, Long memberId);
 
-    @EntityGraph(attributePaths = "waste")
-    Optional<ChatRoom> findBySellerIdAndBuyerIdAndWasteId(Long sellerId, Long buyerId, Long wasteId);
+    @EntityGraph(attributePaths = "product")
+    Optional<ChatRoom> findBySellerIdAndBuyerIdAndProductId(Long sellerId, Long buyerId, Long productId);
 
     @Modifying
     @Query("update ChatRoom cr set cr.sellStatus = ?2 where cr.id = ?1")
