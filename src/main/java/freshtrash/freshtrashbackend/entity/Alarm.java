@@ -41,10 +41,8 @@ public class Alarm extends CreatedAt {
     @Column(nullable = false)
     private String message;
 
-    @Setter
     private LocalDateTime readAt;
 
-    @Setter
     private LocalDateTime deletedAt;
 
     @ToString.Exclude
