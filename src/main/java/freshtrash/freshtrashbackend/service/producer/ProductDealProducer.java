@@ -3,6 +3,7 @@ package freshtrash.freshtrashbackend.service.producer;
 import freshtrash.freshtrashbackend.dto.events.AlarmEvent;
 import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.producer.publisher.MQPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,24 +26,27 @@ public class ProductDealProducer {
         mqPublisher.publish(generateRequestReviewEvent(chatRoom));
     }
 
-    public void updateSellStatus(ChatRoom chatRoom, String message) {
-        mqPublisher.publish(generateUpdateSellStatusEvent(chatRoom, message));
+    public void updateSellStatus(ChatRoom chatRoom, String message, AlarmType alarmType) {
+        mqPublisher.publish(generateUpdateSellStatusEvent(chatRoom, message, alarmType));
     }
 
-    private AlarmEvent generateUpdateSellStatusEvent(ChatRoom chatRoom, String message) {
+    private AlarmEvent generateUpdateSellStatusEvent(ChatRoom chatRoom, String message, AlarmType alarmType) {
         return AlarmEvent.of(
-                WASTE_CHANGE_SELL_STATUS.getRoutingKey(), AlarmPayload.ofProductDealBySeller(message, chatRoom));
+                WASTE_CHANGE_SELL_STATUS.getRoutingKey(),
+                AlarmPayload.ofProductDealBySeller(message, chatRoom, alarmType));
     }
 
     private AlarmEvent generateCompleteDealEvent(ChatRoom chatRoom) {
         return AlarmEvent.of(
                 WASTE_TRANSACTION_COMPLETE.getRoutingKey(),
-                AlarmPayload.ofProductDealBySeller(COMPLETED_SELL_MESSAGE.getMessage(), chatRoom));
+                AlarmPayload.ofProductDealBySeller(
+                        COMPLETED_SELL_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION));
     }
 
     private AlarmEvent generateRequestReviewEvent(ChatRoom chatRoom) {
         return AlarmEvent.of(
                 WASTE_TRANSACTION_COMPLETE.getRoutingKey(),
-                AlarmPayload.ofProductDealByBuyer(REQUEST_REVIEW_MESSAGE.getMessage(), chatRoom));
+                AlarmPayload.ofProductDealByBuyer(
+                        REQUEST_REVIEW_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION));
     }
 }

@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 public class AlarmService {
     private static final Long SSE_TIMEOUT = TimeUnit.MINUTES.toMillis(30);
     private static final String CONNECTED_ALARM_NAME = "connected";
-    private static final String WASTE_TRANSACTION_ALARM_NAME = "waste-transaction-alarm";
     private final EmitterRepository emitterRepository;
     private final AlarmRepository alarmRepository;
 
@@ -68,7 +67,7 @@ public class AlarmService {
                             try {
                                 sseEmitter.send(SseEmitter.event()
                                         .id(String.valueOf(alarmResponse.id()))
-                                        .name(WASTE_TRANSACTION_ALARM_NAME)
+                                        .name(alarmResponse.alarmType().name())
                                         .data(alarmResponse));
                             } catch (IOException e) {
                                 emitterRepository.deleteByMemberId(memberId);
