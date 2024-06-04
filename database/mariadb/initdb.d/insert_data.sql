@@ -17,7 +17,7 @@ values ('abc@never.com', '$2a$10$ZskRs64yZZU9g6blmNdZte7FO6KaMduwlZhk7YkxJX2ZwYL
 
 insert into products(member_id, title, content, product_price, like_count, view_count, file_name, product_category,
                    product_status,
-                   sell_status, address, created_at, modified_at, productDeal_at)
+                   sell_status, address, created_at, modified_at, product_deal_at)
 values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING',
         json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
         now(), null, null),
@@ -125,7 +125,7 @@ VALUES (1, 1, 2, 'ONGOING', 1, now()),
 INSERT INTO chat_messages(chat_room_id, member_id, message, created_at)
 VALUES (1, 1, '첫 번째 메세지입니다.', now());
 
-insert into productDeal_logs(product_id, seller_id, buyer_id, created_at)
+insert into product_deal_logs(product_id, seller_id, buyer_id, created_at)
 values (5, 1, 2, now()),
        (6, 2, 1, now()),
        (7, 3, 1, now()),
@@ -175,3 +175,8 @@ values (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 1), '거래 완료
        (4, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), 'abc님이 판매중으로 변경하였습니다.', now(), null, null),
        (5, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), 'abc님이 판매중으로 변경하였습니다.', now(), null, null),
        (1, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), 'abc님이 판매중으로 변경하였습니다.', now(), null, now());
+
+insert into auctions(member_id, file_name, title, content, product_category, product_status, auction_status, min_bid, view_count, started_at, ended_at, created_at) values
+(1, 'test.png', 'title', 'content', 'CLOTHING', 'GOOD', 'ONGOING', 1000, 1, now(), date_add(now(), interval 1 hour), now()),
+(2, 'test.png', 'title2', 'content2', 'HEALTH', 'GOOD', 'ONGOING', 1000, 3, now(), date_add(now(), interval 1 hour), now()),
+(3, 'test.png', 'title3', 'content3', 'SPORTS', 'GOOD', 'CLOSE', 3000, 5, now(), date_add(now(), interval 1 hour), now());
