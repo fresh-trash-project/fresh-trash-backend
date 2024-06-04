@@ -22,21 +22,21 @@
 
 CREATE TABLE `products`
 (
-    `id`             bigint AUTO_INCREMENT NOT NULL,
-    `member_id`      bigint                NOT NULL,
-    `title`          varchar(255)          NOT NULL,
-    `content`        text                  NOT NULL,
+    `id`               bigint AUTO_INCREMENT NOT NULL,
+    `member_id`        bigint                NOT NULL,
+    `title`            varchar(255)          NOT NULL,
+    `content`          text                  NOT NULL,
     `product_price`    integer               NOT NULL,
-    `like_count`     integer               NOT NULL,
-    `view_count`     integer               NOT NULL,
-    `file_name`      varchar(255)          NOT NULL,
+    `like_count`       integer               NOT NULL,
+    `view_count`       integer               NOT NULL,
+    `file_name`        varchar(255)          NOT NULL,
     `product_category` varchar(255)          NOT NULL,
     `product_status`   varchar(255)          NOT NULL,
-    `sell_status`    varchar(255)          NOT NULL,
-    `address`        json                  NOT NULL,
-    `created_at`     datetime              NOT NULL,
-    `modified_at`    datetime,
-    `product_deal_at` datetime,
+    `sell_status`      varchar(255)          NOT NULL,
+    `address`          json                  NOT NULL,
+    `created_at`       datetime              NOT NULL,
+    `modified_at`      datetime,
+    `product_deal_at`  datetime,
     PRIMARY KEY (`id`),
     foreign key (`member_id`) references members (id) on delete cascade
 ) ENGINE = InnoDB
@@ -47,7 +47,7 @@ CREATE TABLE `product_reviews`
 (
     `id`         bigint AUTO_INCREMENT NOT NULL,
     `member_id`  bigint                NOT NULL,
-    `product_id`   bigint                NOT NULL,
+    `product_id` bigint                NOT NULL,
     `rating`     integer               NOT NULL,
     `created_at` datetime              NOT NULL,
     PRIMARY KEY (`id`),
@@ -61,7 +61,7 @@ CREATE TABLE `product_likes`
 (
     `id`         bigint AUTO_INCREMENT NOT NULL,
     `member_id`  bigint                NOT NULL,
-    `product_id`   bigint                NOT NULL,
+    `product_id` bigint                NOT NULL,
     `created_at` datetime              NOT NULL,
     PRIMARY KEY (`id`),
     foreign key (`member_id`) references members (id) on delete cascade,
@@ -75,7 +75,7 @@ CREATE UNIQUE INDEX member_id_and_product_id ON product_likes (member_id, produc
 CREATE TABLE `chat_rooms`
 (
     `id`            bigint AUTO_INCREMENT NOT NULL,
-    `product_id`      bigint                NOT NULL,
+    `product_id`    bigint                NOT NULL,
     `seller_id`     bigint                NOT NULL,
     `buyer_id`      bigint                NOT NULL,
     `sell_status`   varchar(255)          NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE `chat_messages`
 CREATE TABLE `product_deal_logs`
 (
     `id`         bigint AUTO_INCREMENT NOT NULL,
-    `product_id`   bigint                NOT NULL,
+    `product_id` bigint                NOT NULL,
     `seller_id`  bigint                NOT NULL,
     `buyer_id`   bigint                NOT NULL,
     `created_at` datetime              NOT NULL,
@@ -133,3 +133,23 @@ CREATE TABLE `alarms`
     foreign key (`member_id`) references members (id) on delete cascade
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='알람';
+
+CREATE TABLE `auctions`
+(
+    `id`               bigint AUTO_INCREMENT NOT NULL,
+    `member_id`        bigint                NOT NULL,
+    `file_name`        varchar(255)          NOT NULL,
+    `title`            varchar(255)          NOT NULL,
+    `content`          text                  NOT NULL,
+    `product_category` varchar(255)          NOT NULL,
+    `product_status`   varchar(255)          NOT NULL,
+    `auction_status`   varchar(255)          NOT NULL,
+    `min_bid`          integer               NOT NULL,
+    `view_count`       integer               NOT NULL,
+    `started_at`       datetime              NOT NULL,
+    `ended_at`         datetime              NOT NULL,
+    `created_at`       datetime              NOT NULL,
+    PRIMARY KEY (`id`),
+    foreign key (`member_id`) references members (id) on delete cascade
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='경매';
