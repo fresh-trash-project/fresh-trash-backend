@@ -47,7 +47,11 @@ public enum ErrorCode {
     // Chat
     NOT_FOUND_CHAT_ROOM(HttpStatus.NOT_FOUND, "채팅방이 존재하지 않습니다."),
     FORBIDDEN_CHAT_ROOM(HttpStatus.FORBIDDEN, "채팅방에 대한 권한이 없습니다."),
-    CANNOT_CHAT_WITH_SELF(HttpStatus.BAD_REQUEST, "판매자는 자신이 등록한 폐기물에 대해 채팅을 시작할 수 없습니다.");
+    CANNOT_CHAT_WITH_SELF(HttpStatus.BAD_REQUEST, "판매자는 자신이 등록한 폐기물에 대해 채팅을 시작할 수 없습니다."),
+
+    // Auction
+    NOT_FOUND_AUCTION(HttpStatus.NOT_FOUND, "경매가 존재하지 않습니다."),
+    FORBIDDEN_AUCTION(HttpStatus.FORBIDDEN, "경매에 대한 권한이 없습니다.");
 
     private final HttpStatus status;
     private final String message;
