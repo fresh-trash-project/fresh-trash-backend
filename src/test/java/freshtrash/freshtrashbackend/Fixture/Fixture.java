@@ -6,6 +6,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class Fixture {
@@ -69,8 +70,7 @@ public class Fixture {
     }
 
     public static Member createLoginMember() {
-        return createMember(
-                123L, "testUser@gmail.com", "pw", "testUser", LoginType.EMAIL, AccountStatus.ACTIVE);
+        return createMember(123L, "testUser@gmail.com", "pw", "testUser", LoginType.EMAIL, AccountStatus.ACTIVE);
     }
 
     public static ChatRoom createChatRoom(
@@ -141,5 +141,25 @@ public class Fixture {
                 ProductDealLog.builder().buyerId(1L).sellerId(2L).productId(3L).build();
         ReflectionTestUtils.setField(productDealLog, "product", createProduct());
         return productDealLog;
+    }
+
+    public static Auction createAuction() {
+        Auction auction = Auction.builder()
+                .title("title")
+                .content("content")
+                .productCategory(ProductCategory.BEAUTY)
+                .productStatus(ProductStatus.GOOD)
+                .auctionStatus(AuctionStatus.CANCEL)
+                .min_bid(1000)
+                .startedAt(LocalDateTime.now())
+                .endedAt(LocalDateTime.now().plusDays(1))
+                .fileName("test.png")
+                .memberId(123L)
+                .build();
+
+        ReflectionTestUtils.setField(auction, "id", 1L);
+        ReflectionTestUtils.setField(auction, "member", Fixture.createMember());
+        ReflectionTestUtils.setField(auction, "viewCount", 2);
+        return auction;
     }
 }
