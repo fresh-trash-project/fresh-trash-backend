@@ -1,0 +1,97 @@
+package freshtrash.freshtrashbackend.entity;
+
+import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
+import freshtrash.freshtrashbackend.entity.constants.AuctionStatus;
+import freshtrash.freshtrashbackend.entity.constants.ProductCategory;
+import freshtrash.freshtrashbackend.entity.constants.ProductStatus;
+import lombok.*;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+import static javax.persistence.FetchType.LAZY;
+
+@Getter
+@Entity
+@Table(name = "auctions")
+@ToString(callSuper = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Auction extends CreatedAt {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
+    private Long id;
+
+    @Setter
+    @Column(nullable = false)
+    private String title;
+
+    @Setter
+    @Column(nullable = false, columnDefinition = "text")
+    private String content;
+
+    @Column(nullable = false)
+    private int viewCount;
+
+    @Setter
+    @Column(nullable = false)
+    private String fileName;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private ProductCategory productCategory;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private ProductStatus productStatus;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private AuctionStatus auctionStatus;
+
+    @Column(nullable = false)
+    private int min_bid;
+
+    @Column(nullable = false)
+    private LocalDateTime startedAt;
+
+    @Column(nullable = false)
+    private LocalDateTime endedAt;
+
+    @ToString.Exclude
+    @ManyToOne(optional = false, fetch = LAZY)
+    @JoinColumn(name = "memberId", insertable = false, updatable = false)
+    private Member member;
+
+    @Column(nullable = false)
+    private Long memberId;
+
+    @Builder
+    public Auction(
+            String title,
+            String content,
+            int viewCount,
+            String fileName,
+            ProductCategory productCategory,
+            ProductStatus productStatus,
+            AuctionStatus auctionStatus,
+            int min_bid,
+            LocalDateTime startedAt,
+            LocalDateTime endedAt,
+            Member member,
+            Long memberId) {
+        this.title = title;
+        this.content = content;
+        this.viewCount = viewCount;
+        this.fileName = fileName;
+        this.productCategory = productCategory;
+        this.productStatus = productStatus;
+        this.auctionStatus = auctionStatus;
+        this.min_bid = min_bid;
+        this.startedAt = startedAt;
+        this.endedAt = endedAt;
+        this.member = member;
+        this.memberId = memberId;
+    }
+}
