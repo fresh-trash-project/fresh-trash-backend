@@ -19,7 +19,7 @@ public record AuctionResponse(
         ProductCategory productCategory,
         ProductStatus productStatus,
         AuctionStatus auctionStatus,
-        int min_bid,
+        int minBid,
         LocalDateTime startedAt,
         LocalDateTime endedAt,
         LocalDateTime createdAt,
@@ -43,7 +43,7 @@ public record AuctionResponse(
                 .productCategory(auction.getProductCategory())
                 .productStatus(auction.getProductStatus())
                 .auctionStatus(auction.getAuctionStatus())
-                .min_bid(auction.getMin_bid())
+                .minBid(auction.getMinBid())
                 .startedAt(auction.getStartedAt())
                 .endedAt(auction.getEndedAt())
                 .createdAt(auction.getCreatedAt())

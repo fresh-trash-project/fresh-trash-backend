@@ -61,7 +61,7 @@ class AuctionServiceTest {
         assertThat(auctionResponse.productCategory()).isEqualTo(auctionRequest.productCategory());
         assertThat(auctionResponse.productStatus()).isEqualTo(auctionRequest.productStatus());
         assertThat(auctionResponse.auctionStatus()).isEqualTo(auctionRequest.auctionStatus());
-        assertThat(auctionResponse.min_bid()).isEqualTo(auctionRequest.min_bid());
+        assertThat(auctionResponse.minBid()).isEqualTo(auctionRequest.minBid());
         assertThat(auctionResponse.startedAt()).isEqualTo(auctionRequest.startedAt());
         assertThat(auctionResponse.endedAt()).isEqualTo(auctionRequest.endedAt());
     }

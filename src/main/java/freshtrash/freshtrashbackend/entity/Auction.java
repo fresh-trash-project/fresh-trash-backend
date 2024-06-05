@@ -52,7 +52,7 @@ public class Auction extends CreatedAt {
     private AuctionStatus auctionStatus;
 
     @Column(nullable = false)
-    private int min_bid;
+    private int minBid;
 
     @Column(nullable = false)
     private LocalDateTime startedAt;
@@ -76,7 +76,7 @@ public class Auction extends CreatedAt {
             ProductCategory productCategory,
             ProductStatus productStatus,
             AuctionStatus auctionStatus,
-            int min_bid,
+            int minBid,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
             Long memberId) {
@@ -86,7 +86,7 @@ public class Auction extends CreatedAt {
         this.productCategory = productCategory;
         this.productStatus = productStatus;
         this.auctionStatus = auctionStatus;
-        this.min_bid = min_bid;
+        this.minBid = minBid;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
         this.memberId = memberId;
@@ -99,7 +99,7 @@ public class Auction extends CreatedAt {
                 .productCategory(auctionRequest.productCategory())
                 .productStatus(auctionRequest.productStatus())
                 .auctionStatus(auctionRequest.auctionStatus())
-                .min_bid(auctionRequest.minBid())
+                .minBid(auctionRequest.minBid())
                 .startedAt(auctionRequest.startedAt())
                 .endedAt(auctionRequest.endedAt())
                 .fileName(fileName)

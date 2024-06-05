@@ -150,7 +150,7 @@ public class Fixture {
                 .productCategory(ProductCategory.BEAUTY)
                 .productStatus(ProductStatus.GOOD)
                 .auctionStatus(AuctionStatus.CANCEL)
-                .min_bid(1000)
+                .minBid(1000)
                 .startedAt(LocalDateTime.now())
                 .endedAt(LocalDateTime.now().plusDays(1))
                 .fileName("test.png")
