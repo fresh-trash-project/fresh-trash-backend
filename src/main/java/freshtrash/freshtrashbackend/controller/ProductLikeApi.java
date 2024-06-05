@@ -7,10 +7,7 @@ import freshtrash.freshtrashbackend.dto.response.ProductResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.ProductLike;
 import freshtrash.freshtrashbackend.entity.QProductLike;
-import freshtrash.freshtrashbackend.exception.ProductException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.service.ProductLikeService;
-import freshtrash.freshtrashbackend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +24,6 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
 public class ProductLikeApi {
-    private final ProductService productService;
     private final ProductLikeService productLikeService;
 
     @GetMapping("/likes")
@@ -49,7 +45,7 @@ public class ProductLikeApi {
             @RequestParam LikeStatus likeStatus,
             @PathVariable Long productId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        checkIfNotWriter(memberPrincipal, productId);
+
         Boolean isLike = likeStatus == LikeStatus.LIKE;
         if (isLike) {
             productLikeService.addProductLike(memberPrincipal.id(), productId);
@@ -58,14 +54,5 @@ public class ProductLikeApi {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.of(isLike));
-    }
-
-    /**
-     * 작성자인지 확인 (작성자인 경우 관심 추가/삭제 할수 없음)
-     */
-    private void checkIfNotWriter(MemberPrincipal memberPrincipal, Long productId) {
-        if (productService.isWriterOfArticle(productId, memberPrincipal.id())) {
-            throw new ProductException(ErrorCode.OWNER_PRODUCT_CANT_LIKE);
-        }
     }
 }

@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .permitAll()
                         .regexMatchers("/oauth2.*", ".*auth/signup", ".*auth/signin", ".*mail.*")
                         .hasAnyRole("ANONYMOUS")
-                        .regexMatchers(".*products", "/chat-ws", ".*auth/check-nickname.*")
+                        .regexMatchers(".*products(?:\\?.*)?", ".*auctions(?:\\?.*)?", "/chat-ws", ".*auth/check-nickname.*")
                         .permitAll()
                         .anyRequest()
                         .hasAnyRole("USER", "ADMIN"))

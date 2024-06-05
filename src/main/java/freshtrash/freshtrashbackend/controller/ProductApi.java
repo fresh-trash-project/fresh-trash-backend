@@ -8,10 +8,6 @@ import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.Product;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
-import freshtrash.freshtrashbackend.exception.ChatRoomException;
-import freshtrash.freshtrashbackend.exception.ProductException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.FileService;
 import freshtrash.freshtrashbackend.service.ProductService;
@@ -81,10 +77,9 @@ public class ProductApi {
             @PathVariable Long productId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 
-        checkIfWriterOrAdmin(memberPrincipal, productId);
-
         String savedFileName = productService.findFileNameOfProduct(productId).fileName();
-        ProductResponse productResponse = productService.updateProduct(productId, imgFile, productRequest, memberPrincipal);
+        ProductResponse productResponse =
+                productService.updateProduct(productId, imgFile, productRequest, memberPrincipal);
         fileService.deleteFileIfExists(savedFileName);
 
         return ResponseEntity.ok(productResponse);
@@ -96,9 +91,8 @@ public class ProductApi {
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable Long productId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        checkIfWriterOrAdmin(memberPrincipal, productId);
         String savedFileName = productService.findFileNameOfProduct(productId).fileName();
-        productService.deleteProduct(productId);
+        productService.deleteProduct(productId, memberPrincipal.getUserRole(), memberPrincipal.id());
         fileService.deleteFileIfExists(savedFileName);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
@@ -112,7 +106,6 @@ public class ProductApi {
             @PathVariable Long productId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         Product product = productService.getProduct(productId);
         Member seller = product.getMember();
-        checkIfSellerOfProduct(memberPrincipal.id(), seller.getId());
 
         ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(seller.getId(), memberPrincipal.id(), productId);
 
@@ -120,21 +113,5 @@ public class ProductApi {
                 chatRoom, product.getTitle(), seller.getNickname(), memberPrincipal.nickname());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    /**
-     * 판매자가 자신이 등록한 폐기물에 대해 채팅을 시도하는 경우 예외 처리
-     */
-    private void checkIfSellerOfProduct(Long buyerId, Long sellerId) {
-        if (sellerId.equals(buyerId)) throw new ChatRoomException(ErrorCode.CANNOT_CHAT_WITH_SELF);
-    }
-
-    /**
-     * 작성자 또는 관리자가 맞는지 확인
-     */
-    private void checkIfWriterOrAdmin(MemberPrincipal memberPrincipal, Long productId) {
-        if (memberPrincipal.getUserRole() != UserRole.ADMIN
-                && !productService.isWriterOfArticle(productId, memberPrincipal.id()))
-            throw new ProductException(ErrorCode.FORBIDDEN_PRODUCT);
     }
 }

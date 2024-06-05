@@ -63,10 +63,11 @@ class AlarmServiceTest {
     @DisplayName("알람 읽음 처리")
     void given_alarmId_when_readAlarm_then_updateReadAtToNow() {
         // given
-        Long alarmId = 1L;
+        Long alarmId = 1L, memberId = 123L;
+        given(alarmRepository.existsByIdAndMember_Id(eq(alarmId), eq(memberId))).willReturn(true);
         willDoNothing().given(alarmRepository).updateReadAtById(eq(alarmId));
         // when
-        alarmService.readAlarm(alarmId);
+        alarmService.readAlarm(alarmId, memberId);
         // then
         then(alarmRepository).should(times(1)).updateReadAtById(anyLong());
     }

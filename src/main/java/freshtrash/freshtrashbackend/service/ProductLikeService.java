@@ -28,6 +28,7 @@ public class ProductLikeService {
 
     @Transactional
     public void addProductLike(Long memberId, Long productId) {
+        checkIfNotWriterForLike(productId, memberId);
         if (productLikeRepository.existsByMemberIdAndProductId(memberId, productId)) {
             throw new ProductException(ErrorCode.ALREADY_EXISTS_LIKE);
         }
@@ -38,11 +39,20 @@ public class ProductLikeService {
 
     @Transactional
     public void deleteProductLike(Long memberId, Long productId) {
+        checkIfNotWriterForLike(productId, memberId);
         if (!productLikeRepository.existsByMemberIdAndProductId(memberId, productId)) {
             throw new ProductException(ErrorCode.NOT_FOUND_LIKE);
         }
 
         productLikeRepository.deleteByMemberIdAndProductId(memberId, productId);
         productRepository.updateLikeCount(productId, -1);
+    }
+
+    /**
+     * 작성자는 좋아요를 추가/삭제 할 수 없음
+     */
+    public void checkIfNotWriterForLike(Long productId, Long memberId) {
+        if (productRepository.existsByIdAndMember_Id(productId, memberId))
+            throw new ProductException(ErrorCode.OWNER_PRODUCT_CANT_LIKE);
     }
 }

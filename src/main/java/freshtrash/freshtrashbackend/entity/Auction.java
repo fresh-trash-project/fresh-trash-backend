@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.entity;
 
+import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
 import freshtrash.freshtrashbackend.entity.constants.AuctionStatus;
 import freshtrash.freshtrashbackend.entity.constants.ProductCategory;
@@ -51,7 +52,7 @@ public class Auction extends CreatedAt {
     private AuctionStatus auctionStatus;
 
     @Column(nullable = false)
-    private int min_bid;
+    private int minBid;
 
     @Column(nullable = false)
     private LocalDateTime startedAt;
@@ -71,27 +72,38 @@ public class Auction extends CreatedAt {
     public Auction(
             String title,
             String content,
-            int viewCount,
             String fileName,
             ProductCategory productCategory,
             ProductStatus productStatus,
             AuctionStatus auctionStatus,
-            int min_bid,
+            int minBid,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
-            Member member,
             Long memberId) {
         this.title = title;
         this.content = content;
-        this.viewCount = viewCount;
         this.fileName = fileName;
         this.productCategory = productCategory;
         this.productStatus = productStatus;
         this.auctionStatus = auctionStatus;
-        this.min_bid = min_bid;
+        this.minBid = minBid;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
-        this.member = member;
         this.memberId = memberId;
+    }
+
+    public static Auction fromRequest(AuctionRequest auctionRequest, String fileName, Long memberId) {
+        return Auction.builder()
+                .title(auctionRequest.title())
+                .content(auctionRequest.content())
+                .productCategory(auctionRequest.productCategory())
+                .productStatus(auctionRequest.productStatus())
+                .auctionStatus(auctionRequest.auctionStatus())
+                .minBid(auctionRequest.minBid())
+                .startedAt(auctionRequest.startedAt())
+                .endedAt(auctionRequest.endedAt())
+                .fileName(fileName)
+                .memberId(memberId)
+                .build();
     }
 }

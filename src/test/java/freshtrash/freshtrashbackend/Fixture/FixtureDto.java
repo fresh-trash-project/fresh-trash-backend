@@ -1,12 +1,11 @@
 package freshtrash.freshtrashbackend.Fixture;
 
-import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
-import freshtrash.freshtrashbackend.dto.request.MemberRequest;
-import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
-import freshtrash.freshtrashbackend.dto.request.ProductRequest;
+import freshtrash.freshtrashbackend.dto.request.*;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.constants.*;
+
+import java.time.LocalDateTime;
 
 public class FixtureDto {
 
@@ -68,5 +67,16 @@ public class FixtureDto {
     public static ReviewRequest createReviewRequest(int rate) {
         return new ReviewRequest(rate);
     }
-}
 
+    public static AuctionRequest createAuctionRequest() {
+        return new AuctionRequest(
+                "title",
+                "content",
+                ProductCategory.BEAUTY,
+                ProductStatus.GOOD,
+                AuctionStatus.CANCEL,
+                1000,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(1));
+    }
+}

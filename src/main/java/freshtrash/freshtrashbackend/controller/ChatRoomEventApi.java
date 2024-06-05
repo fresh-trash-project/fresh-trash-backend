@@ -29,7 +29,7 @@ public class ChatRoomEventApi {
     @PostMapping("/{chatRoomId}/flag")
     public ResponseEntity<Void> flagMember(
             @PathVariable Long chatRoomId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
+        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId, memberPrincipal.id());
         userFlagChatAlarm.sendAlarm(chatRoom, memberPrincipal.id());
         return ResponseEntity.ok(null);
     }
@@ -39,11 +39,13 @@ public class ChatRoomEventApi {
      */
     @PostMapping("/{chatRoomId}/productDeal")
     public ResponseEntity<Void> handleProductDeal(
-            @PathVariable Long chatRoomId, @RequestParam ProductEventType productEventType) {
+            @PathVariable Long chatRoomId,
+            @RequestParam ProductEventType productEventType,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         switch (productEventType) {
-            case CANCEL_BOOKING -> cancelBookingProductAlarm.sendAlarm(chatRoomId);
-            case REQUEST_BOOKING -> requestBookingProductAlarm.sendAlarm(chatRoomId);
-            default -> completeDealProductAlarm.sendAlarm(chatRoomId);
+            case CANCEL_BOOKING -> cancelBookingProductAlarm.sendAlarm(chatRoomId, memberPrincipal.id());
+            case REQUEST_BOOKING -> requestBookingProductAlarm.sendAlarm(chatRoomId, memberPrincipal.id());
+            default -> completeDealProductAlarm.sendAlarm(chatRoomId, memberPrincipal.id());
         }
         return ResponseEntity.ok(null);
     }

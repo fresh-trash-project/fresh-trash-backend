@@ -46,9 +46,6 @@ class ProductLikeApiTest {
     @MockBean
     private ProductLikeService productLikeService;
 
-    @MockBean
-    private ProductService productService;
-
     @Test
     @DisplayName("관심 폐기물 목록 조회")
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
@@ -73,8 +70,11 @@ class ProductLikeApiTest {
         // given
         Long productId = 1L;
         Long memberId = 123L;
-        willDoNothing().given(productLikeService).addProductLike(memberId, productId);
-        willDoNothing().given(productLikeService).deleteProductLike(memberId, productId);
+        if (likeStatus == LikeStatus.LIKE) {
+            willDoNothing().given(productLikeService).addProductLike(memberId, productId);
+        } else {
+            willDoNothing().given(productLikeService).deleteProductLike(memberId, productId);
+        }
         // when
         mvc.perform(post("/api/v1/products/" + productId + "/likes").queryParam("likeStatus", String.valueOf(likeStatus)))
                 .andExpect(status().isOk())

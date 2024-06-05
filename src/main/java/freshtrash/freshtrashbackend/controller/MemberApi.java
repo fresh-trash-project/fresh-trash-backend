@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.controller;
 
+import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.response.MemberResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.service.FileService;
@@ -7,11 +8,6 @@ import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,18 +35,11 @@ public class MemberApi {
             @AuthenticationPrincipal MemberPrincipal memberPrincipal,
             @RequestPart MemberRequest memberRequest,
             @RequestPart(required = false) MultipartFile imgFile) {
-        String oldFile =
+        String oldFileName =
                 memberService.findFileNameOfMember(memberPrincipal.id()).fileName();
         MemberResponse memberResponse =
                 MemberResponse.fromEntity(memberService.updateMember(memberPrincipal, memberRequest, imgFile));
-        deleteOrNotOldFile(oldFile, memberResponse);
+        fileService.deleteOrNotOldFile(oldFileName, memberResponse.fileName());
         return ResponseEntity.ok(memberResponse);
-    }
-
-    private void deleteOrNotOldFile(String oldFile, MemberResponse memberResponse) {
-        // 파일이 수정된 경우 -> 이전 파일 삭제
-        if (StringUtils.hasText(oldFile) && !oldFile.equals(memberResponse.fileName())) {
-            fileService.deleteFileIfExists(oldFile);
-        }
     }
 }

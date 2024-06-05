@@ -9,4 +9,9 @@ public interface FileService {
     void uploadFile(MultipartFile file, String fileName);
 
     void deleteFileIfExists(String fileName);
+
+    /**
+     * oldFileName -> newFileName 으로 수정되었을 경우 파일을 삭제
+     */
+    void deleteOrNotOldFile(String oldFileName, String newFileName);
 }

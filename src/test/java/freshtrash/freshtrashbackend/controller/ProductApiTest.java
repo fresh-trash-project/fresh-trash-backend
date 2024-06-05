@@ -11,9 +11,10 @@ import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.Product;
+import freshtrash.freshtrashbackend.entity.constants.ProductCategory;
 import freshtrash.freshtrashbackend.entity.constants.ProductStatus;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
-import freshtrash.freshtrashbackend.entity.constants.ProductCategory;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.LocalFileService;
@@ -85,9 +86,10 @@ class ProductApiTest {
                 .andExpect(jsonPath("$.viewCount").value(product.getViewCount()))
                 .andExpect(jsonPath("$.productCategory")
                         .value(product.getProductCategory().name()))
+                .andExpect(jsonPath("$.productStatus")
+                        .value(product.getProductStatus().name()))
                 .andExpect(
-                        jsonPath("$.productStatus").value(product.getProductStatus().name()))
-                .andExpect(jsonPath("$.sellStatus").value(product.getSellStatus().name()));
+                        jsonPath("$.sellStatus").value(product.getSellStatus().name()));
         // then
     }
 
@@ -116,13 +118,14 @@ class ProductApiTest {
         Product product = Product.fromRequest(productRequest, imgFile.getOriginalFilename(), memberId);
         ReflectionTestUtils.setField(product, "member", Fixture.createMember());
         ProductResponse productResponse = ProductResponse.fromEntity(product);
-        given(productService.addProduct(any(MultipartFile.class), any(ProductRequest.class), any(MemberPrincipal.class)))
+        given(productService.addProduct(
+                        any(MultipartFile.class), any(ProductRequest.class), any(MemberPrincipal.class)))
                 .willReturn(productResponse);
         // when
         mvc.perform(multipart(HttpMethod.POST, "/api/v1/products")
                         .file("imgFile", imgFile.getBytes())
-                        .file(new MockMultipartFile(
-                                "productRequest", "", "application/json", objectMapper.writeValueAsBytes(productRequest)))
+                        .file(Fixture.createMultipartFileOfJson(
+                                "productRequest", objectMapper.writeValueAsString(productRequest)))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value(productRequest.title()))
@@ -133,8 +136,8 @@ class ProductApiTest {
                         .value(productRequest.productCategory().name()))
                 .andExpect(jsonPath("$.productStatus")
                         .value(productRequest.productStatus().name()))
-                .andExpect(
-                        jsonPath("$.sellStatus").value(productRequest.sellStatus().name()));
+                .andExpect(jsonPath("$.sellStatus")
+                        .value(productRequest.sellStatus().name()));
         // then
     }
 
@@ -184,7 +187,10 @@ class ProductApiTest {
         mvc.perform(multipart(HttpMethod.POST, "/api/v1/products")
                         .file("imgFile", imgFile.getBytes())
                         .file(new MockMultipartFile(
-                                "productRequest", "", "application/json", objectMapper.writeValueAsBytes(productRequest)))
+                                "productRequest",
+                                "",
+                                "application/json",
+                                objectMapper.writeValueAsBytes(productRequest)))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
         // then
@@ -203,7 +209,6 @@ class ProductApiTest {
         Product product = Product.fromRequest(productRequest, imgFile.getOriginalFilename(), memberId);
         ReflectionTestUtils.setField(product, "member", Fixture.createMember());
         ProductResponse productResponse = ProductResponse.fromEntity(product);
-        given(productService.isWriterOfArticle(eq(productId), eq(memberId))).willReturn(true);
         given(productService.findFileNameOfProduct(eq(productId))).willReturn(new FileNameSummary(fileName));
         given(productService.updateProduct(
                         eq(productId), any(MultipartFile.class), any(ProductRequest.class), any(MemberPrincipal.class)))
@@ -213,7 +218,10 @@ class ProductApiTest {
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/products/" + productId)
                         .file("imgFile", imgFile.getBytes())
                         .file(new MockMultipartFile(
-                                "productRequest", "", "application/json", objectMapper.writeValueAsBytes(productRequest)))
+                                "productRequest",
+                                "",
+                                "application/json",
+                                objectMapper.writeValueAsBytes(productRequest)))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(productRequest.title()))
@@ -224,8 +232,8 @@ class ProductApiTest {
                         .value(productRequest.productCategory().name()))
                 .andExpect(jsonPath("$.productStatus")
                         .value(productRequest.productStatus().name()))
-                .andExpect(
-                        jsonPath("$.sellStatus").value(productRequest.sellStatus().name()));
+                .andExpect(jsonPath("$.sellStatus")
+                        .value(productRequest.sellStatus().name()));
         // then
     }
 
@@ -234,13 +242,12 @@ class ProductApiTest {
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     void given_productIdAndWriter_when_then_deleteProductAndFile() throws Exception {
         // given
-        Long productId = 1L;
-        Long memberId = 123L;
+        Long productId = 1L, memberId = 123L;
+        UserRole userRole = UserRole.USER;
         String fileName = "test.png";
-        given(productService.isWriterOfArticle(eq(productId), eq(memberId))).willReturn(true);
         given(productService.findFileNameOfProduct(eq(productId))).willReturn(new FileNameSummary(fileName));
         willDoNothing().given(localFileService).deleteFileIfExists(eq(fileName));
-        willDoNothing().given(productService).deleteProduct(eq(productId));
+        willDoNothing().given(productService).deleteProduct(eq(productId), eq(userRole), eq(memberId));
         // when
         mvc.perform(delete("/api/v1/products/" + productId)).andExpect(status().isNoContent());
         // then
@@ -265,7 +272,8 @@ class ProductApiTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.productTitle").value(product.getTitle()))
                 .andExpect(jsonPath("$.sellStatus").value("ONGOING"))
-                .andExpect(jsonPath("$.sellerNickname").value(product.getMember().getNickname()))
+                .andExpect(
+                        jsonPath("$.sellerNickname").value(product.getMember().getNickname()))
                 .andExpect(jsonPath("$.buyerNickname").value(buyerNickname));
         // then
     }
