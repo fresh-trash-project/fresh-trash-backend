@@ -5,9 +5,6 @@ import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
-import freshtrash.freshtrashbackend.exception.AuctionException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -56,14 +53,7 @@ public class AuctionApi {
     @DeleteMapping("/{auctionId}")
     public ResponseEntity<Void> deleteAuction(
             @PathVariable Long auctionId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        checkIfWriterOrAdmin(memberPrincipal, auctionId);
-        auctionService.deleteAuction(auctionId);
+        auctionService.deleteAuction(auctionId, memberPrincipal.getUserRole(), memberPrincipal.id());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-    }
-
-    private void checkIfWriterOrAdmin(MemberPrincipal memberPrincipal, Long auctionId) {
-        if (memberPrincipal.getUserRole() != UserRole.ADMIN
-                && !auctionService.isWriterOfAuction(auctionId, memberPrincipal.id()))
-            throw new AuctionException(ErrorCode.FORBIDDEN_AUCTION);
     }
 }

@@ -64,9 +64,7 @@ class ChatRoomApiTest {
         Long memberId = 123L;
         Long chatRoomId = 2L;
         ChatRoom chatRoom = Fixture.createChatRoom();
-        given(chatRoomService.isSellerOrBuyerOfChatRoom(eq(chatRoomId), eq(memberId)))
-                .willReturn(true);
-        given(chatRoomService.getChatRoom(eq(chatRoomId))).willReturn(chatRoom);
+        given(chatRoomService.getChatRoom(eq(chatRoomId), eq(memberId))).willReturn(chatRoom);
         // when
         mvc.perform(get("/api/v1/chats/" + chatRoomId))
                 .andExpect(status().isOk())

@@ -66,10 +66,12 @@ class ChatRoomServiceTest {
     @DisplayName("채팅방 단일 조회")
     void given_chatRoomId_when_getChatRoom_then_returnChatRoom() {
         // given
-        Long chatRoomId = 1L;
+        Long chatRoomId = 1L, memberId = 123L;
+        given(chatRoomRepository.existsByIdAndMemberId(eq(chatRoomId), eq(memberId)))
+                .willReturn(true);
         given(chatRoomRepository.findById(eq(chatRoomId))).willReturn(Optional.of(Fixture.createChatRoom()));
         // when
-        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
+        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId, memberId);
         // then
         assertThat(chatRoom).isNotNull();
     }

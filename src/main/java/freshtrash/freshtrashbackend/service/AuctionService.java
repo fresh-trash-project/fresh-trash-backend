@@ -5,6 +5,7 @@ import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.AuctionException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.AuctionRepository;
@@ -42,11 +43,13 @@ public class AuctionService {
                 .orElseThrow(() -> new AuctionException(ErrorCode.NOT_FOUND_AUCTION));
     }
 
-    public void deleteAuction(Long auctionId) {
+    public void deleteAuction(Long auctionId, UserRole userRole, Long memberId) {
+        checkIfWriterOrAdmin(auctionId, userRole, memberId);
         auctionRepository.deleteById(auctionId);
     }
 
-    public boolean isWriterOfAuction(Long auctionId, Long memberId) {
-        return auctionRepository.existsByIdAndMemberId(auctionId, memberId);
+    private void checkIfWriterOrAdmin(Long auctionId, UserRole userRole, Long memberId) {
+        if (userRole != UserRole.ADMIN && !auctionRepository.existsByIdAndMemberId(auctionId, memberId))
+            throw new AuctionException(ErrorCode.FORBIDDEN_AUCTION);
     }
 }

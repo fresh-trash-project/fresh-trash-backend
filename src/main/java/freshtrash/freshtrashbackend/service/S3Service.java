@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -84,5 +85,10 @@ public class S3Service implements FileService {
         } catch (SdkClientException | S3Exception e) {
             throw new FileException(ErrorCode.FILE_CANT_DELETE);
         }
+    }
+
+    @Override
+    public void deleteOrNotOldFile(String oldFileName, String newFileName) {
+        if (StringUtils.hasText(oldFileName) && !oldFileName.equals(newFileName)) deleteFileIfExists(oldFileName);
     }
 }

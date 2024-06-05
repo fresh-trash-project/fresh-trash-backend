@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.dto.response.ChatRoomResponse;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.exception.ChatException;
+import freshtrash.freshtrashbackend.exception.ChatRoomException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +32,15 @@ public class ChatRoomService {
                 .map(ChatRoomResponse::fromEntity);
     }
 
-    public ChatRoom getChatRoom(Long chatRoomId) {
+    public ChatRoom getChatRoom(Long chatRoomId, Long memberId) {
+        checkIfSellerOrBuyerOfChatRoom(chatRoomId, memberId);
         return chatRoomRepository
                 .findById(chatRoomId)
                 .orElseThrow(() -> new ChatException(ErrorCode.NOT_FOUND_CHAT_ROOM));
     }
 
     public ChatRoom getOrCreateChatRoom(Long sellerId, Long buyerId, Long productId) {
-
+        checkIfSellerOfProduct(sellerId, buyerId);
         // 기존 채팅방 검색
         return chatRoomRepository
                 .findBySellerIdAndBuyerIdAndProductId(sellerId, buyerId, productId)
@@ -51,10 +53,6 @@ public class ChatRoomService {
                         .build()));
     }
 
-    public boolean isSellerOrBuyerOfChatRoom(Long chatRoomId, Long memberId) {
-        return chatRoomRepository.existsByIdAndMemberId(chatRoomId, memberId);
-    }
-
     public void closeChatRoom(Long chatRoomId) {
         chatRoomRepository.updateOpenOrClose(chatRoomId);
     }
@@ -64,5 +62,20 @@ public class ChatRoomService {
      */
     private List<ChatRoom> getChatRoomsByProductIdAndNotSellStatus(Long productId, SellStatus sellStatus) {
         return chatRoomRepository.findByProduct_IdAndSellStatusNot(productId, sellStatus);
+    }
+
+    /**
+     * 판매자 또는 구매자만이 대상 채팅방을 조회할 수 있습니다
+     */
+    private void checkIfSellerOrBuyerOfChatRoom(Long chatRoomId, Long memberId) {
+        if (!chatRoomRepository.existsByIdAndMemberId(chatRoomId, memberId))
+            throw new ChatException(ErrorCode.FORBIDDEN_CHAT_ROOM);
+    }
+
+    /**
+     * 판매자가 자신이 등록한 폐기물에 대해 채팅을 시도하는 경우 예외 처리
+     */
+    private void checkIfSellerOfProduct(Long sellerId, Long buyerId) {
+        if (sellerId.equals(buyerId)) throw new ChatRoomException(ErrorCode.CANNOT_CHAT_WITH_SELF);
     }
 }

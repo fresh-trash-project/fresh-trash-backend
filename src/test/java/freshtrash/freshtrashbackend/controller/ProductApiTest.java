@@ -14,6 +14,7 @@ import freshtrash.freshtrashbackend.entity.Product;
 import freshtrash.freshtrashbackend.entity.constants.ProductCategory;
 import freshtrash.freshtrashbackend.entity.constants.ProductStatus;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.LocalFileService;
@@ -208,7 +209,6 @@ class ProductApiTest {
         Product product = Product.fromRequest(productRequest, imgFile.getOriginalFilename(), memberId);
         ReflectionTestUtils.setField(product, "member", Fixture.createMember());
         ProductResponse productResponse = ProductResponse.fromEntity(product);
-        given(productService.isWriterOfArticle(eq(productId), eq(memberId))).willReturn(true);
         given(productService.findFileNameOfProduct(eq(productId))).willReturn(new FileNameSummary(fileName));
         given(productService.updateProduct(
                         eq(productId), any(MultipartFile.class), any(ProductRequest.class), any(MemberPrincipal.class)))
@@ -242,13 +242,12 @@ class ProductApiTest {
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     void given_productIdAndWriter_when_then_deleteProductAndFile() throws Exception {
         // given
-        Long productId = 1L;
-        Long memberId = 123L;
+        Long productId = 1L, memberId = 123L;
+        UserRole userRole = UserRole.USER;
         String fileName = "test.png";
-        given(productService.isWriterOfArticle(eq(productId), eq(memberId))).willReturn(true);
         given(productService.findFileNameOfProduct(eq(productId))).willReturn(new FileNameSummary(fileName));
         willDoNothing().given(localFileService).deleteFileIfExists(eq(fileName));
-        willDoNothing().given(productService).deleteProduct(eq(productId));
+        willDoNothing().given(productService).deleteProduct(eq(productId), eq(userRole), eq(memberId));
         // when
         mvc.perform(delete("/api/v1/products/" + productId)).andExpect(status().isNoContent());
         // then

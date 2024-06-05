@@ -2,8 +2,6 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.exception.AlarmException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.service.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -43,15 +41,7 @@ public class AlarmApi {
     @PutMapping("/{alarmId}")
     public ResponseEntity<Void> readAlarm(
             @PathVariable Long alarmId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        checkIfOwnerOfAlarm(alarmId, memberPrincipal.id());
-        alarmService.readAlarm(alarmId);
+        alarmService.readAlarm(alarmId, memberPrincipal.id());
         return ResponseEntity.ok(null);
-    }
-
-    /**
-     * 로그인한 사용자가 대상 알람의 주인인지 확인
-     */
-    private void checkIfOwnerOfAlarm(Long alarmId, Long memberId) {
-        if (!alarmService.isOwnerOfAlarm(alarmId, memberId)) throw new AlarmException(ErrorCode.FORBIDDEN_ALARM);
     }
 }

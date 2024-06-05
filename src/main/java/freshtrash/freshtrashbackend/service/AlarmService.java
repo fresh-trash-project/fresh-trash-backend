@@ -47,7 +47,8 @@ public class AlarmService {
      * 알람 메시지 전송 Listener
      */
     @ManualAcknowledge
-    @RabbitListener(queues = {"#{productCompleteQueue.name}", "#{productFlagQueue.name}", "#{productChangeStatusQueue.name}"})
+    @RabbitListener(
+            queues = {"#{productCompleteQueue.name}", "#{productFlagQueue.name}", "#{productChangeStatusQueue.name}"})
     public void receiveProductProductDeal(
             Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload AlarmPayload alarmPayload) {
         log.debug("receive complete productDeal message: {}", alarmPayload);
@@ -108,7 +109,8 @@ public class AlarmService {
         return sseEmitter;
     }
 
-    public void readAlarm(Long alarmId) {
+    public void readAlarm(Long alarmId, Long memberId) {
+        checkIfOwnerOfAlarm(alarmId, memberId);
         alarmRepository.updateReadAtById(alarmId);
     }
 
@@ -125,11 +127,15 @@ public class AlarmService {
         log.debug("successfully deleted alarms!!");
     }
 
-    public boolean isOwnerOfAlarm(Long alarmId, Long memberId) {
-        return alarmRepository.existsByIdAndMember_Id(alarmId, memberId);
-    }
-
     private Alarm saveAlarm(AlarmPayload alarmPayload) {
         return alarmRepository.save(Alarm.fromMessageRequest(alarmPayload));
+    }
+
+    /**
+     * 로그인한 사용자가 대상 알람의 주인인지 확인
+     */
+    private void checkIfOwnerOfAlarm(Long alarmId, Long memberId) {
+        if (!alarmRepository.existsByIdAndMember_Id(alarmId, memberId))
+            throw new AlarmException(ErrorCode.FORBIDDEN_ALARM);
     }
 }

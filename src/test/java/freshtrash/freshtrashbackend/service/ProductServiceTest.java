@@ -8,6 +8,7 @@ import freshtrash.freshtrashbackend.dto.response.ProductResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Product;
 import freshtrash.freshtrashbackend.entity.QProduct;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -102,10 +103,13 @@ class ProductServiceTest {
         String updatedFileName = "updated.png";
         MemberPrincipal memberPrincipal = FixtureDto.createMemberPrincipal();
         Product product = Product.fromRequest(productRequest, updatedFileName, memberPrincipal.id());
+        given(productRepository.existsByIdAndMember_Id(eq(productId), eq(memberPrincipal.id())))
+                .willReturn(true);
         given(productRepository.save(any(Product.class))).willReturn(product);
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
         // when
-        ProductResponse productResponse = productService.updateProduct(productId, multipartFile, productRequest, memberPrincipal);
+        ProductResponse productResponse =
+                productService.updateProduct(productId, multipartFile, productRequest, memberPrincipal);
 
         // then
         assertThat(productResponse.title()).isEqualTo(productRequest.title());
@@ -122,10 +126,13 @@ class ProductServiceTest {
     @DisplayName("Product 삭제")
     void given_productId_when_then_deleteProductAndFile() {
         // given
-        Long productId = 1L;
+        Long productId = 1L, memberId = 123L;
+        UserRole userRole = UserRole.USER;
+        given(productRepository.existsByIdAndMember_Id(eq(productId), eq(memberId)))
+                .willReturn(true);
         willDoNothing().given(productRepository).deleteById(eq(productId));
         // when
-        productService.deleteProduct(productId);
+        productService.deleteProduct(productId, userRole, memberId);
         // then
     }
 }

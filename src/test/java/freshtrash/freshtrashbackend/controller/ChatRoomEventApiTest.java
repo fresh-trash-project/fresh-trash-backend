@@ -58,8 +58,9 @@ class ChatRoomEventApiTest {
     void given_chatRoomIdAndMemberId_when_then_calledSendAlarmOfChatAlarm() throws Exception {
         // given
         Long currentMemberId = 123L, chatRoomId = 2L, productId = 1L, targetMemberId = 321L;
-        ChatRoom chatRoom = Fixture.createChatRoom(productId, targetMemberId, currentMemberId, true, SellStatus.ONGOING);
-        given(chatRoomService.getChatRoom(eq(chatRoomId))).willReturn(chatRoom);
+        ChatRoom chatRoom =
+                Fixture.createChatRoom(productId, targetMemberId, currentMemberId, true, SellStatus.ONGOING);
+        given(chatRoomService.getChatRoom(eq(chatRoomId), eq(currentMemberId))).willReturn(chatRoom);
         willDoNothing().given(userFlagChatAlarm).sendAlarm(eq(chatRoom), eq(currentMemberId));
         // when
         mvc.perform(post("/api/v1/chats/" + chatRoomId + "/flag")).andExpect(status().isOk());
@@ -73,15 +74,15 @@ class ChatRoomEventApiTest {
     void given_chatRoomIdAndEventType_when_then_calledSendAlarmOfProductAlarm(ProductEventType productEventType)
             throws Exception {
         // given
-        Long chatRoomId = 2L;
+        Long chatRoomId = 2L, memberId = 123L;
         switch (productEventType) {
             case CANCEL_BOOKING -> willDoNothing()
                     .given(cancelBookingProductAlarm)
-                    .sendAlarm(eq(chatRoomId));
+                    .sendAlarm(eq(chatRoomId), eq(memberId));
             case REQUEST_BOOKING -> willDoNothing()
                     .given(requestBookingProductAlarm)
-                    .sendAlarm(eq(chatRoomId));
-            default -> willDoNothing().given(completeDealProductAlarm).sendAlarm(chatRoomId);
+                    .sendAlarm(eq(chatRoomId), eq(memberId));
+            default -> willDoNothing().given(completeDealProductAlarm).sendAlarm(chatRoomId, memberId);
         }
         // when
         mvc.perform(post("/api/v1/chats/" + chatRoomId + "/productDeal")

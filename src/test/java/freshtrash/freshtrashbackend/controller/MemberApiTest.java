@@ -23,8 +23,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
@@ -91,7 +90,7 @@ class MemberApiTest {
         given(memberService.updateMember(
                         any(MemberPrincipal.class), any(MemberRequest.class), any(MultipartFile.class)))
                 .willReturn(member);
-        willDoNothing().given(localFileService).deleteFileIfExists(eq(oldFile));
+        willDoNothing().given(localFileService).deleteOrNotOldFile(eq(oldFile), anyString());
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/members")
                         .file("imgFile", imgFile.getBytes())

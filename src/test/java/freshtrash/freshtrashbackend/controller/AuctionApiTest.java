@@ -9,6 +9,7 @@ import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -110,8 +111,8 @@ class AuctionApiTest {
     void given_auctionIdAndLoginUser_when_loginUserIsWriterOrAdmin_then_deleteAuction() throws Exception {
         // given
         Long auctionId = 1L, memberId = 123L;
-        given(auctionService.isWriterOfAuction(eq(auctionId), eq(memberId))).willReturn(true);
-        willDoNothing().given(auctionService).deleteAuction(auctionId);
+        UserRole userRole = UserRole.USER;
+        willDoNothing().given(auctionService).deleteAuction(auctionId, userRole, memberId);
         // when
         mvc.perform(delete("/api/v1/auctions/" + auctionId)).andExpect(status().isNoContent());
         // then

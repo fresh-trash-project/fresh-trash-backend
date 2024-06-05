@@ -5,6 +5,7 @@ import freshtrash.freshtrashbackend.exception.FileException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -37,6 +38,11 @@ public class LocalFileService implements FileService {
         } else {
             throw new FileException(ErrorCode.FILE_NOT_FOUND);
         }
+    }
+
+    @Override
+    public void deleteOrNotOldFile(String oldFileName, String newFileName) {
+        if (StringUtils.hasText(oldFileName) && !oldFileName.equals(newFileName)) deleteFileIfExists(oldFileName);
     }
 
     private File createFileInstance(String fileName) {

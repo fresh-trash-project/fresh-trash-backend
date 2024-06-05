@@ -74,8 +74,7 @@ class AlarmApiTest {
         // given
         Long alarmId = 1L;
         Long memberId = 123L;
-        given(alarmService.isOwnerOfAlarm(eq(alarmId), eq(memberId))).willReturn(true);
-        willDoNothing().given(alarmService).readAlarm(eq(alarmId));
+        willDoNothing().given(alarmService).readAlarm(eq(alarmId), eq(memberId));
         // when
         mvc.perform(put("/api/v1/notis/" + alarmId)).andExpect(status().isOk());
         // then

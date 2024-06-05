@@ -45,8 +45,10 @@ class ProductLikeServiceTest {
         Long memberId = 1L;
         ProductCategory category = ProductCategory.BEAUTY;
         int expectedSize = 1;
-        Predicate predicate =
-                QProductLike.productLike.memberId.eq(memberId).and(QProductLike.productLike.product.productCategory.eq(category));
+        Predicate predicate = QProductLike.productLike
+                .memberId
+                .eq(memberId)
+                .and(QProductLike.productLike.product.productCategory.eq(category));
         Pageable pageable = PageRequest.of(0, 6, Sort.Direction.DESC, "createdAt");
         given(productLikeRepository.findAll(eq(predicate), eq(pageable)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createProductLike())));
@@ -60,12 +62,14 @@ class ProductLikeServiceTest {
     @DisplayName("관심 폐기물 추가")
     void given_memberIdAndProductId_when_addProductLike_then_saveProductLikeAndUpdateLikeCount() {
         // given
-        Long memberId = 123L;
-        Long productId = 1L;
+        Long memberId = 123L, productId = 1L;
         ProductLike productLike = ProductLike.of(memberId, productId);
+        given(productRepository.existsByIdAndMember_Id(eq(productId), eq(memberId)))
+                .willReturn(false);
+        given(productLikeRepository.existsByMemberIdAndProductId(memberId, productId))
+                .willReturn(false);
         given(productLikeRepository.save(any(ProductLike.class))).willReturn(productLike);
         willDoNothing().given(productRepository).updateLikeCount(productId, 1);
-
         // when
         productLikeService.addProductLike(memberId, productId);
         // then
@@ -75,12 +79,13 @@ class ProductLikeServiceTest {
     @DisplayName("관심 폐기물 삭제")
     void given_memberIdAndProductId_when_deleteProductLike_then_deleteProductLikeAndUpdateLikeCount() {
         // given
-        Long memberId = 123L;
-        Long productId = 1L;
-        given(productLikeRepository.existsByMemberIdAndProductId(memberId, productId)).willReturn(true);
+        Long memberId = 123L, productId = 1L;
+        given(productRepository.existsByIdAndMember_Id(eq(productId), eq(memberId)))
+                .willReturn(false);
+        given(productLikeRepository.existsByMemberIdAndProductId(memberId, productId))
+                .willReturn(true);
         willDoNothing().given(productLikeRepository).deleteByMemberIdAndProductId(memberId, productId);
         willDoNothing().given(productRepository).updateLikeCount(productId, -1);
-
         // when
         productLikeService.deleteProductLike(memberId, productId);
         // then

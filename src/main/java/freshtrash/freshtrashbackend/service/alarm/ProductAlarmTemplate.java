@@ -12,8 +12,8 @@ public abstract class ProductAlarmTemplate {
     protected final ProductDealService productDealService;
     protected final ProductDealProducer producer;
 
-    public void sendAlarm(Long chatRoomId) {
-        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId);
+    public void sendAlarm(Long chatRoomId, Long memberId) {
+        ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId, memberId);
         update(chatRoom);
         publishEvent(chatRoom);
     }
