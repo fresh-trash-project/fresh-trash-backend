@@ -51,7 +51,8 @@ public enum ErrorCode {
 
     // Auction
     NOT_FOUND_AUCTION(HttpStatus.NOT_FOUND, "경매가 존재하지 않습니다."),
-    FORBIDDEN_AUCTION(HttpStatus.FORBIDDEN, "경매에 대한 권한이 없습니다.");
+    FORBIDDEN_AUCTION(HttpStatus.FORBIDDEN, "경매에 대한 권한이 없습니다."),
+    INVALID_AUCTION_TIME(HttpStatus.BAD_REQUEST, "경매 시간이 잘못되었습니다.");
 
     private final HttpStatus status;
     private final String message;
