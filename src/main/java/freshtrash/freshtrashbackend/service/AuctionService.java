@@ -68,18 +68,27 @@ public class AuctionService {
             backoff = @Backoff(delay = 1000, maxDelay = 5000))
     public void requestBidding(Long auctionId, int biddingPrice, Long memberId) {
         Auction auction = getAuction(auctionId);
-        // 요청한 입찰가는 이전 입찰가보다 높아야함
-        if (auction.getFinalBid() >= biddingPrice) throw new AuctionException(ErrorCode.INVALID_BIDDING_PRICE);
-        // 경매를 올린 사용자는 입찰이 불가능
-        if (Objects.equals(auction.getMemberId(), memberId)) throw new AuctionException(ErrorCode.WRITER_CANT_BIDDING);
-        // 경매가 시작하기 전 또는 후에는 입찰이 불가능
-        if (LocalDateTime.now().isBefore(auction.getStartedAt())
-                && LocalDateTime.now().isAfter(auction.getEndedAt()))
-            throw new AuctionException(ErrorCode.CANT_BIDDING_TIME);
+        validateBiddingRequest(auction, biddingPrice, memberId);
         // 입찰가 변경
         auction.setFinalBid(biddingPrice);
         // 입찰 기록
         addBiddingHistory(auctionId, memberId, biddingPrice);
+    }
+
+    private void validateBiddingRequest(Auction auction, int biddingPrice, Long memberId) {
+        // 요청한 입찰가는 이전 입찰가보다 높아야함
+        if (auction.getFinalBid() >= biddingPrice) {
+            throw new AuctionException(ErrorCode.INVALID_BIDDING_PRICE);
+        }
+        // 경매를 올린 사용자는 입찰이 불가능
+        if (Objects.equals(auction.getMemberId(), memberId)) {
+            throw new AuctionException(ErrorCode.WRITER_CANT_BIDDING);
+        }
+        // 경매가 시작하기 전 또는 후에는 입찰이 불가능
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(auction.getStartedAt()) || now.isAfter(auction.getEndedAt())) {
+            throw new AuctionException(ErrorCode.CANT_BIDDING_TIME);
+        }
     }
 
     private void checkIfWriterOrAdmin(Long auctionId, UserRole userRole, Long memberId) {
