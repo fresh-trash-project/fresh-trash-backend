@@ -79,4 +79,8 @@ public class FixtureDto {
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(1));
     }
+
+    public static BiddingRequest createBiddingRequest(int biddingPrice) {
+        return new BiddingRequest(biddingPrice);
+    }
 }

@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
+import freshtrash.freshtrashbackend.dto.request.BiddingRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
@@ -73,7 +74,8 @@ class AuctionApiTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value(auctionRequest.title()))
-                .andExpect(jsonPath("$.content").value(auctionRequest.content()));
+                .andExpect(jsonPath("$.content").value(auctionRequest.content()))
+                .andExpect(jsonPath("$.minimumBid").value(auctionRequest.minimumBid()));
         // then
     }
 
@@ -115,6 +117,23 @@ class AuctionApiTest {
         willDoNothing().given(auctionService).deleteAuction(auctionId, userRole, memberId);
         // when
         mvc.perform(delete("/api/v1/auctions/" + auctionId)).andExpect(status().isNoContent());
+        // then
+    }
+
+    @DisplayName("경매 입찰 요청")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    void bidding() throws Exception {
+        // given
+        Long auctionId = 2L, memberId = 123L;
+        int biddingPrice = 10000;
+        BiddingRequest biddingRequest = FixtureDto.createBiddingRequest(biddingPrice);
+        willDoNothing().given(auctionService).requestBidding(auctionId, biddingPrice, memberId);
+        // when
+        mvc.perform(put("/api/v1/auctions/" + auctionId + "/bid")
+                        .content(objectMapper.writeValueAsString(biddingRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
         // then
     }
 }
