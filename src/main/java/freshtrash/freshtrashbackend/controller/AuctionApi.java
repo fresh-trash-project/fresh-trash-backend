@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.controller;
 
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
+import freshtrash.freshtrashbackend.dto.request.BiddingRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
@@ -55,5 +56,14 @@ public class AuctionApi {
             @PathVariable Long auctionId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         auctionService.deleteAuction(auctionId, memberPrincipal.getUserRole(), memberPrincipal.id());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @PutMapping("/{auctionId}")
+    public ResponseEntity<Void> requestBidding(
+            @PathVariable Long auctionId,
+            @RequestBody @Valid BiddingRequest biddingRequest,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        auctionService.requestBidding(auctionId, biddingRequest.biddingPrice(), memberPrincipal.id());
+        return ResponseEntity.ok(null);
     }
 }
