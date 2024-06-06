@@ -114,6 +114,10 @@ public class MemberService {
             // 수정된 파일 저장
             fileService.uploadFile(imgFile, updatedFileName);
         }
+        // 파일이 유효하지 않을 경우 삭제
+        else {
+            member.setFileName(null);
+        }
         memberCacheRepository.save(MemberPrincipal.fromEntity(member));
 
         return member;
