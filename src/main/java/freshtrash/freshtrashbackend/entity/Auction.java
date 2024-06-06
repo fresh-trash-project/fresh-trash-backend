@@ -51,8 +51,9 @@ public class Auction extends CreatedAt {
     @Enumerated(value = EnumType.STRING)
     private AuctionStatus auctionStatus;
 
+    @Setter
     @Column(nullable = false)
-    private int minBid;
+    private int finalBid; // 최종 입찰 금액
 
     @Column(nullable = false)
     private LocalDateTime startedAt;
@@ -68,6 +69,9 @@ public class Auction extends CreatedAt {
     @Column(nullable = false)
     private Long memberId;
 
+    @Version
+    private int version;
+
     @Builder
     public Auction(
             String title,
@@ -76,7 +80,7 @@ public class Auction extends CreatedAt {
             ProductCategory productCategory,
             ProductStatus productStatus,
             AuctionStatus auctionStatus,
-            int minBid,
+            int finalBid,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
             Long memberId) {
@@ -86,7 +90,7 @@ public class Auction extends CreatedAt {
         this.productCategory = productCategory;
         this.productStatus = productStatus;
         this.auctionStatus = auctionStatus;
-        this.minBid = minBid;
+        this.finalBid = finalBid;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
         this.memberId = memberId;
@@ -99,7 +103,7 @@ public class Auction extends CreatedAt {
                 .productCategory(auctionRequest.productCategory())
                 .productStatus(auctionRequest.productStatus())
                 .auctionStatus(auctionRequest.auctionStatus())
-                .minBid(auctionRequest.minBid())
+                .finalBid(auctionRequest.finalBid())
                 .startedAt(auctionRequest.startedAt())
                 .endedAt(auctionRequest.endedAt())
                 .fileName(fileName)
