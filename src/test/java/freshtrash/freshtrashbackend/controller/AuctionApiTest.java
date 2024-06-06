@@ -75,7 +75,7 @@ class AuctionApiTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value(auctionRequest.title()))
                 .andExpect(jsonPath("$.content").value(auctionRequest.content()))
-                .andExpect(jsonPath("$.minimumBid").value(auctionRequest.minimumBid()));
+                .andExpect(jsonPath("$.finalBid").value(auctionRequest.minimumBid()));
         // then
     }
 
