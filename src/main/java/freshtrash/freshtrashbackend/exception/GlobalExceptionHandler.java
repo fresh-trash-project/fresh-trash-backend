@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,6 +29,14 @@ public class GlobalExceptionHandler {
         log.error("MethodArgumentNotValidException is occurred.", e);
         String message = "Validation failed for argument in "
                 + e.getParameter().getExecutable().getName();
+        return ResponseEntity.status(BAD_REQUEST)
+                .body(ExceptionResponse.fromBindingResult(message, e.getBindingResult()));
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ExceptionResponse> resolveException(BindException e) {
+        log.error("BindException is occurred.", e);
+        String message = "Validation failed for argument in " + e.getObjectName();
         return ResponseEntity.status(BAD_REQUEST)
                 .body(ExceptionResponse.fromBindingResult(message, e.getBindingResult()));
     }
