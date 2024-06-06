@@ -18,7 +18,7 @@ public record AuctionRequest(
         @NotNull ProductCategory productCategory,
         @NotNull ProductStatus productStatus,
         @NotNull AuctionStatus auctionStatus,
-        @PositiveOrZero int finalBid,
+        @PositiveOrZero int minimumBid,
         @NotNull @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startedAt,
         @NotNull @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endedAt) {
 

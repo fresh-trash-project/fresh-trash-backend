@@ -58,8 +58,8 @@ public class AuctionApi {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @PutMapping("/{auctionId}")
-    public ResponseEntity<Void> requestBidding(
+    @PutMapping("/{auctionId}/bid")
+    public ResponseEntity<Void> placeBidding(
             @PathVariable Long auctionId,
             @RequestBody @Valid BiddingRequest biddingRequest,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {

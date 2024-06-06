@@ -103,7 +103,7 @@ public class Auction extends CreatedAt {
                 .productCategory(auctionRequest.productCategory())
                 .productStatus(auctionRequest.productStatus())
                 .auctionStatus(auctionRequest.auctionStatus())
-                .finalBid(auctionRequest.finalBid())
+                .finalBid(auctionRequest.minimumBid())
                 .startedAt(auctionRequest.startedAt())
                 .endedAt(auctionRequest.endedAt())
                 .fileName(fileName)
