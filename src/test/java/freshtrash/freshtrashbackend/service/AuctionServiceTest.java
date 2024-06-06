@@ -7,9 +7,11 @@ import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.entity.QAuction;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.repository.AuctionRepository;
+import freshtrash.freshtrashbackend.repository.BiddingHistoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -42,6 +45,9 @@ class AuctionServiceTest {
 
     @Mock
     private LocalFileService fileService;
+
+    @Mock
+    private BiddingHistoryRepository biddingHistoryRepository;
 
     @DisplayName("경매 추가")
     @Test
@@ -62,7 +68,7 @@ class AuctionServiceTest {
         assertThat(auctionResponse.productCategory()).isEqualTo(auctionRequest.productCategory());
         assertThat(auctionResponse.productStatus()).isEqualTo(auctionRequest.productStatus());
         assertThat(auctionResponse.auctionStatus()).isEqualTo(auctionRequest.auctionStatus());
-        assertThat(auctionResponse.minBid()).isEqualTo(auctionRequest.minBid());
+        assertThat(auctionResponse.finalBid()).isEqualTo(auctionRequest.minimumBid());
         assertThat(auctionResponse.startedAt()).isEqualTo(auctionRequest.startedAt());
         assertThat(auctionResponse.endedAt()).isEqualTo(auctionRequest.endedAt());
     }
@@ -100,10 +106,26 @@ class AuctionServiceTest {
         // given
         Long auctionId = 1L, memberId = 123L;
         UserRole userRole = UserRole.USER;
-        given(auctionRepository.existsByIdAndMemberId(eq(auctionId), eq(memberId))).willReturn(true);
+        given(auctionRepository.existsByIdAndMemberId(eq(auctionId), eq(memberId)))
+                .willReturn(true);
         willDoNothing().given(auctionRepository).deleteById(auctionId);
         // when
         auctionService.deleteAuction(auctionId, userRole, memberId);
+        // then
+    }
+
+    @DisplayName("경매 입찰")
+    @Test
+    void given_auctionIdAndBiddingPriceAndMemberId_when_passedDefenseLogic_then_updatePriceAndAddHistory() {
+        // given
+        Long auctionId = 1L, memberId = 3L;
+        int biddingPrice = 10000;
+        Auction auction = Fixture.createAuction();
+        BiddingHistory biddingHistory = Fixture.createBiddingHistory(auctionId, memberId, biddingPrice);
+        given(auctionRepository.findById(eq(auctionId))).willReturn(Optional.of(auction));
+        given(biddingHistoryRepository.save(any(BiddingHistory.class))).willReturn(biddingHistory);
+        // when
+        auctionService.requestBidding(auctionId, biddingPrice, memberId);
         // then
     }
 }

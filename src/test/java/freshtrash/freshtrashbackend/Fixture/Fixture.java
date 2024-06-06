@@ -150,7 +150,7 @@ public class Fixture {
                 .productCategory(ProductCategory.BEAUTY)
                 .productStatus(ProductStatus.GOOD)
                 .auctionStatus(AuctionStatus.CANCEL)
-                .minBid(1000)
+                .finalBid(1000)
                 .startedAt(LocalDateTime.now())
                 .endedAt(LocalDateTime.now().plusDays(1))
                 .fileName("test.png")
@@ -161,5 +161,13 @@ public class Fixture {
         ReflectionTestUtils.setField(auction, "member", Fixture.createMember());
         ReflectionTestUtils.setField(auction, "viewCount", 2);
         return auction;
+    }
+
+    public static BiddingHistory createBiddingHistory(Long auctionId, Long memberId, int biddingPrice) {
+        return BiddingHistory.builder()
+                .auctionId(auctionId)
+                .memberId(memberId)
+                .price(biddingPrice)
+                .build();
     }
 }

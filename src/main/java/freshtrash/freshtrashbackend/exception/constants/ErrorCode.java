@@ -52,7 +52,10 @@ public enum ErrorCode {
     // Auction
     NOT_FOUND_AUCTION(HttpStatus.NOT_FOUND, "경매가 존재하지 않습니다."),
     FORBIDDEN_AUCTION(HttpStatus.FORBIDDEN, "경매에 대한 권한이 없습니다."),
-    INVALID_AUCTION_TIME(HttpStatus.BAD_REQUEST, "경매 시간이 잘못되었습니다.");
+    INVALID_AUCTION_TIME(HttpStatus.BAD_REQUEST, "경매 시간이 잘못되었습니다."),
+    WRITER_CANT_BIDDING(HttpStatus.BAD_REQUEST, "경매 등록 사용자는 입찰할 수 없습니다."),
+    INVALID_BIDDING_PRICE(HttpStatus.BAD_REQUEST, "요청 입찰가는 기존 입찰가보다 커야합니다."),
+    CANT_BIDDING_TIME(HttpStatus.BAD_REQUEST, "지금은 경매 중이 아닙니다.");
 
     private final HttpStatus status;
     private final String message;
