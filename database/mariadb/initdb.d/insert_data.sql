@@ -176,7 +176,12 @@ values (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 1), '거래 완료
        (5, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), 'abc님이 판매중으로 변경하였습니다.', now(), null, null),
        (1, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), 'abc님이 판매중으로 변경하였습니다.', now(), null, now());
 
-insert into auctions(member_id, file_name, title, content, product_category, product_status, auction_status, min_bid, view_count, started_at, ended_at, created_at) values
+insert into auctions(member_id, file_name, title, content, product_category, product_status, auction_status, final_bid, view_count, started_at, ended_at, created_at) values
 (1, 'test.png', 'title', 'content', 'CLOTHING', 'GOOD', 'ONGOING', 1000, 1, now(), date_add(now(), interval 1 hour), now()),
 (2, 'test.png', 'title2', 'content2', 'HEALTH', 'GOOD', 'ONGOING', 1000, 3, now(), date_add(now(), interval 1 hour), now()),
 (3, 'test.png', 'title3', 'content3', 'SPORTS', 'GOOD', 'CLOSE', 3000, 5, now(), date_add(now(), interval 1 hour), now());
+
+insert into bidding_history(member_id, auction_id, price, is_success_bidding, created_at) values
+(2, 1, 1000, true, now()),
+(1, 2, 1000, false, now()),
+(1, 3, 3000, true, now());
