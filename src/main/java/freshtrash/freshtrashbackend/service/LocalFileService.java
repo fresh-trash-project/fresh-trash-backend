@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.dto.properties.LocalFileProperties;
 import freshtrash.freshtrashbackend.exception.FileException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LocalFileService implements FileService {
@@ -33,10 +35,10 @@ public class LocalFileService implements FileService {
         if (file.exists()) {
             // 파일을 정상적으로 삭제할 경우 true를 반환하며 false를 반환할 경우 예외 처리
             if (!file.delete()) {
-                throw new FileException(ErrorCode.FILE_CANT_DELETE);
+                log.error("파일 삭제에 실패했습니다. fileName: {}", fileName);
             }
         } else {
-            throw new FileException(ErrorCode.FILE_NOT_FOUND);
+            log.error("파일을 찾을 수 없습니다.");
         }
     }
 

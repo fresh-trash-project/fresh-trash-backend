@@ -83,7 +83,7 @@ public class S3Service implements FileService {
                     .build();
             s3.deleteObject(deleteObjectRequest);
         } catch (SdkClientException | S3Exception e) {
-            throw new FileException(ErrorCode.FILE_CANT_DELETE);
+            log.error("파일 삭제에 실패했습니다. key: {}\n", key, e);
         }
     }
 
