@@ -13,10 +13,10 @@ import freshtrash.freshtrashbackend.repository.AuctionRepository;
 import freshtrash.freshtrashbackend.repository.BiddingHistoryRepository;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -24,10 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.LockModeType;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Random;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuctionService {
@@ -62,12 +63,24 @@ public class AuctionService {
     }
 
     @Transactional
-    @Lock(LockModeType.OPTIMISTIC)
     @Retryable(
             value = {ObjectOptimisticLockingFailureException.class, CannotAcquireLockException.class},
-            backoff = @Backoff(delay = 1000, maxDelay = 5000))
+            backoff = @Backoff(delay = 300, maxDelay = 700))
     public void requestBidding(Long auctionId, int biddingPrice, Long memberId) {
         Auction auction = getAuction(auctionId);
+
+        // 통합 테스트를 위해 추가된 코드
+        if (log.isDebugEnabled()) {
+            try {
+                Random random = new Random();
+                long ms = random.nextLong(100) + 200;
+                log.debug("sleep... {}ms", ms);
+                Thread.sleep(ms);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         validateBiddingRequest(auction, biddingPrice, memberId);
         // 입찰가 변경
         auction.setFinalBid(biddingPrice);
@@ -77,7 +90,8 @@ public class AuctionService {
 
     private void validateBiddingRequest(Auction auction, int biddingPrice, Long memberId) {
         // 요청한 입찰가는 이전 입찰가보다 높아야함
-        if (auction.getFinalBid() >= biddingPrice) {
+        log.debug("Read finalBid -> {}, Bid Price -> {}", auction.getFinalBid(), biddingPrice);
+        if (auction.getFinalBid() >= biddingPrice || biddingPrice % 10 != 0) {
             throw new AuctionException(ErrorCode.INVALID_BIDDING_PRICE);
         }
         // 경매를 올린 사용자는 입찰이 불가능

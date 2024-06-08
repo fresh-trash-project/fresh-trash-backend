@@ -8,6 +8,12 @@ spring:
         - file
         - mail
         - security
+      integration_test:
+        - common
+        - amqp
+        - file
+        - mail
+        - security
       test:
         - file
         - mail
@@ -29,6 +35,22 @@ spring:
   devtools.livereload:
     enabled: true
     port: 35730
+
+---
+
+spring:
+  config.activate.on-profile: integration_test
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  devtools.livereload:
+    enabled: true
+    port: 35730
+logging:
+  level:
+    org.springframework.transaction: debug
+    org.springframework.orm.jpa: debug
+    freshtrash.freshtrashbackend: debug
 
 ---
 
