@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.controller;
 
+import freshtrash.freshtrashbackend.dto.request.ChangePasswordRequest;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.response.MemberResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +44,16 @@ public class MemberApi {
                 MemberResponse.fromEntity(memberService.updateMember(memberPrincipal, memberRequest, imgFile));
         fileService.deleteOrNotOldFile(oldFileName, memberResponse.fileName());
         return ResponseEntity.ok(memberResponse);
+    }
+
+    /**
+     * 비밀번호 변경
+     */
+    @PutMapping("/change-password")
+    public ResponseEntity<Void> changePassword(
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+            @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+        memberService.changePassword(changePasswordRequest, memberPrincipal);
+        return ResponseEntity.ok(null);
     }
 }
