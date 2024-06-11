@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.dto.request.*;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.constants.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -39,11 +40,12 @@ public class FixtureDto {
     }
 
     public static MemberPrincipal createMemberPrincipal() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return MemberPrincipal.builder()
                 .id(1L)
                 .authorities(UserRole.USER)
                 .nickname("nickname")
-                .password("pw")
+                .password(encoder.encode("qwer1234!!"))
                 .email("test@gmail.com")
                 .address(Fixture.createAddress())
                 .rating(4)
@@ -82,5 +84,9 @@ public class FixtureDto {
 
     public static BiddingRequest createBiddingRequest(int biddingPrice) {
         return new BiddingRequest(biddingPrice);
+    }
+
+    public static ChangePasswordRequest createChangePasswordRequest(String oldPassword, String newPassword) {
+        return new ChangePasswordRequest(oldPassword, newPassword);
     }
 }

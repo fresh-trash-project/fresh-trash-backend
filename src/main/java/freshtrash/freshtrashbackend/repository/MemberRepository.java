@@ -36,6 +36,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             """)
     void updateFlagCount(Long memberId, int flagLimit);
 
-    @Query(nativeQuery = true, value = "update members m set m.user_role = ?2 where m.id = ?1")
-    void updateUserRoleById(Long targetMemberId, UserRole userRole);
+    @Query(nativeQuery = true, value = "update members m set m.password = ?2 where m.email = ?1")
+    void updatePasswordByEmail(String email, String encodedPassword);
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
+import freshtrash.freshtrashbackend.dto.request.ChangePasswordRequest;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Member;
@@ -27,8 +28,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.context.support.TestExecutionEvent.TEST_EXECUTION;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MemberApi.class)
@@ -94,7 +94,8 @@ class MemberApiTest {
         // when
         mvc.perform(multipart(HttpMethod.PUT, "/api/v1/members")
                         .file("imgFile", imgFile.getBytes())
-                        .file(Fixture.createMultipartFileOfJson("memberRequest", objectMapper.writeValueAsString(memberRequest)))
+                        .file(Fixture.createMultipartFileOfJson(
+                                "memberRequest", objectMapper.writeValueAsString(memberRequest)))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nickname").value(memberRequest.nickname()))
@@ -109,6 +110,22 @@ class MemberApiTest {
                         .value(memberRequest.address().getDistrict()))
                 .andExpect(jsonPath("$.address.detail")
                         .value(memberRequest.address().getDetail()));
+        // then
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 요청")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
+    void given_changePasswordRequestAndLoginUser_when_then_changePassword() throws Exception {
+        // given
+        ChangePasswordRequest changePasswordRequest = FixtureDto.createChangePasswordRequest("1234asdf!", "asdf1234!");
+        MemberPrincipal memberPrincipal = FixtureDto.createMemberPrincipal();
+        willDoNothing().given(memberService).changePassword(eq(changePasswordRequest), eq(memberPrincipal));
+        // when
+        mvc.perform(put("/api/v1/members/change-password")
+                        .content(objectMapper.writeValueAsString(changePasswordRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
         // then
     }
 }

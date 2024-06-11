@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
+import freshtrash.freshtrashbackend.dto.request.ChangePasswordRequest;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
@@ -14,6 +15,7 @@ import freshtrash.freshtrashbackend.repository.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -136,10 +139,18 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
-    public void updatePassword(String email, String temporaryPassword) {
-        Member member = getMemberByEmail(email);
-        member.setPassword(encoder.encode(temporaryPassword));
-        memberRepository.save(member);
+    public void updatePassword(String email, String newPassword) {
+        memberRepository.updatePasswordByEmail(email, encoder.encode(newPassword));
+    }
+
+    public void changePassword(ChangePasswordRequest changePasswordRequest, MemberPrincipal memberPrincipal) {
+        // 이전 비밀번호 일치 여부 확인
+        if (!encoder.matches(changePasswordRequest.oldPassword(), memberPrincipal.password())) {
+            log.warn("기존 비밀번호가 일치하지 않습니다.");
+            throw new MemberException(ErrorCode.UNMATCHED_PASSWORD);
+        }
+        // 비밀번호 변경
+        updatePassword(memberPrincipal.email(), changePasswordRequest.newPassword());
     }
 
     /**

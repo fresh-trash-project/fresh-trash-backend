@@ -25,7 +25,7 @@ public enum ErrorCode {
     ALREADY_EXISTS_REVIEW(HttpStatus.BAD_REQUEST, "이미 리뷰가 등록되었습니다."),
 
     // Mail
-    AUTH_CODE_UNMATCHED(HttpStatus.BAD_REQUEST, "잘못된 인증코드입니다."),
+    UNMATCHED_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증코드가 일치하지 않습니다."),
     NOT_FOUND_AUTH_CODE(HttpStatus.NOT_FOUND, "인증코드가 만료되었거나 존재하지 않습니다."),
     EMPTY_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증코드가 입력되지 않았습니다."),
     MAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "메일전송에 실패했습니다"),
@@ -36,6 +36,7 @@ public enum ErrorCode {
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "유저 정보가 존재하지 않습니다."),
     ALREADY_EXISTS_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
     ALREADY_EXISTS_NICKNAME(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다."),
+    UNMATCHED_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
     // Alarm
     ALARM_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알람을 위한 연결 시도 실패"),
