@@ -2,7 +2,10 @@ package freshtrash.freshtrashbackend.config;
 
 import freshtrash.freshtrashbackend.config.constants.QueueType;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -18,8 +21,7 @@ import static freshtrash.freshtrashbackend.config.constants.QueueType.*;
 @Slf4j
 @Configuration
 public class RabbitMQConfig {
-    private static final String directExchangeName = "direct-exchange";
-    private static final String topicExchangeName = "amq.topic";
+    private static final String TOPIC_EXCHANGE_NAME = "amq.topic";
 
     @Bean
     Queue productCompleteQueue() {
@@ -42,21 +44,21 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding productCompleteBinding(Queue productCompleteQueue, DirectExchange directExchange) {
+    Binding productCompleteBinding(Queue productCompleteQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(productCompleteQueue)
-                .to(directExchange)
+                .to(topicExchange)
                 .with(PRODUCT_TRANSACTION_COMPLETE.getRoutingKey());
     }
 
     @Bean
-    Binding productCancelBinding(Queue productFlagQueue, DirectExchange directExchange) {
-        return BindingBuilder.bind(productFlagQueue).to(directExchange).with(PRODUCT_TRANSACTION_FLAG.getRoutingKey());
+    Binding productCancelBinding(Queue productFlagQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(productFlagQueue).to(topicExchange).with(PRODUCT_TRANSACTION_FLAG.getRoutingKey());
     }
 
     @Bean
-    Binding productChangeStatusBinding(Queue productChangeStatusQueue, DirectExchange directExchange) {
+    Binding productChangeStatusBinding(Queue productChangeStatusQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(productChangeStatusQueue)
-                .to(directExchange)
+                .to(topicExchange)
                 .with(PRODUCT_CHANGE_SELL_STATUS.getRoutingKey());
     }
 
@@ -66,19 +68,14 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    DirectExchange directExchange() {
-        return new DirectExchange(directExchangeName);
-    }
-
-    @Bean
     TopicExchange topicExchange() {
-        return new TopicExchange(topicExchangeName);
+        return new TopicExchange(TOPIC_EXCHANGE_NAME);
     }
 
     @Bean
     RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter jackson2JsonMessageConverter) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setExchange(directExchangeName);
+        rabbitTemplate.setExchange(TOPIC_EXCHANGE_NAME);
         rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter);
         rabbitTemplate.setMandatory(true);
         // 메시지가 브로커에 도착했지만 지정된 큐로 라우팅되지 못한 경우
