@@ -56,7 +56,7 @@ public class MailService {
         }
 
         if (!emailCodeCache.code().equals(code)) {
-            throw new MailException(ErrorCode.AUTH_CODE_UNMATCHED);
+            throw new MailException(ErrorCode.UNMATCHED_AUTH_CODE);
         }
     }
 
