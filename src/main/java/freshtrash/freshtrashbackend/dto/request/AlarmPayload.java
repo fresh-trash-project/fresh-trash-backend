@@ -4,8 +4,20 @@ import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import lombok.Builder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Builder
 public record AlarmPayload(String message, Long productId, Long memberId, Long fromMemberId, AlarmType alarmType) {
+    public Map<String, String> toMap() {
+        Map<String, String> data = new HashMap<>();
+        data.put("productId", productId.toString());
+        data.put("memberId", memberId.toString());
+        data.put("fromMemberId", fromMemberId.toString());
+        data.put("alarmType", alarmType.name());
+        return data;
+    }
+
     public static AlarmPayload ofProductDealByBuyer(String message, ChatRoom chatRoom, AlarmType alarmType) {
         return ofProductDeal(message, chatRoom, alarmType)
                 .memberId(chatRoom.getSellerId())
