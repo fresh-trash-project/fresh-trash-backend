@@ -9,10 +9,12 @@ import freshtrash.freshtrashbackend.service.alarm.CompleteDealProductAlarm;
 import freshtrash.freshtrashbackend.service.alarm.RequestBookingProductAlarm;
 import freshtrash.freshtrashbackend.service.alarm.UserFlagChatAlarm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/chats")
@@ -30,6 +32,7 @@ public class ChatRoomEventApi {
     public ResponseEntity<Void> flagMember(
             @PathVariable Long chatRoomId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId, memberPrincipal.id());
+        log.debug("채팅방 {} 조회...", chatRoomId);
         userFlagChatAlarm.sendAlarm(chatRoom, memberPrincipal.id());
         return ResponseEntity.ok(null);
     }

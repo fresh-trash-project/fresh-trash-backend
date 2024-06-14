@@ -8,8 +8,8 @@ import freshtrash.freshtrashbackend.service.producer.publisher.MQPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static freshtrash.freshtrashbackend.config.constants.QueueType.PRODUCT_CHANGE_SELL_STATUS;
-import static freshtrash.freshtrashbackend.config.constants.QueueType.PRODUCT_TRANSACTION_COMPLETE;
+import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.PRODUCT_CHANGE_SELL_STATUS;
+import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.PRODUCT_TRANSACTION_COMPLETE;
 import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.COMPLETED_SELL_MESSAGE;
 import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.REQUEST_REVIEW_MESSAGE;
 

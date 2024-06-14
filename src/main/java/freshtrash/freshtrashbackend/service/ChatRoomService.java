@@ -8,12 +8,14 @@ import freshtrash.freshtrashbackend.exception.ChatRoomException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
@@ -68,6 +70,7 @@ public class ChatRoomService {
      * 판매자 또는 구매자만이 대상 채팅방을 조회할 수 있습니다
      */
     private void checkIfSellerOrBuyerOfChatRoom(Long chatRoomId, Long memberId) {
+        log.debug("채팅방을 조회할 수 있는 판매자 또는 구매자인지 확인... chatRoomId: {}, memberId: {}", chatRoomId, memberId);
         if (!chatRoomRepository.existsByIdAndMemberId(chatRoomId, memberId))
             throw new ChatException(ErrorCode.FORBIDDEN_CHAT_ROOM);
     }
