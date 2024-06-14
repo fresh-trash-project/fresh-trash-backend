@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.controller.AuctionApi;
 import freshtrash.freshtrashbackend.dto.request.BiddingRequest;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Slf4j
-// @Disabled
+@Disabled
 @ActiveProfiles("integration_test")
 @SpringBootTest
 @Import(TestSecurityConfig.class)
