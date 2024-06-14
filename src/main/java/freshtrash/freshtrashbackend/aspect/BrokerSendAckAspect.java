@@ -36,13 +36,12 @@ public class BrokerSendAckAspect {
         if (args.length >= 2) {
             Channel channel = (Channel) args[0];
             long tag = (long) args[1];
-            if (!ack) {
-                channel.basicReject(tag, false);
-                log.warn(
-                        "Successfully send reject after \"{}\" method",
-                        pjp.getSignature().getName());
-            } else {
+            if (ack) {
                 channel.basicAck(tag, false);
+                log.debug("Successfully sent ack after \"{}\" method", pjp.getSignature().getName());
+            } else {
+                channel.basicReject(tag, false);
+                log.warn("Sent reject after \"{}\" method due to error", pjp.getSignature().getName());
             }
         }
     }
