@@ -13,63 +13,55 @@ import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.*;
 public class BindingConfig {
     @Bean
     Binding productCompleteBinding(Queue productCompleteQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(productCompleteQueue)
-                .to(topicExchange)
-                .with(PRODUCT_TRANSACTION_COMPLETE.getRoutingKey());
+        return createBinding(productCompleteQueue, topicExchange, PRODUCT_TRANSACTION_COMPLETE.getRoutingKey());
     }
 
     @Bean
-    Binding productCancelBinding(Queue productFlagQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(productFlagQueue).to(topicExchange).with(PRODUCT_TRANSACTION_FLAG.getRoutingKey());
+    Binding productFlagBinding(Queue productFlagQueue, TopicExchange topicExchange) {
+        return createBinding(productFlagQueue, topicExchange, PRODUCT_TRANSACTION_FLAG.getRoutingKey());
     }
 
     @Bean
     Binding productChangeStatusBinding(Queue productChangeStatusQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(productChangeStatusQueue)
-                .to(topicExchange)
-                .with(PRODUCT_CHANGE_SELL_STATUS.getRoutingKey());
+        return createBinding(productChangeStatusQueue, topicExchange, PRODUCT_CHANGE_SELL_STATUS.getRoutingKey());
     }
 
     @Bean
     Binding chatBinding(Queue chatQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(chatQueue).to(topicExchange).with(CHAT.getRoutingKey());
+        return createBinding(chatQueue, topicExchange, CHAT.getRoutingKey());
     }
 
     @Bean
     Binding dlqProductCompleteBinding(Queue dlqProductCompleteQueue, TopicExchange dlqExchange) {
-        return BindingBuilder.bind(dlqProductCompleteQueue)
-                .to(dlqExchange)
-                .with(DLQ_PRODUCT_TRANSACTION_COMPLETE.getRoutingKey());
+        return createBinding(dlqProductCompleteQueue, dlqExchange, DLQ_PRODUCT_TRANSACTION_COMPLETE.getRoutingKey());
     }
 
     @Bean
     Binding dlqProductFlagBinding(Queue dlqProductFlagQueue, TopicExchange dlqExchange) {
-        return BindingBuilder.bind(dlqProductFlagQueue)
-                .to(dlqExchange)
-                .with(DLQ_PRODUCT_TRANSACTION_FLAG.getRoutingKey());
+        return createBinding(dlqProductFlagQueue, dlqExchange, DLQ_PRODUCT_TRANSACTION_FLAG.getRoutingKey());
     }
 
     @Bean
     Binding dlqProductChangeStatusBinding(Queue dlqProductChangeStatusQueue, TopicExchange dlqExchange) {
-        return BindingBuilder.bind(dlqProductChangeStatusQueue)
-                .to(dlqExchange)
-                .with(DLQ_PRODUCT_CHANGE_SELL_STATUS.getRoutingKey());
+        return createBinding(dlqProductChangeStatusQueue, dlqExchange, DLQ_PRODUCT_CHANGE_SELL_STATUS.getRoutingKey());
     }
 
     @Bean
     Binding dlqChatBinding(Queue dlqChatQueue, TopicExchange dlqExchange) {
-        return BindingBuilder.bind(dlqChatQueue).to(dlqExchange).with(DLQ_CHAT.getRoutingKey());
+        return createBinding(dlqChatQueue, dlqExchange, DLQ_CHAT.getRoutingKey());
     }
 
     @Bean
     Binding productParkingLotBinding(Queue productParkingLotQueue, TopicExchange parkingLotExchange) {
-        return BindingBuilder.bind(productParkingLotQueue)
-                .to(parkingLotExchange)
-                .with(PRODUCT_PARKING_LOT.getRoutingKey());
+        return createBinding(productParkingLotQueue, parkingLotExchange, PRODUCT_PARKING_LOT.getRoutingKey());
     }
 
     @Bean
     Binding chatParkingLotBinding(Queue chatParkingLotQueue, TopicExchange parkingLotExchange) {
-        return BindingBuilder.bind(chatParkingLotQueue).to(parkingLotExchange).with(CHAT_PARKING_LOT.getRoutingKey());
+        return createBinding(chatParkingLotQueue, parkingLotExchange, CHAT_PARKING_LOT.getRoutingKey());
+    }
+
+    private Binding createBinding(Queue queue, TopicExchange exchange, String routingKey) {
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 }

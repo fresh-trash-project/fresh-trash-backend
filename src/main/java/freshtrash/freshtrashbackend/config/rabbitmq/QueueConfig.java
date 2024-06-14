@@ -8,10 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.*;
-import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.CHAT_PARKING_LOT;
 
 @Configuration
 public class QueueConfig {
+    private static final String QUEUE_VERSION = "x-queue-version";
+    private static final String DLX = "x-dead-letter-exchange";
+    private static final String DLK = "x-dead-letter-routing-key";
+
     /**
      * Queue with DLQ
      */
@@ -72,16 +75,16 @@ public class QueueConfig {
     }
 
     private Queue createQueueWithDLQ(QueueType queueType, QueueType dlqType) {
-        Map<String, Object> args = new HashMap<String, Object>();
-        args.put("x-queue-version", 2);
-        args.put("x-dead-letter-exchange", RabbitMQConfig.DLQ_EXCHANGE_NAME);
-        args.put("x-dead-letter-routing-key", dlqType.getRoutingKey());
+        Map<String, Object> args = new HashMap<>();
+        args.put(QUEUE_VERSION, 2);
+        args.put(DLX, RabbitMQConfig.DLQ_EXCHANGE_NAME);
+        args.put(DLK, dlqType.getRoutingKey());
         return new Queue(queueType.getName(), true, false, false, args);
     }
 
     private Queue createQueue(QueueType queueType) {
-        Map<String, Object> args = new HashMap<String, Object>();
-        args.put("x-queue-version", 2);
+        Map<String, Object> args = new HashMap<>();
+        args.put(QUEUE_VERSION, 2);
         return new Queue(queueType.getName(), true, false, false, args);
     }
 }
