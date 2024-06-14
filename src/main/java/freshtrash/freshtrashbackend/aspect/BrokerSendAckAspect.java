@@ -1,14 +1,14 @@
 package freshtrash.freshtrashbackend.aspect;
 
 import com.rabbitmq.client.Channel;
-import freshtrash.freshtrashbackend.exception.AlarmException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Slf4j
 @Aspect
@@ -18,18 +18,32 @@ public class BrokerSendAckAspect {
     @Pointcut("@annotation(freshtrash.freshtrashbackend.aspect.annotation.ManualAcknowledge)")
     private void publishMessage() {}
 
-    @AfterReturning("publishMessage()")
-    public void sendAck(JoinPoint joinpoint) {
+    @Around("publishMessage()")
+    public Object sendAck(ProceedingJoinPoint pjp) throws IOException {
         try {
-            Object[] args = joinpoint.getArgs();
+            Object proceedResult = pjp.proceed();
+            channelSend(pjp, true);
+            return proceedResult;
+        } catch (Throwable e) {
+            log.warn("occurs error during publish message.", e);
+            channelSend(pjp, false);
+        }
+        return null;
+    }
+
+    private void channelSend(ProceedingJoinPoint pjp, boolean ack) throws IOException {
+        Object[] args = pjp.getArgs();
+        if (args.length >= 2) {
             Channel channel = (Channel) args[0];
             long tag = (long) args[1];
-            channel.basicAck(tag, false);
-            log.debug(
-                    "Successfully send ack after \"{}\" method",
-                    joinpoint.getSignature().getName());
-        } catch (Exception e) {
-            throw new AlarmException(ErrorCode.FAILED_SEND_ACK_TO_BROKER);
+            if (!ack) {
+                channel.basicReject(tag, false);
+                log.warn(
+                        "Successfully send reject after \"{}\" method",
+                        pjp.getSignature().getName());
+            } else {
+                channel.basicAck(tag, false);
+            }
         }
     }
 }
