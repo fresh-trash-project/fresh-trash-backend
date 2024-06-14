@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.config.rabbitmq;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -29,7 +30,11 @@ public class RabbitMQConfig {
                     "Failed Publish - routingKey: {}, replyText: {}",
                     returnedMessage.getRoutingKey(),
                     returnedMessage.getReplyText());
-            rabbitTemplate.send(DLQ_EXCHANGE_NAME, returnedMessage.getRoutingKey(), returnedMessage.getMessage());
+            try {
+                rabbitTemplate.send(DLQ_EXCHANGE_NAME, returnedMessage.getRoutingKey(), returnedMessage.getMessage());
+            } catch (AmqpException e) {
+                log.error("Error sending message to DLQ", e);
+            }
         });
         return rabbitTemplate;
     }
