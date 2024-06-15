@@ -55,7 +55,7 @@ public class FixtureDto {
     public static AlarmPayload createAlarmPayload() {
         return AlarmPayload.builder()
                 .message("test message")
-                .productId(1L)
+                .targetId(1L)
                 .memberId(123L)
                 .fromMemberId(3L)
                 .alarmType(AlarmType.TRANSACTION)
