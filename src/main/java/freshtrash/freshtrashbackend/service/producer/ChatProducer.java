@@ -17,7 +17,7 @@ public class ChatProducer {
 
     public void occurredUserFlag(Long productId, Long targetMemberId, Long currentMemberId, String message) {
         log.debug(
-                "신고 알람 publish...\n\t=> productId: {}, targetMemberId: {}, currentMemberId: {}, message: {}",
+                "신고 알람 publish...\n\t=> targetId: {}, targetMemberId: {}, currentMemberId: {}, message: {}",
                 productId,
                 targetMemberId,
                 currentMemberId,

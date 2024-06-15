@@ -17,18 +17,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProductAlarmConsumer {
+public class AuctionAlarmConsumer {
     private final AlarmService alarmService;
 
     /**
-     * 중고 상품 알람 메시지 전송 Listener
+     * 경매 알람 메시지 전송 Listener
      */
     @ManualAcknowledge
-    @RabbitListener(
-            queues = {"#{productCompleteQueue.name}", "#{productFlagQueue.name}", "#{productChangeStatusQueue.name}"})
-    public void consumeProductDealMessage(
+    @RabbitListener(queues = {"#{auctionCompleteQueue.name}"})
+    public void consumeAuctionMessage(
             Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload AlarmPayload alarmPayload) {
-        log.debug("receive complete productDeal message: {}", alarmPayload);
+        log.debug("receive complete bid auction message: {}", alarmPayload);
         Alarm alarm = alarmService.saveAlarm(alarmPayload);
         alarmService.receive(alarmPayload.memberId(), AlarmResponse.fromEntity(alarm));
     }

@@ -66,7 +66,7 @@ public class Alarm extends CreatedAt {
                 .message(alarmPayload.message())
                 .memberId(alarmPayload.memberId())
                 .alarmType(alarmPayload.alarmType())
-                .alarmArgs(AlarmArgs.of(alarmPayload.fromMemberId(), alarmPayload.productId()))
+                .alarmArgs(AlarmArgs.of(alarmPayload.fromMemberId(), alarmPayload.targetId()))
                 .build();
     }
 }

@@ -94,6 +94,28 @@ public class AlarmService {
     }
 
     /**
+     * SSE 알람 전송
+     * @param memberId 알람을 받는 사용자 id
+     */
+    public void receive(Long memberId, AlarmResponse alarmResponse) {
+        emitterRepository
+                .findByMemberId(memberId)
+                .ifPresentOrElse(
+                        sseEmitter -> {
+                            try {
+                                sseEmitter.send(SseEmitter.event()
+                                        .id(String.valueOf(alarmResponse.id()))
+                                        .name(alarmResponse.alarmType().name())
+                                        .data(alarmResponse));
+                            } catch (IOException e) {
+                                emitterRepository.deleteByMemberId(memberId);
+                                throw new AlarmException(ErrorCode.ALARM_CONNECT_ERROR, e);
+                            }
+                        },
+                        () -> log.error("Emiter를 찾을 수 없습니다."));
+    }
+
+    /**
      * 로그인한 사용자가 대상 알람의 주인인지 확인
      */
     private void checkIfOwnerOfAlarm(Long alarmId, Long memberId) {

@@ -9,6 +9,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -68,6 +70,11 @@ public class Auction extends CreatedAt {
 
     @Column(nullable = false)
     private Long memberId;
+
+    @ToString.Exclude
+    @OrderBy("createdAt DESC")
+    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, fetch = LAZY)
+    private Set<BiddingHistory> biddingHistories = new LinkedHashSet<>();
 
     @Version
     private int version;

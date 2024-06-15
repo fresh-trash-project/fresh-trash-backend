@@ -38,6 +38,11 @@ public class QueueConfig {
         return createQueueWithDLQ(CHAT, DLQ_CHAT);
     }
 
+    @Bean
+    Queue auctionCompleteQueue() {
+        return createQueueWithDLQ(AUCTION_BID_COMPLETE, DLQ_AUCTION_BID_COMPLETE);
+    }
+
     /**
      * DLQ
      */
@@ -61,6 +66,11 @@ public class QueueConfig {
         return createQueue(DLQ_CHAT);
     }
 
+    @Bean
+    Queue dlqAuctionCompleteQueue() {
+        return createQueue(DLQ_AUCTION_BID_COMPLETE);
+    }
+
     /**
      * Parking Lot Queue
      */
@@ -72,6 +82,11 @@ public class QueueConfig {
     @Bean
     Queue chatParkingLotQueue() {
         return createQueue(CHAT_PARKING_LOT);
+    }
+
+    @Bean
+    Queue auctionParkingLotQueue() {
+        return createQueue(AUCTION_PARKING_LOT);
     }
 
     private Queue createQueueWithDLQ(QueueType queueType, QueueType dlqType) {
