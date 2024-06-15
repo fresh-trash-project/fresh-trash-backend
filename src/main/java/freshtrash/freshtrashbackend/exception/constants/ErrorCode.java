@@ -41,7 +41,6 @@ public enum ErrorCode {
     // Alarm
     ALARM_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알람을 위한 연결 시도 실패"),
     FORBIDDEN_ALARM(HttpStatus.FORBIDDEN, "알람에 대한 권한이 없습니다."),
-    FAILED_SEND_ACK_TO_BROKER(HttpStatus.INTERNAL_SERVER_ERROR, "메시지 브로커로 ack를 전송하는데 실패했습니다."),
 
     // Chat
     NOT_FOUND_CHAT_ROOM(HttpStatus.NOT_FOUND, "채팅방이 존재하지 않습니다."),

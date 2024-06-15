@@ -71,24 +71,4 @@ class AlarmServiceTest {
         // then
         then(alarmRepository).should(times(1)).updateReadAtById(anyLong());
     }
-
-    @Test
-    @DisplayName("알람 메시지 전송")
-    void given_alarmPayload_when_listenMessage_then_saveAlarmAndSendAlarm() {
-        // given
-        AlarmPayload alarmPayload = FixtureDto.createAlarmPayload();
-        Long memberId = alarmPayload.memberId();
-        Alarm alarm = Alarm.fromMessageRequest(alarmPayload);
-        SseEmitter sseEmitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
-        Channel channel = mock(Channel.class);
-        long deliveryTag = 3;
-        given(alarmRepository.save(eq(alarm))).willReturn(alarm);
-        given(emitterRepository.findByMemberId(eq(memberId))).willReturn(Optional.of(sseEmitter));
-        // whenxp
-        alarmService.receiveProductProductDeal(channel, deliveryTag, alarmPayload);
-        ArgumentCaptor<Alarm> alarmCaptor = ArgumentCaptor.forClass(Alarm.class);
-        // then
-        verify(alarmRepository, times(1)).save(alarmCaptor.capture());
-        verify(emitterRepository, times(1)).findByMemberId(eq(memberId));
-    }
 }

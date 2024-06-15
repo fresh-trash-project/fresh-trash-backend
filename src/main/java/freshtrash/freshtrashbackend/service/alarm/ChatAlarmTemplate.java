@@ -4,9 +4,11 @@ import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.service.MemberService;
 import freshtrash.freshtrashbackend.service.producer.ChatProducer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
+@Slf4j
 @RequiredArgsConstructor
 public abstract class ChatAlarmTemplate {
     protected final MemberService memberService;
@@ -17,6 +19,7 @@ public abstract class ChatAlarmTemplate {
         Long targetMemberId = Objects.equals(currentMemberId, chatRoom.getSellerId())
                 ? chatRoom.getBuyerId()
                 : chatRoom.getSellerId();
+        log.debug("알람을 받을 유저 memberId: {}", targetMemberId);
         publishEvent(update(targetMemberId), chatRoom.getProductId(), targetMemberId, currentMemberId);
     }
 

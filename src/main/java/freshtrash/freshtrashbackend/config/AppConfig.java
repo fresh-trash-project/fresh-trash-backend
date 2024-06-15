@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.config;
 
+import com.slack.api.Slack;
 import freshtrash.freshtrashbackend.dto.properties.S3Properties;
 import freshtrash.freshtrashbackend.service.FileService;
 import freshtrash.freshtrashbackend.service.LocalFileService;
@@ -28,6 +29,11 @@ public class AppConfig {
     @Bean
     public FileService fileService(Environment env, S3Service s3Service, LocalFileService localFileService) {
         return selectBean(env, s3Service, localFileService);
+    }
+
+    @Bean
+    public Slack slackClient() {
+        return Slack.getInstance();
     }
 
     private <T> T selectBean(Environment env, T prodBean, T localBean) {

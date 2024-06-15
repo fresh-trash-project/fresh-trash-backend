@@ -13,7 +13,7 @@ public class RabbitMQPublisher implements MQPublisher {
     private final RabbitTemplate rabbitTemplate;
 
     public void publish(BaseEvent<?> event) {
-        log.debug("rabbitmq publish");
+        log.debug("by rabbitmq (routingKey: {})", event.getRoutingKey());
         rabbitTemplate.convertAndSend(event.getRoutingKey(), event.getPayload());
     }
 }
