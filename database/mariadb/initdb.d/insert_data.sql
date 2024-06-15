@@ -16,8 +16,8 @@ values ('abc@never.com', '$2a$10$ZskRs64yZZU9g6blmNdZte7FO6KaMduwlZhk7YkxJX2ZwYL
 
 
 insert into products(member_id, title, content, product_price, like_count, view_count, file_name, product_category,
-                   product_status,
-                   sell_status, address, created_at, modified_at, product_deal_at)
+                     product_status,
+                     sell_status, address, created_at, modified_at, product_deal_at)
 values (1, 'title', 'content', 0, 1, 0, 'test.png', 'CLOTHING', 'GOOD', 'ONGOING',
         json_object('zipcode', '12345', 'state', 'state', 'city', 'city', 'district', 'district', 'detail', 'detail'),
         now(), null, null),
@@ -152,10 +152,14 @@ values (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 1), '거래 완료
        (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), 'user123님이 판매중으로 변경하였습니다.', now(), null, null),
        (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 5), '거래 완료되었습니다.', now(), now(), null),
        (1, 'CHAT', json_object('fromMemberId', 1, 'targetId', 6), '알람 테스트', now(), now(), null),
-       (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 예약중으로 변경하였습니다.', now(), now(), null),
-       (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 판매중으로 변경하였습니다.', now(), now(), null),
-       (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 예약중으로 변경하였습니다.', now(), now(), null),
-       (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 판매중으로 변경하였습니다.', now(), now(), null),
+       (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 예약중으로 변경하였습니다.', now(), now(),
+        null),
+       (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 판매중으로 변경하였습니다.', now(), now(),
+        null),
+       (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 예약중으로 변경하였습니다.', now(), now(),
+        null),
+       (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 판매중으로 변경하였습니다.', now(), now(),
+        null),
        (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), '거래 완료되었습니다.', now(), null, null),
        (1, 'TRANSACTION', json_object('fromMemberId', 4, 'targetId', 4), '예약중으로 변경하였습니다.', now(), null, null),
        (1, 'TRANSACTION', json_object('fromMemberId', 4, 'targetId', 4), '거래 완료되었습니다.', now(), null, null),
@@ -176,12 +180,17 @@ values (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 1), '거래 완료
        (5, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), 'abc님이 판매중으로 변경하였습니다.', now(), null, null),
        (1, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 1), 'abc님이 판매중으로 변경하였습니다.', now(), null, now());
 
-insert into auctions(member_id, file_name, title, content, product_category, product_status, auction_status, final_bid, view_count, started_at, ended_at, created_at) values
-(1, 'test.png', 'title', 'content', 'CLOTHING', 'GOOD', 'ONGOING', 1000, 1, now(), date_add(now(), interval 1 hour), now()),
-(2, 'test.png', 'title2', 'content2', 'HEALTH', 'GOOD', 'ONGOING', 1000, 3, now(), date_add(now(), interval 1 hour), now()),
-(3, 'test.png', 'title3', 'content3', 'SPORTS', 'GOOD', 'CLOSE', 3000, 5, now(), date_add(now(), interval 1 hour), now());
+insert into auctions(member_id, file_name, title, content, product_category, product_status, auction_status, final_bid,
+                     view_count, started_at, ended_at, created_at)
+values (1, 'test.png', 'title', 'content', 'CLOTHING', 'GOOD', 'ONGOING', 1000, 1, now(),
+        date_add(now(), interval 1 hour), now()),
+       (2, 'test.png', 'title2', 'content2', 'HEALTH', 'GOOD', 'ONGOING', 1000, 3, now(),
+        date_add(now(), interval 1 hour), now()),
+       (3, 'test.png', 'title3', 'content3', 'SPORTS', 'GOOD', 'CLOSE', 3000, 5, now(),
+        date_add(now(), interval 1 hour), now()),
+       (4, 'test.png', 'title4', 'content4', 'SPORTS', 'GOOD', 'ONGOING', 3000, 5, now(), now(), now());
 
-insert into bidding_history(member_id, auction_id, price, is_success_bidding, created_at) values
-(2, 1, 1000, true, now()),
-(1, 2, 1000, false, now()),
-(1, 3, 3000, true, now());
+insert into bidding_history(member_id, auction_id, price, is_success_bidding, created_at)
+values (2, 1, 1000, true, now()),
+       (1, 2, 1000, false, now()),
+       (1, 3, 3000, true, now());
