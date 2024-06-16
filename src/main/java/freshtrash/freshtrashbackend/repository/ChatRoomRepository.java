@@ -20,8 +20,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     List<ChatRoom> findByProduct_IdAndSellStatusNot(Long productId, SellStatus sellStatus);
 
-    List<BuyerIdSummary> findBuyerIdByProductIdAndBuyerIdNot(Long productId, Long buyerId);
-
     @EntityGraph(attributePaths = {"product", "buyer", "seller", "chatMessages"})
     Optional<ChatRoom> findById(Long chatRoomId);
 

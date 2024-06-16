@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     Page<Alarm> findAllByMember_Id(Long memberId, Pageable pageable);
 
-    @Query(nativeQuery = true, value = "update alarms a set a.read_at = now() where a.id = ?1 and a.read_at is null")
+    @Query(nativeQuery = true, value = "update alarms a set a.read_at = current_timestamp where a.id = ?1 and a.read_at is null")
     void updateReadAtById(Long alarmId);
 
     boolean existsByIdAndMember_Id(Long alarmId, Long memberId);

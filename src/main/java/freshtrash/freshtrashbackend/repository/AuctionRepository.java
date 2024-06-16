@@ -39,7 +39,7 @@ public interface AuctionRepository
     boolean existsByIdAndMemberId(Long auctionId, Long memberId);
 
     @EntityGraph(attributePaths = "biddingHistories")
-    @Query("select a from Auction a where a.auctionStatus = 'ONGOING' and a.endedAt < now()")
+    @Query("select a from Auction a where a.auctionStatus = 'ONGOING' and a.endedAt < current_timestamp")
     List<Auction> findAllEndedAuctions();
 
     @Query(nativeQuery = true, value = "update auctions a set a.auction_status = 'CLOSE' where a.id = ?1")

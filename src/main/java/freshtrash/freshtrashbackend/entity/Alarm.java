@@ -22,7 +22,7 @@ import static javax.persistence.FetchType.LAZY;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @TypeDef(name = "json", typeClass = JsonType.class)
-@SQLDelete(sql = "update alarms set deleted_at = now() where id=?")
+@SQLDelete(sql = "update alarms set deleted_at = current_timestamp where id=?")
 @Where(clause = "deleted_at is NULL")
 public class Alarm extends CreatedAt {
     @Id
