@@ -149,6 +149,7 @@ CREATE TABLE `auctions`
     `started_at`       datetime              NOT NULL,
     `ended_at`         datetime              NOT NULL,
     `created_at`       datetime              NOT NULL,
+    `deleted_at`       datetime,
     `version`          integer default 0     NOT NULL,
     PRIMARY KEY (`id`),
     foreign key (`member_id`) references members (id) on delete cascade
@@ -163,6 +164,7 @@ CREATE TABLE `bidding_history`
     `price`              integer               NOT NULL,
     `is_success_bidding` tinyint(1)            NOT NULL,
     `created_at`         datetime              NOT NULL,
+    `deleted_at`         datetime,
     PRIMARY KEY (`id`),
     foreign key (`member_id`) references members (id) on delete cascade,
     foreign key (`auction_id`) references auctions (id) on delete cascade
