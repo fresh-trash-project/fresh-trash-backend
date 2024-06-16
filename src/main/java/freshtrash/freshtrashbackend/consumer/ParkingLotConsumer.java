@@ -22,7 +22,9 @@ public class ParkingLotConsumer {
      * Product Parking Lot Listener
      */
     @ManualAcknowledge
-    @RabbitListener(queues = {"#{productParkingLotQueue.name}", "#{chatParkingLotQueue.name}"})
+    @RabbitListener(
+            queues = {"#{productParkingLotQueue.name}", "#{chatParkingLotQueue.name}", "#{auctionParkingLotQueue.name}"
+            })
     public void handleProductParkingLot(
             Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload AlarmPayload alarmPayload) {
         log.warn("consume from parking lot");
