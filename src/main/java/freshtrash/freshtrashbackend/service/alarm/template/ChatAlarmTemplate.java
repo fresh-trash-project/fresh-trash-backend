@@ -1,4 +1,4 @@
-package freshtrash.freshtrashbackend.service.alarm;
+package freshtrash.freshtrashbackend.service.alarm.template;
 
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.service.MemberService;
@@ -23,7 +23,7 @@ public abstract class ChatAlarmTemplate {
         publishEvent(update(targetMemberId), chatRoom.getProductId(), targetMemberId, currentMemberId);
     }
 
-    abstract int update(Long targetId);
+    protected abstract int update(Long targetId);
 
-    abstract void publishEvent(int updatedValue, Long productId, Long targetMemberId, Long currentMemberId);
+    protected abstract void publishEvent(int updatedValue, Long productId, Long targetMemberId, Long currentMemberId);
 }

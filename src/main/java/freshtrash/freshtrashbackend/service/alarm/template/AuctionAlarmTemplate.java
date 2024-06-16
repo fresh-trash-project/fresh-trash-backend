@@ -1,4 +1,4 @@
-package freshtrash.freshtrashbackend.service.alarm;
+package freshtrash.freshtrashbackend.service.alarm.template;
 
 import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.service.AuctionService;
@@ -21,9 +21,9 @@ public abstract class AuctionAlarmTemplate {
                         () -> publishEvent(auction));
     }
 
-    abstract void update(Long targetId);
+    protected abstract void update(Long targetId);
 
-    abstract void publishEvent(Auction auction, Long bidMemberId);
+    protected abstract void publishEvent(Auction auction, Long bidMemberId);
 
-    abstract void publishEvent(Auction auction);
+    protected abstract void publishEvent(Auction auction);
 }

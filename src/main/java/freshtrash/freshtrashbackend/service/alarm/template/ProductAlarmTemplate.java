@@ -1,4 +1,4 @@
-package freshtrash.freshtrashbackend.service.alarm;
+package freshtrash.freshtrashbackend.service.alarm.template;
 
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
@@ -18,7 +18,7 @@ public abstract class ProductAlarmTemplate {
         publishEvent(chatRoom);
     }
 
-    abstract void update(ChatRoom chatRoom);
+    protected abstract void update(ChatRoom chatRoom);
 
-    abstract void publishEvent(ChatRoom chatRoom);
+    protected abstract void publishEvent(ChatRoom chatRoom);
 }

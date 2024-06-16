@@ -5,6 +5,7 @@ import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.ProductDealService;
+import freshtrash.freshtrashbackend.service.alarm.template.ProductAlarmTemplate;
 import freshtrash.freshtrashbackend.service.producer.ProductDealProducer;
 import org.springframework.stereotype.Component;
 
@@ -19,12 +20,12 @@ public class CancelBookingProductAlarm extends ProductAlarmTemplate {
     }
 
     @Override
-    void update(ChatRoom chatRoom) {
+    public void update(ChatRoom chatRoom) {
         this.productDealService.updateSellStatus(chatRoom.getProductId(), chatRoom.getId(), SellStatus.ONGOING);
     }
 
     @Override
-    void publishEvent(ChatRoom bookedChatRoom) {
+    public void publishEvent(ChatRoom bookedChatRoom) {
         String message = generateMessage(bookedChatRoom.getSeller().getNickname());
         this.chatRoomService
                 .getNotClosedChatRoomsByProductId(bookedChatRoom.getProductId())

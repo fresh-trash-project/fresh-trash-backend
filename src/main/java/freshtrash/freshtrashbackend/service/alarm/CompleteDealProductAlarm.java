@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.ProductDealService;
+import freshtrash.freshtrashbackend.service.alarm.template.ProductAlarmTemplate;
 import freshtrash.freshtrashbackend.service.producer.ProductDealProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ public class CompleteDealProductAlarm extends ProductAlarmTemplate {
     }
 
     @Override
-    void update(ChatRoom closedChatRoom) {
+    public void update(ChatRoom closedChatRoom) {
         this.productDealService.completeProductDeal(
                 closedChatRoom.getProductId(),
                 closedChatRoom.getId(),
@@ -28,7 +29,7 @@ public class CompleteDealProductAlarm extends ProductAlarmTemplate {
     }
 
     @Override
-    void publishEvent(ChatRoom closedChatRoom) {
+    public void publishEvent(ChatRoom closedChatRoom) {
         // 판매자, 구매자에게 알람 전송
         this.producer.completeDeal(closedChatRoom);
         log.debug("Send message to seller.");
