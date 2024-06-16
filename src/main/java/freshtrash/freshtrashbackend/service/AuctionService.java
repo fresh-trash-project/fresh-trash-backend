@@ -58,8 +58,13 @@ public class AuctionService {
                 .orElseThrow(() -> new AuctionException(ErrorCode.NOT_FOUND_AUCTION));
     }
 
-    public void deleteAuction(Long auctionId, UserRole userRole, Long memberId) {
-        checkIfWriterOrAdmin(auctionId, userRole, memberId);
+    public Auction getAuctionWithBiddingHistory(Long auctionId) {
+        return auctionRepository
+                .findWithBiddingHistoryById(auctionId)
+                .orElseThrow(() -> new AuctionException(ErrorCode.NOT_FOUND_AUCTION));
+    }
+
+    public void deleteAuction(Long auctionId) {
         auctionRepository.deleteById(auctionId);
     }
 
@@ -99,6 +104,24 @@ public class AuctionService {
         return auctionRepository.findAllEndedAuctions();
     }
 
+    public void checkIfWriterOrAdmin(Long auctionId, UserRole userRole, Long memberId) {
+        log.debug(
+                "memberId {}가 auctionId {}의 작성자인지 또는 userRole {}이 admin인지 확인하고 아닐 경우 예외 발생",
+                auctionId,
+                memberId,
+                userRole);
+        if (userRole != UserRole.ADMIN && !auctionRepository.existsByIdAndMemberId(auctionId, memberId))
+            throw new AuctionException(ErrorCode.FORBIDDEN_AUCTION);
+    }
+
+    private void addBiddingHistory(Long auctionId, Long memberId, int price) {
+        biddingHistoryRepository.save(BiddingHistory.builder()
+                .auctionId(auctionId)
+                .memberId(memberId)
+                .price(price)
+                .build());
+    }
+
     private void validateBiddingRequest(Auction auction, int biddingPrice, Long memberId) {
         // 요청한 입찰가는 이전 입찰가보다 높아야함
         log.debug("Read finalBid -> {}, Bid Price -> {}", auction.getFinalBid(), biddingPrice);
@@ -114,18 +137,5 @@ public class AuctionService {
         if (now.isBefore(auction.getStartedAt()) || now.isAfter(auction.getEndedAt())) {
             throw new AuctionException(ErrorCode.CANT_BIDDING_TIME);
         }
-    }
-
-    private void checkIfWriterOrAdmin(Long auctionId, UserRole userRole, Long memberId) {
-        if (userRole != UserRole.ADMIN && !auctionRepository.existsByIdAndMemberId(auctionId, memberId))
-            throw new AuctionException(ErrorCode.FORBIDDEN_AUCTION);
-    }
-
-    private void addBiddingHistory(Long auctionId, Long memberId, int price) {
-        biddingHistoryRepository.save(BiddingHistory.builder()
-                .auctionId(auctionId)
-                .memberId(memberId)
-                .price(price)
-                .build());
     }
 }

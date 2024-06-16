@@ -30,12 +30,18 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         if (StringUtils.hasText(district)) {
             predicate = Expressions.booleanTemplate(
                             "JSON_CONTAINS({0}, {1}, {2})",
-                            QProduct.product.address, Expressions.stringTemplate("JSON_QUOTE({0})", district), "$.district")
+                            QProduct.product.address,
+                            Expressions.stringTemplate("JSON_QUOTE({0})", district),
+                            "$.district")
                     .isTrue()
                     .or(predicate);
         }
         QProduct product = QProduct.product;
-        Long totalOfElements = jpaQueryFactory.select(product.count()).from(product).where(predicate).fetchFirst();
+        Long totalOfElements = jpaQueryFactory
+                .select(product.count())
+                .from(product)
+                .where(predicate)
+                .fetchFirst();
         List<Product> products = jpaQueryFactory
                 .selectFrom(product)
                 .where(predicate)

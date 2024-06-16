@@ -24,7 +24,7 @@ public class AuctionAlarmConsumer {
      * 경매 알람 메시지 전송 Listener
      */
     @ManualAcknowledge
-    @RabbitListener(queues = {"#{auctionCompleteQueue.name}"})
+    @RabbitListener(queues = {"#{auctionCompleteQueue.name}", "#{cancelAuctionQueue.name}"})
     public void consumeAuctionMessage(
             Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload AlarmPayload alarmPayload) {
         log.debug("receive complete bid auction message: {}", alarmPayload);

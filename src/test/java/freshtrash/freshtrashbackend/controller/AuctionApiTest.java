@@ -11,6 +11,7 @@ import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.service.AuctionEventService;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,9 @@ class AuctionApiTest {
 
     @MockBean
     private AuctionService auctionService;
+
+    @MockBean
+    private AuctionEventService auctionEventService;
 
     @DisplayName("경매 추가 요청")
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
@@ -114,7 +118,7 @@ class AuctionApiTest {
         // given
         Long auctionId = 1L, memberId = 123L;
         UserRole userRole = UserRole.USER;
-        willDoNothing().given(auctionService).deleteAuction(auctionId, userRole, memberId);
+        willDoNothing().given(auctionEventService).cancelAuction(auctionId, userRole, memberId);
         // when
         mvc.perform(delete("/api/v1/auctions/" + auctionId)).andExpect(status().isNoContent());
         // then

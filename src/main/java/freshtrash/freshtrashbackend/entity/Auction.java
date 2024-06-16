@@ -6,6 +6,8 @@ import freshtrash.freshtrashbackend.entity.constants.AuctionStatus;
 import freshtrash.freshtrashbackend.entity.constants.ProductCategory;
 import freshtrash.freshtrashbackend.entity.constants.ProductStatus;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,6 +22,8 @@ import static javax.persistence.FetchType.LAZY;
 @ToString(callSuper = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "update auctions set deleted_at = current_timestamp where id=?")
+@Where(clause = "deleted_at is NULL")
 public class Auction extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,6 +79,8 @@ public class Auction extends CreatedAt {
     @OrderBy("createdAt DESC")
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, fetch = LAZY)
     private Set<BiddingHistory> biddingHistories = new LinkedHashSet<>();
+
+    private LocalDateTime deletedAt;
 
     @Version
     private int version;

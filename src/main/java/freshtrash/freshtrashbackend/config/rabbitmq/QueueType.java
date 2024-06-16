@@ -12,6 +12,7 @@ public enum QueueType {
     PRODUCT_TRANSACTION_FLAG("queue.product.flag", "product.productDeal.flag"),
     CHAT("queue.chat", "chats.#"),
     AUCTION_BID_COMPLETE("queue.auction.complete", "auction.bid.complete"),
+    CANCEL_AUCTION("queue.auction.cancel", "auction.cancel"),
 
     // DLQ
     DLQ_PRODUCT_TRANSACTION_COMPLETE("queue.product.complete.dlq", "product.productDeal.complete"),
@@ -19,6 +20,7 @@ public enum QueueType {
     DLQ_PRODUCT_TRANSACTION_FLAG("queue.product.flag.dlq", "product.productDeal.flag"),
     DLQ_CHAT("queue.chat.dlq", "chats.#"),
     DLQ_AUCTION_BID_COMPLETE("queue.auction.complete.dlq", "auction.bid.complete"),
+    DLQ_CANCEL_AUCTION("queue.auction.cancel.dlq", "auction.cancel"),
 
     // Parking Lot
     PRODUCT_PARKING_LOT("queue.product.parking-lot", "product.#"),

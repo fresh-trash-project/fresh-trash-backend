@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.dto.request.BiddingRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.service.AuctionEventService;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequestMapping("/api/v1/auctions")
 public class AuctionApi {
     private final AuctionService auctionService;
+    private final AuctionEventService auctionEventService;
 
     @GetMapping
     public ResponseEntity<Page<AuctionResponse>> getAuctions(
@@ -52,9 +54,9 @@ public class AuctionApi {
     }
 
     @DeleteMapping("/{auctionId}")
-    public ResponseEntity<Void> deleteAuction(
+    public ResponseEntity<Void> cancelAuction(
             @PathVariable Long auctionId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        auctionService.deleteAuction(auctionId, memberPrincipal.getUserRole(), memberPrincipal.id());
+        auctionEventService.cancelAuction(auctionId, memberPrincipal.getUserRole(), memberPrincipal.id());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
