@@ -4,6 +4,8 @@ import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.controller.AuctionApi;
 import freshtrash.freshtrashbackend.dto.request.BiddingRequest;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.exception.AuctionException;
 import freshtrash.freshtrashbackend.repository.AuctionRepository;
 import freshtrash.freshtrashbackend.service.AuctionEventService;
 import freshtrash.freshtrashbackend.service.AuctionService;
@@ -24,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @Disabled
@@ -84,5 +87,17 @@ public class AuctionIntegrationTest {
         auctionEventService.processCompletedAuctions();
         // then
         assertThat(auctionRepository.findAllEndedAuctions().size()).isLessThan(previousCount);
+    }
+
+    @Test
+    @DisplayName("경매 취소 후 입찰자들에게 알람 전송")
+    void cancelAuction() {
+        // given
+        Long auctionId = 1L, memberId = 1L;
+        UserRole userRole = UserRole.USER;
+        // when
+        auctionEventService.cancelAuction(auctionId, userRole, memberId);
+        // then
+        assertThatThrownBy(() -> auctionService.getAuction(auctionId)).isInstanceOf(AuctionException.class);
     }
 }

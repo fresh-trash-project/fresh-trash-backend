@@ -99,20 +99,6 @@ class AuctionServiceTest {
         assertThat(auction.getId()).isEqualTo(expectedAuction.getId());
     }
 
-    @DisplayName("경매 삭제")
-    @Test
-    void given_auctionId_when_then_deleteAuction() {
-        // given
-        Long auctionId = 1L, memberId = 123L;
-        UserRole userRole = UserRole.USER;
-        given(auctionRepository.existsByIdAndMemberId(eq(auctionId), eq(memberId)))
-                .willReturn(true);
-        willDoNothing().given(auctionRepository).deleteById(auctionId);
-        // when
-        auctionService.deleteAuction(auctionId, userRole, memberId);
-        // then
-    }
-
     @DisplayName("경매 입찰")
     @Test
     void given_auctionIdAndBiddingPriceAndMemberId_when_passedDefenseLogic_then_updatePriceAndAddHistory() {
