@@ -21,7 +21,7 @@ public class AuctionPublisher {
         mqPublisher.publish(AlarmEvent.of(
                 AUCTION_BID_COMPLETE.getRoutingKey(),
                 AlarmPayload.ofAuctionNotBid(
-                        String.format(NOT_COMPLETE_AUCTION.getMessage(), auction.getTitle()), auction)));
+                        String.format(NOT_COMPLETED_AUCTION.getMessage(), auction.getTitle()), auction)));
     }
 
     public void completeBid(Auction auction, Long bidMemberId) {
