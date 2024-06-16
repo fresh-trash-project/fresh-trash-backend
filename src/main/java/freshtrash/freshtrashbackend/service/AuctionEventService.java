@@ -17,7 +17,7 @@ public class AuctionEventService {
     private final CompleteBidAuctionAlarm completeBidAuctionAlarm;
 
     @Scheduled(cron = "0 0 0 * * *")
-    public void completeAuction() {
+    public void processCompletedAuctions() {
         List<Auction> auctions = auctionService.getEndedAuctions();
         // 입찰자 여부를 확인하고 입찰자가 없으면 구매자에게 알림, 있으면 판매자에게 알림
         auctions.forEach(completeBidAuctionAlarm::sendAlarm);

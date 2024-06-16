@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -38,7 +37,7 @@ class AuctionEventServiceTest {
         given(auctionService.getEndedAuctions()).willReturn(List.of(auction));
         willDoNothing().given(completeBidAuctionAlarm).sendAlarm(auction);
         // when
-        auctionEventService.completeAuction();
+        auctionEventService.processCompletedAuctions();
         // then
         then(auctionService).should().getEndedAuctions();
         then(completeBidAuctionAlarm).should(times(1)).sendAlarm(auction);

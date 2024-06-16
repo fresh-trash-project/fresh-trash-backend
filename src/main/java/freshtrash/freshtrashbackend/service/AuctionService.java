@@ -91,7 +91,7 @@ public class AuctionService {
 
     public void closeAuction(Long auctionId) {
         log.debug("경매 판매 상태를 CLOSE로 변경");
-        auctionRepository.updateCloseById(auctionId);
+        auctionRepository.closeAuctionById(auctionId);
     }
 
     public List<Auction> getEndedAuctions() {

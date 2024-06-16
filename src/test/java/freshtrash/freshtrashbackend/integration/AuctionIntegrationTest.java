@@ -81,7 +81,7 @@ public class AuctionIntegrationTest {
         // 마감된 되었지만 status가 ONGOING인 경매 수
         int previousCount = auctionRepository.findAllEndedAuctions().size();
         // when
-        auctionEventService.completeAuction();
+        auctionEventService.processCompletedAuctions();
         // then
         assertThat(auctionRepository.findAllEndedAuctions().size()).isLessThan(previousCount);
     }
