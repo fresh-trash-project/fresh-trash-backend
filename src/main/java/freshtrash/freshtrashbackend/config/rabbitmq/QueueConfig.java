@@ -43,6 +43,11 @@ public class QueueConfig {
         return createQueueWithDLQ(AUCTION_BID_COMPLETE, DLQ_AUCTION_BID_COMPLETE);
     }
 
+    @Bean
+    Queue cancelAuctionQueue() {
+        return createQueueWithDLQ(CANCEL_AUCTION, DLQ_CANCEL_AUCTION);
+    }
+
     /**
      * DLQ
      */
@@ -69,6 +74,11 @@ public class QueueConfig {
     @Bean
     Queue dlqAuctionCompleteQueue() {
         return createQueue(DLQ_AUCTION_BID_COMPLETE);
+    }
+
+    @Bean
+    Queue dlqCancelAuctionQueue() {
+        return createQueue(DLQ_CANCEL_AUCTION);
     }
 
     /**

@@ -40,6 +40,11 @@ public class BindingConfig {
         return createBinding(auctionCompleteQueue, topicExchange, AUCTION_BID_COMPLETE.getRoutingKey());
     }
 
+    @Bean
+    Binding cancelAuctionBinding(Queue cancelAuctionQueue, TopicExchange topicExchange) {
+        return createBinding(cancelAuctionQueue, topicExchange, CANCEL_AUCTION.getRoutingKey());
+    }
+
     /**
      * DLQ Binding
      */
@@ -66,6 +71,11 @@ public class BindingConfig {
     @Bean
     Binding dlqAuctionCompleteBinding(Queue dlqAuctionCompleteQueue, TopicExchange dlqExchange) {
         return createBinding(dlqAuctionCompleteQueue, dlqExchange, DLQ_AUCTION_BID_COMPLETE.getRoutingKey());
+    }
+
+    @Bean
+    Binding dlqCancelAuctionBinding(Queue dlqCancelAuctionQueue, TopicExchange dlqExchange) {
+        return createBinding(dlqCancelAuctionQueue, dlqExchange, DLQ_CANCEL_AUCTION.getRoutingKey());
     }
 
     /**
