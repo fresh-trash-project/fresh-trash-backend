@@ -36,6 +36,9 @@ public interface AuctionRepository
     @EntityGraph(attributePaths = "member")
     Optional<Auction> findById(Long auctionId);
 
+    @EntityGraph(attributePaths = {"member", "biddingHistories"})
+    Optional<Auction> findWithBiddingHistoryById(Long auctionId);
+
     boolean existsByIdAndMemberId(Long auctionId, Long memberId);
 
     @EntityGraph(attributePaths = "biddingHistories")

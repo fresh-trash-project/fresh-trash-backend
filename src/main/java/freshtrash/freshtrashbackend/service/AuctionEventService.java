@@ -1,6 +1,8 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.service.alarm.CancelAuctionAlarm;
 import freshtrash.freshtrashbackend.service.alarm.CompleteBidAuctionAlarm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +17,17 @@ import java.util.List;
 public class AuctionEventService {
     private final AuctionService auctionService;
     private final CompleteBidAuctionAlarm completeBidAuctionAlarm;
+    private final CancelAuctionAlarm cancelAuctionAlarm;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void processCompletedAuctions() {
         List<Auction> auctions = auctionService.getEndedAuctions();
         // 입찰자 여부를 확인하고 입찰자가 없으면 구매자에게 알림, 있으면 판매자에게 알림
         auctions.forEach(completeBidAuctionAlarm::sendAlarm);
+    }
+
+    public void cancelAuction(Long auctionId, UserRole userRole, Long memberId) {
+        auctionService.checkIfWriterOrAdmin(auctionId, userRole, memberId);
+        cancelAuctionAlarm.sendAlarm(auctionService.getAuctionWithBiddingHistory(auctionId));
     }
 }

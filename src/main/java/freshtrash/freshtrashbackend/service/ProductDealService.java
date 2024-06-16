@@ -20,7 +20,8 @@ public class ProductDealService {
     private final ProductRepository productRepository;
     private final ChatRoomRepository chatRoomRepository;
 
-    public Page<ProductResponse> getTransactedProducts(Long memberId, ProductDealMemberType memberType, Pageable pageable) {
+    public Page<ProductResponse> getTransactedProducts(
+            Long memberId, ProductDealMemberType memberType, Pageable pageable) {
         switch (memberType) {
             case SELLER_CLOSE -> {
                 return productDealLogRepository
@@ -47,7 +48,8 @@ public class ProductDealService {
      * - 거래 내역 저장
      */
     @Transactional
-    public void completeProductDeal(Long productId, Long chatRoomId, Long sellerId, Long buyerId, SellStatus sellStatus) {
+    public void completeProductDeal(
+            Long productId, Long chatRoomId, Long sellerId, Long buyerId, SellStatus sellStatus) {
         updateSellStatus(productId, chatRoomId, sellStatus);
         saveProductDealLog(productId, sellerId, buyerId);
     }

@@ -81,6 +81,25 @@ public record AlarmPayload(String message, Long targetId, Long memberId, Long fr
                 .build();
     }
 
+    /**
+     * 경매가 취소되었음을 입찰자들에게 알림
+     */
+    public static AlarmPayload ofCancelAuction(String message, Auction auction, Long fromMemberId) {
+        return ofAuctionBid(message, auction, AlarmType.CANCEL)
+                .memberId(fromMemberId)
+                .fromMemberId(auction.getMemberId())
+                .build();
+    }
+
+    /**
+     * 경매가 취소되었음을 판매자에게 알림
+     */
+    public static AlarmPayload ofCancelAuction(String message, Auction auction) {
+        return ofAuctionBid(message, auction, AlarmType.CANCEL)
+                .memberId(auction.getMemberId())
+                .build();
+    }
+
     private static AlarmPayloadBuilder ofProductDeal(String message, ChatRoom chatRoom, AlarmType alarmType) {
         return AlarmPayload.builder()
                 .message(message)

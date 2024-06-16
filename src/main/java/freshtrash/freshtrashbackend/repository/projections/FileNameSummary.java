@@ -1,4 +1,3 @@
 package freshtrash.freshtrashbackend.repository.projections;
 
-public record FileNameSummary(String fileName) {
-}
+public record FileNameSummary(String fileName) {}
