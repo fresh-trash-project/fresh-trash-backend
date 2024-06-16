@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -86,6 +87,16 @@ public class AuctionService {
         auction.setFinalBid(biddingPrice);
         // 입찰 기록
         addBiddingHistory(auctionId, memberId, biddingPrice);
+    }
+
+    public void closeAuction(Long auctionId) {
+        log.debug("경매 판매 상태를 CLOSE로 변경");
+        auctionRepository.closeAuctionById(auctionId);
+    }
+
+    public List<Auction> getEndedAuctions() {
+        log.debug("마감되었지만 AuctionStatus가 ONGOING인 경매 조회");
+        return auctionRepository.findAllEndedAuctions();
     }
 
     private void validateBiddingRequest(Auction auction, int biddingPrice, Long memberId) {

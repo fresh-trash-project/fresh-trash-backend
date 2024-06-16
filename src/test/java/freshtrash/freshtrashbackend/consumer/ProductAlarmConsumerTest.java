@@ -52,7 +52,7 @@ class ProductAlarmConsumerTest {
         given(alarmService.saveAlarm(eq(alarmPayload))).willReturn(alarm);
         given(emitterRepository.findByMemberId(eq(memberId))).willReturn(Optional.of(sseEmitter));
         // whenxp
-        productAlarmConsumer.receiveProductDeal(channel, deliveryTag, alarmPayload);
+        productAlarmConsumer.consumeProductDealMessage(channel, deliveryTag, alarmPayload);
         ArgumentCaptor<AlarmPayload> alarmCaptor = ArgumentCaptor.forClass(AlarmPayload.class);
         // then
         verify(alarmService, times(1)).saveAlarm(alarmCaptor.capture());

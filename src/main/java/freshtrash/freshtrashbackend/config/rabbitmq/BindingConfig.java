@@ -11,6 +11,10 @@ import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.*;
 
 @Configuration
 public class BindingConfig {
+
+    /**
+     * Queue Binding
+     */
     @Bean
     Binding productCompleteBinding(Queue productCompleteQueue, TopicExchange topicExchange) {
         return createBinding(productCompleteQueue, topicExchange, PRODUCT_TRANSACTION_COMPLETE.getRoutingKey());
@@ -32,6 +36,14 @@ public class BindingConfig {
     }
 
     @Bean
+    Binding auctionCompleteBinding(Queue auctionCompleteQueue, TopicExchange topicExchange) {
+        return createBinding(auctionCompleteQueue, topicExchange, AUCTION_BID_COMPLETE.getRoutingKey());
+    }
+
+    /**
+     * DLQ Binding
+     */
+    @Bean
     Binding dlqProductCompleteBinding(Queue dlqProductCompleteQueue, TopicExchange dlqExchange) {
         return createBinding(dlqProductCompleteQueue, dlqExchange, DLQ_PRODUCT_TRANSACTION_COMPLETE.getRoutingKey());
     }
@@ -52,6 +64,14 @@ public class BindingConfig {
     }
 
     @Bean
+    Binding dlqAuctionCompleteBinding(Queue dlqAuctionCompleteQueue, TopicExchange dlqExchange) {
+        return createBinding(dlqAuctionCompleteQueue, dlqExchange, DLQ_AUCTION_BID_COMPLETE.getRoutingKey());
+    }
+
+    /**
+     * Parking Lot Queue Binding
+     */
+    @Bean
     Binding productParkingLotBinding(Queue productParkingLotQueue, TopicExchange parkingLotExchange) {
         return createBinding(productParkingLotQueue, parkingLotExchange, PRODUCT_PARKING_LOT.getRoutingKey());
     }
@@ -59,6 +79,11 @@ public class BindingConfig {
     @Bean
     Binding chatParkingLotBinding(Queue chatParkingLotQueue, TopicExchange parkingLotExchange) {
         return createBinding(chatParkingLotQueue, parkingLotExchange, CHAT_PARKING_LOT.getRoutingKey());
+    }
+
+    @Bean
+    Binding auctionParkingLotBinding(Queue auctionParkingLotQueue, TopicExchange parkingLotExchange) {
+        return createBinding(auctionParkingLotQueue, parkingLotExchange, AUCTION_PARKING_LOT.getRoutingKey());
     }
 
     private Binding createBinding(Queue queue, TopicExchange exchange, String routingKey) {

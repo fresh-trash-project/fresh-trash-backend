@@ -3,7 +3,9 @@ package freshtrash.freshtrashbackend.consumer;
 import com.rabbitmq.client.Channel;
 import freshtrash.freshtrashbackend.aspect.annotation.ManualAcknowledge;
 import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
-import freshtrash.freshtrashbackend.service.SlackService;
+import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
+import freshtrash.freshtrashbackend.entity.Alarm;
+import freshtrash.freshtrashbackend.service.AlarmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -15,20 +17,18 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ParkingLotConsumer {
-    private final SlackService slackService;
+public class AuctionAlarmConsumer {
+    private final AlarmService alarmService;
 
     /**
-     * Product Parking Lot Listener
+     * 경매 알람 메시지 전송 Listener
      */
     @ManualAcknowledge
-    @RabbitListener(
-            queues = {"#{productParkingLotQueue.name}", "#{chatParkingLotQueue.name}", "#{auctionParkingLotQueue.name}"
-            })
-    public void handleProductParkingLot(
+    @RabbitListener(queues = {"#{auctionCompleteQueue.name}"})
+    public void consumeAuctionMessage(
             Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload AlarmPayload alarmPayload) {
-        log.warn("consume from parking lot");
-        slackService.sendMessage(alarmPayload.message(), alarmPayload.toMap());
-        log.debug("send notification to slack");
+        log.debug("receive complete bid auction message: {}", alarmPayload);
+        Alarm alarm = alarmService.saveAlarm(alarmPayload);
+        alarmService.receive(alarmPayload.memberId(), AlarmResponse.fromEntity(alarm));
     }
 }
