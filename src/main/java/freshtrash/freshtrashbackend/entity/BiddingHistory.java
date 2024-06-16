@@ -2,8 +2,11 @@ package freshtrash.freshtrashbackend.entity;
 
 import freshtrash.freshtrashbackend.entity.audit.CreatedAt;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -13,6 +16,8 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name = "bidding_history")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "update bidding_history set deleted_at = current_timestamp where id=?")
+@Where(clause = "deleted_at is NULL")
 public class BiddingHistory extends CreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +45,8 @@ public class BiddingHistory extends CreatedAt {
 
     @Column(nullable = false)
     private Long auctionId;
+
+    private LocalDateTime deletedAt;
 
     @Builder
     public BiddingHistory(int price, Long memberId, Long auctionId) {
