@@ -30,7 +30,7 @@ public class CancelBookingProductAlarm extends ProductAlarmTemplate {
         this.chatRoomService
                 .getNotClosedChatRoomsByProductId(bookedChatRoom.getProductId())
                 .forEach(chatRoom -> {
-                    this.producer.updateSellStatus(chatRoom, message, AlarmType.TRANSACTION);
+                    this.producer.publishForUpdatedSellStatus(chatRoom, message, AlarmType.TRANSACTION);
                 });
     }
 

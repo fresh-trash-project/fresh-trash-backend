@@ -52,8 +52,8 @@ public class FixtureDto {
                 .build();
     }
 
-    public static AlarmPayload createAlarmPayload() {
-        return AlarmPayload.builder()
+    public static BaseAlarmPayload createAlarmPayload() {
+        return ProductAlarmPayload.builder()
                 .message("test message")
                 .targetId(1L)
                 .memberId(123L)

@@ -8,6 +8,7 @@ import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.service.AuctionEventService;
 import freshtrash.freshtrashbackend.service.AuctionService;
+import freshtrash.freshtrashbackend.service.BiddingHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 public class AuctionApi {
     private final AuctionService auctionService;
     private final AuctionEventService auctionEventService;
+    private final BiddingHistoryService biddingHistoryService;
 
     @GetMapping
     public ResponseEntity<Page<AuctionResponse>> getAuctions(
@@ -66,6 +68,13 @@ public class AuctionApi {
             @RequestBody @Valid BiddingRequest biddingRequest,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         auctionService.requestBidding(auctionId, biddingRequest.biddingPrice(), memberPrincipal.id());
+        return ResponseEntity.ok(null);
+    }
+
+    @PutMapping("/{auctionId}/pay")
+    public ResponseEntity<Void> completePay(
+            @PathVariable Long auctionId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        biddingHistoryService.updateToCompletedPayAndNotify(auctionId, memberPrincipal.id());
         return ResponseEntity.ok(null);
     }
 }

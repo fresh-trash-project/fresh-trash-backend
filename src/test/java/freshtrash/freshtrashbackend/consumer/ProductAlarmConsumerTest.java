@@ -2,7 +2,8 @@ package freshtrash.freshtrashbackend.consumer;
 
 import com.rabbitmq.client.Channel;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
+import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
+import freshtrash.freshtrashbackend.dto.request.ProductAlarmPayload;
 import freshtrash.freshtrashbackend.entity.Alarm;
 import freshtrash.freshtrashbackend.repository.EmitterRepository;
 import freshtrash.freshtrashbackend.service.AlarmService;
@@ -43,17 +44,17 @@ class ProductAlarmConsumerTest {
     @DisplayName("알람 메시지 consume")
     void given_alarmPayload_when_listenMessage_then_saveAlarmAndSendAlarm() {
         // given
-        AlarmPayload alarmPayload = FixtureDto.createAlarmPayload();
-        Long memberId = alarmPayload.memberId();
-        Alarm alarm = Alarm.fromMessageRequest(alarmPayload);
+        BaseAlarmPayload baseAlarmPayload = FixtureDto.createAlarmPayload();
+        Long memberId = baseAlarmPayload.getMemberId();
+        Alarm alarm = Alarm.fromAlarmPayload(baseAlarmPayload);
         SseEmitter sseEmitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
         Channel channel = mock(Channel.class);
         long deliveryTag = 3;
-        given(alarmService.saveAlarm(eq(alarmPayload))).willReturn(alarm);
+        given(alarmService.saveAlarm(eq(baseAlarmPayload))).willReturn(alarm);
         given(emitterRepository.findByMemberId(eq(memberId))).willReturn(Optional.of(sseEmitter));
         // whenxp
-        productAlarmConsumer.consumeProductDealMessage(channel, deliveryTag, alarmPayload);
-        ArgumentCaptor<AlarmPayload> alarmCaptor = ArgumentCaptor.forClass(AlarmPayload.class);
+        productAlarmConsumer.consumeProductDealMessage(channel, deliveryTag, baseAlarmPayload);
+        ArgumentCaptor<ProductAlarmPayload> alarmCaptor = ArgumentCaptor.forClass(ProductAlarmPayload.class);
         // then
         verify(alarmService, times(1)).saveAlarm(alarmCaptor.capture());
         verify(emitterRepository, times(1)).findByMemberId(eq(memberId));

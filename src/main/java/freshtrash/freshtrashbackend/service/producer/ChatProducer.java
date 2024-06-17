@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.service.producer;
 
 import freshtrash.freshtrashbackend.dto.events.AlarmEvent;
-import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
+import freshtrash.freshtrashbackend.dto.request.ProductAlarmPayload;
 import freshtrash.freshtrashbackend.service.producer.publisher.MQPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +24,6 @@ public class ChatProducer {
                 message);
         mqPublisher.publish(AlarmEvent.of(
                 PRODUCT_TRANSACTION_FLAG.getRoutingKey(),
-                AlarmPayload.ofUserFlag(message, productId, targetMemberId, currentMemberId)));
+                ProductAlarmPayload.ofUserFlag(message, productId, targetMemberId, currentMemberId)));
     }
 }

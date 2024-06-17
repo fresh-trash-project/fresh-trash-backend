@@ -1,16 +1,16 @@
 package freshtrash.freshtrashbackend.dto.events;
 
-import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
+import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AlarmEvent extends BaseEvent<AlarmPayload> {
-    public AlarmEvent(String routingKey, AlarmPayload payload) {
+public class AlarmEvent extends BaseEvent<BaseAlarmPayload> {
+    public AlarmEvent(String routingKey, BaseAlarmPayload payload) {
         super(routingKey, payload);
     }
 
-    public static AlarmEvent of(String routingKey, AlarmPayload payload) {
+    public static AlarmEvent of(String routingKey, BaseAlarmPayload payload) {
         return new AlarmEvent(routingKey, payload);
     }
 }

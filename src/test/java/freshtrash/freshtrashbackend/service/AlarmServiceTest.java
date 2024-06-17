@@ -1,17 +1,12 @@
 package freshtrash.freshtrashbackend.service;
 
-import com.rabbitmq.client.Channel;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
-import freshtrash.freshtrashbackend.entity.Alarm;
 import freshtrash.freshtrashbackend.repository.AlarmRepository;
 import freshtrash.freshtrashbackend.repository.EmitterRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,17 +15,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)

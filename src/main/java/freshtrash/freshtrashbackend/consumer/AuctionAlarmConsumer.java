@@ -2,7 +2,7 @@ package freshtrash.freshtrashbackend.consumer;
 
 import com.rabbitmq.client.Channel;
 import freshtrash.freshtrashbackend.aspect.annotation.ManualAcknowledge;
-import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
+import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.entity.Alarm;
 import freshtrash.freshtrashbackend.service.AlarmService;
@@ -24,11 +24,11 @@ public class AuctionAlarmConsumer {
      * 경매 알람 메시지 전송 Listener
      */
     @ManualAcknowledge
-    @RabbitListener(queues = {"#{auctionCompleteQueue.name}", "#{cancelAuctionQueue.name}"})
+    @RabbitListener(queues = {"#{auctionCompleteQueue.name}", "#{cancelAuctionQueue.name}", "#{auctionPayQueue.name}"})
     public void consumeAuctionMessage(
-            Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload AlarmPayload alarmPayload) {
+            Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload BaseAlarmPayload alarmPayload) {
         log.debug("receive complete bid auction message: {}", alarmPayload);
         Alarm alarm = alarmService.saveAlarm(alarmPayload);
-        alarmService.receive(alarmPayload.memberId(), AlarmResponse.fromEntity(alarm));
+        alarmService.receive(alarmPayload.getMemberId(), AlarmResponse.fromEntity(alarm));
     }
 }

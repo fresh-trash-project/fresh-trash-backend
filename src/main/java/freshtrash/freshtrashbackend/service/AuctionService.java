@@ -5,12 +5,10 @@ import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
-import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.AuctionException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.AuctionRepository;
-import freshtrash.freshtrashbackend.repository.BiddingHistoryRepository;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +31,9 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class AuctionService {
-    private final BiddingHistoryRepository biddingHistoryRepository;
     private final AuctionRepository auctionRepository;
     private final FileService fileService;
+    private final BiddingHistoryService biddingHistoryService;
 
     public AuctionResponse addAuction(
             MultipartFile imgFile, AuctionRequest auctionRequest, MemberPrincipal memberPrincipal) {
@@ -73,6 +71,9 @@ public class AuctionService {
             value = {ObjectOptimisticLockingFailureException.class, CannotAcquireLockException.class},
             backoff = @Backoff(delay = 300, maxDelay = 700))
     public void requestBidding(Long auctionId, int biddingPrice, Long memberId) {
+        // 판매자는 입찰을 요청할 수 없음
+        log.debug("판매자는 입찰을 요청할 수 없으므로 memberId {}가 auctionId {}의 판매자인지 확인", auctionId, memberId);
+        if (isSeller(auctionId, memberId)) throw new AuctionException(ErrorCode.FORBIDDEN_AUCTION_BID);
         Auction auction = getAuction(auctionId);
 
         // 통합 테스트를 위해 추가된 코드
@@ -91,7 +92,7 @@ public class AuctionService {
         // 입찰가 변경
         auction.setFinalBid(biddingPrice);
         // 입찰 기록
-        addBiddingHistory(auctionId, memberId, biddingPrice);
+        biddingHistoryService.addBiddingHistory(auctionId, memberId, biddingPrice);
     }
 
     public void closeAuction(Long auctionId) {
@@ -104,22 +105,18 @@ public class AuctionService {
         return auctionRepository.findAllEndedAuctions();
     }
 
+    public boolean isSeller(Long auctionId, Long memberId) {
+        return auctionRepository.existsByIdAndMemberId(auctionId, memberId);
+    }
+
     public void checkIfWriterOrAdmin(Long auctionId, UserRole userRole, Long memberId) {
         log.debug(
                 "memberId {}가 auctionId {}의 작성자인지 또는 userRole {}이 admin인지 확인하고 아닐 경우 예외 발생",
                 auctionId,
                 memberId,
                 userRole);
-        if (userRole != UserRole.ADMIN && !auctionRepository.existsByIdAndMemberId(auctionId, memberId))
+        if (userRole != UserRole.ADMIN && !isSeller(auctionId, memberId))
             throw new AuctionException(ErrorCode.FORBIDDEN_AUCTION);
-    }
-
-    private void addBiddingHistory(Long auctionId, Long memberId, int price) {
-        biddingHistoryRepository.save(BiddingHistory.builder()
-                .auctionId(auctionId)
-                .memberId(memberId)
-                .price(price)
-                .build());
     }
 
     private void validateBiddingRequest(Auction auction, int biddingPrice, Long memberId) {

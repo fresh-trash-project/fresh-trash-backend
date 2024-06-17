@@ -9,7 +9,6 @@ import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.entity.QAuction;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.repository.AuctionRepository;
 import freshtrash.freshtrashbackend.repository.BiddingHistoryRepository;
 import org.junit.jupiter.api.DisplayName;

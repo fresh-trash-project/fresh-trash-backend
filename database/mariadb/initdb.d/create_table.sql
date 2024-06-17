@@ -158,13 +158,13 @@ CREATE TABLE `auctions`
 
 CREATE TABLE `bidding_history`
 (
-    `id`                 bigint AUTO_INCREMENT NOT NULL,
-    `member_id`          bigint                NOT NULL,
-    `auction_id`         bigint                NOT NULL,
-    `price`              integer               NOT NULL,
-    `is_success_bidding` tinyint(1)            NOT NULL,
-    `created_at`         datetime              NOT NULL,
-    `deleted_at`         datetime,
+    `id`         bigint AUTO_INCREMENT NOT NULL,
+    `member_id`  bigint                NOT NULL,
+    `auction_id` bigint                NOT NULL,
+    `price`      integer               NOT NULL,
+    `is_pay`     tinyint(1)            NOT NULL,
+    `created_at` datetime              NOT NULL,
+    `deleted_at` datetime,
     PRIMARY KEY (`id`),
     foreign key (`member_id`) references members (id) on delete cascade,
     foreign key (`auction_id`) references auctions (id) on delete cascade
