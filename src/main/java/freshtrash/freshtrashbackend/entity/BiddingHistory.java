@@ -27,8 +27,9 @@ public class BiddingHistory extends CreatedAt {
     @Column(nullable = false)
     private int price; // 입찰 금액
 
+    @Setter
     @Column(nullable = false)
-    private boolean isSuccessBidding; // 낙찰 여부
+    private boolean isPay; // 결제 여부
 
     @ToString.Exclude
     @ManyToOne(optional = false, fetch = LAZY)
