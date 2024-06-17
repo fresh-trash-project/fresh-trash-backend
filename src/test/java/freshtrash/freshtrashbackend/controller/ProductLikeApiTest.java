@@ -7,7 +7,6 @@ import freshtrash.freshtrashbackend.controller.constants.LikeStatus;
 import freshtrash.freshtrashbackend.dto.response.ProductResponse;
 import freshtrash.freshtrashbackend.entity.constants.ProductCategory;
 import freshtrash.freshtrashbackend.service.ProductLikeService;
-import freshtrash.freshtrashbackend.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -66,7 +65,8 @@ class ProductLikeApiTest {
     @DisplayName("관심 폐기물 추가/삭제")
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
     @CsvSource(value = {"LIKE", "UNLIKE"})
-    void given_likeStatusAndProductIdAndLoginUser_when_addOrDeleteProductLike_then_returnBoolean(LikeStatus likeStatus) throws Exception {
+    void given_likeStatusAndProductIdAndLoginUser_when_addOrDeleteProductLike_then_returnBoolean(LikeStatus likeStatus)
+            throws Exception {
         // given
         Long productId = 1L;
         Long memberId = 123L;
@@ -76,9 +76,10 @@ class ProductLikeApiTest {
             willDoNothing().given(productLikeService).deleteProductLike(memberId, productId);
         }
         // when
-        mvc.perform(post("/api/v1/products/" + productId + "/likes").queryParam("likeStatus", String.valueOf(likeStatus)))
+        mvc.perform(post("/api/v1/products/" + productId + "/likes")
+                        .queryParam("likeStatus", String.valueOf(likeStatus)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value(likeStatus==LikeStatus.LIKE));
+                .andExpect(jsonPath("$.data").value(likeStatus == LikeStatus.LIKE));
         // then
     }
 }

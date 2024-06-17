@@ -37,7 +37,8 @@ class ProductReviewApiTest {
     @Test
     @DisplayName("폐기물 리뷰 작성")
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    void given_reviewRequestAndProductIdAndLoginUser_when_addProductReview_then_returnReviewResponse() throws Exception {
+    void given_reviewRequestAndProductIdAndLoginUser_when_addProductReview_then_returnReviewResponse()
+            throws Exception {
         // given
         ReviewRequest reviewRequest = FixtureDto.createReviewRequest(4);
         Long productId = 1L;

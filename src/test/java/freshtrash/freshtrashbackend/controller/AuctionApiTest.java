@@ -13,6 +13,7 @@ import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.service.AuctionEventService;
 import freshtrash.freshtrashbackend.service.AuctionService;
+import freshtrash.freshtrashbackend.service.BiddingHistoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,6 +54,9 @@ class AuctionApiTest {
 
     @MockBean
     private AuctionEventService auctionEventService;
+
+    @MockBean
+    private BiddingHistoryService biddingHistoryService;
 
     @DisplayName("경매 추가 요청")
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
@@ -81,6 +83,9 @@ class AuctionApiTest {
                 .andExpect(jsonPath("$.content").value(auctionRequest.content()))
                 .andExpect(jsonPath("$.finalBid").value(auctionRequest.minimumBid()));
         // then
+        then(auctionService)
+                .should()
+                .addAuction(any(MultipartFile.class), any(AuctionRequest.class), any(MemberPrincipal.class));
     }
 
     @DisplayName("경매 목록 조회")
@@ -95,6 +100,7 @@ class AuctionApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements").value(1));
         // then
+        then(auctionService).should().getAuctions(any(Predicate.class), any(Pageable.class));
     }
 
     @DisplayName("경매 단일 조회")
@@ -103,12 +109,13 @@ class AuctionApiTest {
     void given_auctionIdAndLoginUser_when_getAuction_then_returnSingleAuctionData() throws Exception {
         // given
         Auction auction = Fixture.createAuction();
-        given(auctionService.getAuction(eq(auction.getId()))).willReturn(auction);
+        given(auctionService.getAuction(auction.getId())).willReturn(auction);
         // when
         mvc.perform(get("/api/v1/auctions/" + auction.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(auction.getId()));
         // then
+        then(auctionService).should().getAuction(auction.getId());
     }
 
     @DisplayName("경매 삭제 요청")
@@ -122,12 +129,13 @@ class AuctionApiTest {
         // when
         mvc.perform(delete("/api/v1/auctions/" + auctionId)).andExpect(status().isNoContent());
         // then
+        then(auctionEventService).should().cancelAuction(auctionId, userRole, memberId);
     }
 
     @DisplayName("경매 입찰 요청")
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    void bidding() throws Exception {
+    void given_auctionIdAndBiddingPriceAndLoginUser_when_then_requestBidding() throws Exception {
         // given
         Long auctionId = 2L, memberId = 123L;
         int biddingPrice = 10000;
@@ -139,5 +147,19 @@ class AuctionApiTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         // then
+        then(auctionService).should().requestBidding(auctionId, biddingPrice, memberId);
+    }
+
+    @DisplayName("경매 결제 완료 처리 요청")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    void given_auctionIdAndLoginUser_when_then_updateToCompletedPayAndNotify() throws Exception {
+        // given
+        Long auctionId = 2L, memberId = 123L;
+        willDoNothing().given(biddingHistoryService).updateToCompletedPayAndNotify(auctionId, memberId);
+        // when
+        mvc.perform(put("/api/v1/auctions/" + auctionId + "/pay")).andExpect(status().isOk());
+        // then
+        then(biddingHistoryService).should().updateToCompletedPayAndNotify(auctionId, memberId);
     }
 }

@@ -16,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.mockito.BDDMockito.*;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @ActiveProfiles("test")
@@ -51,15 +50,15 @@ class AuctionEventServiceTest {
     @DisplayName("경매가 취소되면 입찰자들에게 알림을 전송합니다.")
     @Test
     void given_auctionIdAndLoginUser_when_writerOrAdmin_then_deleteAuctionAndNotifyToBidUsers() {
-        //given
+        // given
         Long auctionId = 1L, memberId = 2L;
         UserRole userRole = UserRole.USER;
         Auction auction = Fixture.createAuction();
         willDoNothing().given(auctionService).checkIfWriterOrAdmin(auctionId, userRole, memberId);
         given(auctionService.getAuctionWithBiddingHistory(auctionId)).willReturn(auction);
         willDoNothing().given(cancelAuctionAlarm).sendAlarm(auction);
-        //when
+        // when
         auctionEventService.cancelAuction(auctionId, userRole, memberId);
-        //then
+        // then
     }
 }
