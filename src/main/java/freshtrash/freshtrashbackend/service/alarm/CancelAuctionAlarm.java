@@ -24,12 +24,12 @@ public class CancelAuctionAlarm extends AuctionAlarmTemplate {
     @Override
     protected void publishEvent(Auction auction, Long bidMemberId) {
         log.debug("입찰자에게 경매 취소되었음을 알림");
-        this.producer.cancelAuction(auction, bidMemberId);
+        this.producer.publishToBiddersForCancelAuction(auction, bidMemberId);
     }
 
     @Override
     protected void publishEvent(Auction auction) {
         log.debug("구매자에게 경매 취소되었음을 알림");
-        this.producer.cancelAuction(auction);
+        this.producer.publishToSellerForCancelAuction(auction);
     }
 }

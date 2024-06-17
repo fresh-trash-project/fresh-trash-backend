@@ -15,7 +15,9 @@ public enum AlarmMessage {
     NOT_COMPLETED_AUCTION_MESSAGE("겅매 [%s]가 입찰된 내역이 없습니다."),
     COMPLETE_BID_AUCTION_MESSAGE("경매 [%s]가 낙찰되었습니다."),
     REQUEST_PAY_AUCTION_MESSAGE("경매 [%s]가 낙찰되었습니다. 24시간 이내에 결제바랍니다."),
-    CANCEL_AUCTION_MESSAGE("경매 [%s]가 취소되었습니다.");
+    CANCEL_AUCTION_MESSAGE("경매 [%s]가 취소되었습니다."),
+    COMPLETED_PAY_MESSAGE("경매 [%s] 상품 결제가 완료되었습니다."),
+    COMPLETED_PAY_AND_REQUEST_DELIVERY_MESSAGE("경매 [%s] 상품 결제가 완료되었습니다. %s 님에게 상품을 배송해주세요.");
 
     private final String message;
 }

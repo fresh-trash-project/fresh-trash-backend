@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.service.producer;
 
 import freshtrash.freshtrashbackend.dto.events.AlarmEvent;
-import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
+import freshtrash.freshtrashbackend.dto.request.ProductAlarmPayload;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.producer.publisher.MQPublisher;
@@ -18,23 +18,23 @@ import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.REQUEST_RE
 public class ProductDealProducer {
     private final MQPublisher mqPublisher;
 
-    public void completeDeal(ChatRoom chatRoom) {
+    public void publishForCompletedProductDeal(ChatRoom chatRoom) {
         mqPublisher.publish(AlarmEvent.of(
                 PRODUCT_TRANSACTION_COMPLETE.getRoutingKey(),
-                AlarmPayload.ofProductDealBySeller(
+                ProductAlarmPayload.ofCompletedProductDeal(
                         COMPLETED_SELL_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION)));
     }
 
-    public void requestReview(ChatRoom chatRoom) {
+    public void publishToBuyerForRequestReview(ChatRoom chatRoom) {
         mqPublisher.publish(AlarmEvent.of(
                 PRODUCT_TRANSACTION_COMPLETE.getRoutingKey(),
-                AlarmPayload.ofProductDealByBuyer(
+                ProductAlarmPayload.ofRequestReview(
                         REQUEST_REVIEW_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION)));
     }
 
-    public void updateSellStatus(ChatRoom chatRoom, String message, AlarmType alarmType) {
+    public void publishForUpdatedSellStatus(ChatRoom chatRoom, String message, AlarmType alarmType) {
         mqPublisher.publish(AlarmEvent.of(
                 PRODUCT_CHANGE_SELL_STATUS.getRoutingKey(),
-                AlarmPayload.ofProductDealBySeller(message, chatRoom, alarmType)));
+                ProductAlarmPayload.ofUpdatedSellStatus(message, chatRoom, alarmType)));
     }
 }

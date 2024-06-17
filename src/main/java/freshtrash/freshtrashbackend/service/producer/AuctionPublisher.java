@@ -1,15 +1,15 @@
 package freshtrash.freshtrashbackend.service.producer;
 
 import freshtrash.freshtrashbackend.dto.events.AlarmEvent;
-import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
+import freshtrash.freshtrashbackend.dto.request.AuctionAlarmPayload;
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.service.producer.publisher.MQPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.AUCTION_BID_COMPLETE;
-import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.CANCEL_AUCTION;
+import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.*;
 import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.*;
 
 @Slf4j
@@ -18,42 +18,63 @@ import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.*;
 public class AuctionPublisher {
     private final MQPublisher mqPublisher;
 
-    public void notCompleteBid(Auction auction) {
+    public void publishToSellerForNotExistBidders(Auction auction) {
         mqPublisher.publish(AlarmEvent.of(
                 AUCTION_BID_COMPLETE.getRoutingKey(),
-                AlarmPayload.ofAuctionNotBid(
+                AuctionAlarmPayload.ofNotExistBidders(
                         String.format(NOT_COMPLETED_AUCTION_MESSAGE.getMessage(), auction.getTitle()), auction)));
     }
 
-    public void completeBid(Auction auction, Long bidMemberId) {
+    public void publishToSellerForCompletedAuction(Auction auction, Long bidMemberId) {
         mqPublisher.publish(AlarmEvent.of(
                 AUCTION_BID_COMPLETE.getRoutingKey(),
-                AlarmPayload.ofAuctionBidByBuyer(
+                AuctionAlarmPayload.ofCompletedAuction(
                         String.format(COMPLETE_BID_AUCTION_MESSAGE.getMessage(), auction.getTitle()),
                         auction,
                         bidMemberId)));
     }
 
-    public void requestPay(Auction auction, Long bidMemberId) {
+    public void publishToWonBidderForRequestPay(Auction auction, Long bidMemberId) {
         mqPublisher.publish(AlarmEvent.of(
                 AUCTION_BID_COMPLETE.getRoutingKey(),
-                AlarmPayload.ofAuctionBidBySeller(
+                AuctionAlarmPayload.ofRequestPay(
                         String.format(REQUEST_PAY_AUCTION_MESSAGE.getMessage(), auction.getTitle()),
                         auction,
                         bidMemberId)));
     }
 
-    public void cancelAuction(Auction auction, Long bidMemberId) {
+    public void publishToBiddersForCancelAuction(Auction auction, Long bidMemberId) {
         mqPublisher.publish(AlarmEvent.of(
                 CANCEL_AUCTION.getRoutingKey(),
-                AlarmPayload.ofCancelAuction(
+                AuctionAlarmPayload.ofCancelAuctionToBidders(
                         String.format(CANCEL_AUCTION_MESSAGE.getMessage(), auction.getTitle()), auction, bidMemberId)));
     }
 
-    public void cancelAuction(Auction auction) {
+    public void publishToSellerForCancelAuction(Auction auction) {
         mqPublisher.publish(AlarmEvent.of(
                 CANCEL_AUCTION.getRoutingKey(),
-                AlarmPayload.ofCancelAuction(
+                AuctionAlarmPayload.ofCancelAuctionToSeller(
                         String.format(CANCEL_AUCTION_MESSAGE.getMessage(), auction.getTitle()), auction)));
+    }
+
+    public void publishForCompletedPayAndRequestDelivery(BiddingHistory biddingHistory) {
+        String auctionTitle = biddingHistory.getAuction().getTitle();
+        // 낙찰자에게 전송
+        mqPublisher.publish(AlarmEvent.of(
+                AUCTION_PAY.getRoutingKey(),
+                AuctionAlarmPayload.ofCompletedPayToWonBidder(
+                        String.format(COMPLETED_PAY_MESSAGE.getMessage(), auctionTitle),
+                        biddingHistory.getAuction(),
+                        biddingHistory.getMemberId())));
+        // 판매자에게 전송
+        mqPublisher.publish(AlarmEvent.of(
+                AUCTION_PAY.getRoutingKey(),
+                AuctionAlarmPayload.ofCompletedPayAndRequestDeliveryToSeller(
+                        String.format(
+                                COMPLETED_PAY_AND_REQUEST_DELIVERY_MESSAGE.getMessage(),
+                                auctionTitle,
+                                biddingHistory.getMember().getNickname()),
+                        biddingHistory.getAuction(),
+                        biddingHistory.getMemberId())));
     }
 }

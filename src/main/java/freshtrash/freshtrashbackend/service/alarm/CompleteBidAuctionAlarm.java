@@ -23,13 +23,13 @@ public class CompleteBidAuctionAlarm extends AuctionAlarmTemplate {
     @Override
     public void publishEvent(Auction auction, Long bidMemberId) {
         log.debug("판매자에게 낙찰 알림, 구매자에게 결제 요청 알림");
-        this.producer.completeBid(auction, bidMemberId);
-        this.producer.requestPay(auction, bidMemberId);
+        this.producer.publishToSellerForCompletedAuction(auction, bidMemberId);
+        this.producer.publishToWonBidderForRequestPay(auction, bidMemberId);
     }
 
     @Override
     public void publishEvent(Auction auction) {
         log.debug("입찰자가 없음을 판매자에게 알림");
-        this.producer.notCompleteBid(auction);
+        this.producer.publishToSellerForNotExistBidders(auction);
     }
 }

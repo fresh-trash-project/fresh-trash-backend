@@ -1,6 +1,6 @@
 package freshtrash.freshtrashbackend.service;
 
-import freshtrash.freshtrashbackend.dto.request.AlarmPayload;
+import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
 import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.entity.Alarm;
 import freshtrash.freshtrashbackend.exception.AlarmException;
@@ -40,8 +40,8 @@ public class AlarmService {
     /**
      * 알람 저장
      */
-    public Alarm saveAlarm(AlarmPayload alarmPayload) {
-        return alarmRepository.save(Alarm.fromMessageRequest(alarmPayload));
+    public Alarm saveAlarm(BaseAlarmPayload baseAlarmPayload) {
+        return alarmRepository.save(Alarm.fromAlarmPayload(baseAlarmPayload));
     }
 
     /**

@@ -31,15 +31,15 @@ public class CompleteDealProductAlarm extends ProductAlarmTemplate {
     @Override
     public void publishEvent(ChatRoom closedChatRoom) {
         // 판매자, 구매자에게 알람 전송
-        this.producer.completeDeal(closedChatRoom);
-        log.debug("Send message to seller.");
-        this.producer.requestReview(closedChatRoom);
-        log.debug("Send message to buyer.");
+        log.debug("판매자에게 판매 완료 알림 전송");
+        this.producer.publishForCompletedProductDeal(closedChatRoom);
+        log.debug("구매자에게 리뷰 요청 알림 전송");
+        this.producer.publishToBuyerForRequestReview(closedChatRoom);
 
         // 그 밖의 채팅 요청한 사용자들에게 알람 전송
+        log.debug("채팅 요청했던 사용자들에게 판매 완료 알림 전송");
         chatRoomService
                 .getNotClosedChatRoomsByProductId(closedChatRoom.getProductId())
-                .forEach(this.producer::completeDeal);
-        log.debug("Send message to others.");
+                .forEach(this.producer::publishForCompletedProductDeal);
     }
 }
