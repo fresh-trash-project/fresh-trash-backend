@@ -22,6 +22,8 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class Member extends AuditingAt {
+    public static final int USER_FLAG_LIMIT = 10; // 블랙리스트에 들어갈 유저 신고 횟수
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include

@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
+import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.service.MemberService;
 import freshtrash.freshtrashbackend.service.alarm.template.ChatAlarmTemplate;
 import freshtrash.freshtrashbackend.service.producer.ChatProducer;
@@ -13,8 +14,6 @@ import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.FLAG_MESSA
 @Component
 public class UserFlagChatAlarm extends ChatAlarmTemplate {
 
-    private static final int FLAG_LIMIT = 10;
-
     public UserFlagChatAlarm(MemberService memberService, ChatProducer producer) {
         super(memberService, producer);
     }
@@ -25,7 +24,9 @@ public class UserFlagChatAlarm extends ChatAlarmTemplate {
     @Override
     public int update(Long targetMemberId) {
         log.debug("유저 신고 횟수 + 1 업데이트...");
-        return this.memberService.updateFlagCount(targetMemberId, FLAG_LIMIT).flagCount();
+        return this.memberService
+                .updateFlagCount(targetMemberId, Member.USER_FLAG_LIMIT)
+                .flagCount();
     }
 
     @Override
@@ -36,7 +37,7 @@ public class UserFlagChatAlarm extends ChatAlarmTemplate {
     }
 
     private String generateMessage(int flagCount) {
-        return flagCount >= FLAG_LIMIT
+        return flagCount >= Member.USER_FLAG_LIMIT
                 ? EXCEED_FLAG_MESSAGE.getMessage()
                 : String.format(FLAG_MESSAGE.getMessage(), flagCount);
     }
