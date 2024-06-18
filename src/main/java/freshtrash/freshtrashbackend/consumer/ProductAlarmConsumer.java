@@ -25,7 +25,12 @@ public class ProductAlarmConsumer {
      */
     @ManualAcknowledge
     @RabbitListener(
-            queues = {"#{productCompleteQueue.name}", "#{productFlagQueue.name}", "#{productChangeStatusQueue.name}"})
+            queues = {
+                "#{productCompleteQueue.name}",
+                "#{productFlagQueue.name}",
+                "#{productChangeStatusQueue.name}",
+                "#{reviewQueue.name}"
+            })
     public void consumeProductDealMessage(
             Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, @Payload BaseAlarmPayload alarmPayload) {
         log.debug("receive complete productDeal message: {}", alarmPayload);

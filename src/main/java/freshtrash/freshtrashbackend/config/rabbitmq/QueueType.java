@@ -14,6 +14,7 @@ public enum QueueType {
     AUCTION_BID_COMPLETE("queue.auction.complete", "auction.bid.complete"),
     CANCEL_AUCTION("queue.auction.cancel", "auction.cancel"),
     AUCTION_PAY("queue.auction.pay", "auction.pay"),
+    REVIEW("queue.review", "product.review"),
 
     // DLQ
     DLQ_PRODUCT_TRANSACTION_COMPLETE("queue.product.complete.dlq", "product.productDeal.complete"),
@@ -23,6 +24,7 @@ public enum QueueType {
     DLQ_AUCTION_BID_COMPLETE("queue.auction.complete.dlq", "auction.bid.complete"),
     DLQ_CANCEL_AUCTION("queue.auction.cancel.dlq", "auction.cancel"),
     DLQ_AUCTION_PAY("queue.auction.pay.dlq", "auction.pay"),
+    DLQ_REVIEW("queue.review.dlq", "product.review"),
 
     // Parking Lot
     PRODUCT_PARKING_LOT("queue.product.parking-lot", "product.#"),
