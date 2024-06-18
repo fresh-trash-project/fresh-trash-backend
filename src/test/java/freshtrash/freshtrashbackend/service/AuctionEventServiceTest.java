@@ -2,9 +2,12 @@ package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.service.alarm.CancelAuctionAlarm;
 import freshtrash.freshtrashbackend.service.alarm.CompleteBidAuctionAlarm;
+import freshtrash.freshtrashbackend.service.alarm.NotPaidAuctionAlarm;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,10 +31,16 @@ class AuctionEventServiceTest {
     private AuctionService auctionService;
 
     @Mock
+    private BiddingHistoryService biddingHistoryService;
+
+    @Mock
     private CompleteBidAuctionAlarm completeBidAuctionAlarm;
 
     @Mock
     private CancelAuctionAlarm cancelAuctionAlarm;
+
+    @Mock
+    private NotPaidAuctionAlarm notPaidAuctionAlarm;
 
     @DisplayName("매일 0시에 마감된 경매를 조회하고 낙찰자에게 알림을 전송합니다.")
     @Test
@@ -60,5 +69,20 @@ class AuctionEventServiceTest {
         // when
         auctionEventService.cancelAuction(auctionId, userRole, memberId);
         // then
+    }
+
+    @DisplayName("24시간 이내에 낙찰된 상품을 결제하지 않으면 낙찰이 취소됩니다.")
+    @Test
+    void when_passed_24hours_then_cancelAuction() {
+        // given
+        Long auctionId = 2L, memberId = 123L;
+        int price = 1000;
+        BiddingHistory biddingHistory = Fixture.createBiddingHistory(auctionId, memberId, price);
+        given(biddingHistoryService.getSuccessBiddingHistories()).willReturn(List.of(biddingHistory));
+        willDoNothing().given(notPaidAuctionAlarm).sendAlarm(biddingHistory);
+        // when
+        auctionEventService.processNotPaidAuctions();
+        // then
+        then(notPaidAuctionAlarm).should().sendAlarm(biddingHistory);
     }
 }

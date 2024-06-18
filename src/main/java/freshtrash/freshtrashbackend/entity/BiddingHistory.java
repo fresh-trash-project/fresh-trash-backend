@@ -47,6 +47,9 @@ public class BiddingHistory extends CreatedAt {
     @Column(nullable = false)
     private Long auctionId;
 
+    @Setter
+    private LocalDateTime successBidAt; // 낙찰 일시
+
     private LocalDateTime deletedAt;
 
     @Builder

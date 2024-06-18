@@ -100,6 +100,11 @@ public class AuctionService {
         auctionRepository.closeAuctionById(auctionId);
     }
 
+    public void cancelAuction(Long auctionId) {
+        log.debug("경매 판매 상태를 CANCEL로 변경");
+        auctionRepository.cancelAuctionById(auctionId);
+    }
+
     public List<Auction> getEndedAuctions() {
         log.debug("마감되었지만 AuctionStatus가 ONGOING인 경매 조회");
         return auctionRepository.findAllEndedAuctions();

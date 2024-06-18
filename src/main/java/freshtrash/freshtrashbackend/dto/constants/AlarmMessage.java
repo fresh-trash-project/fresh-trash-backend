@@ -17,7 +17,9 @@ public enum AlarmMessage {
     REQUEST_PAY_AUCTION_MESSAGE("경매 [%s]가 낙찰되었습니다. 24시간 이내에 결제바랍니다."),
     CANCEL_AUCTION_MESSAGE("경매 [%s]가 취소되었습니다."),
     COMPLETED_PAY_MESSAGE("경매 [%s] 상품 결제가 완료되었습니다."),
-    COMPLETED_PAY_AND_REQUEST_DELIVERY_MESSAGE("경매 [%s] 상품 결제가 완료되었습니다. %s 님에게 상품을 배송해주세요.");
+    COMPLETED_PAY_AND_REQUEST_DELIVERY_MESSAGE("경매 [%s] 상품 결제가 완료되었습니다. %s 님에게 상품을 배송해주세요."),
+    BUYER_NOT_PAID_MESSAGE("%s님이 경매 [%s] 상품을 24시간 이내에 결제하지않아 해당 경매 낙찰을 취소합니다."),
+    NOT_PAID_MESSAGE("경매 [%s] 상품을 24시간 이내에 결제하지않아 경매 낙찰을 취소합니다.");
 
     private final String message;
 }
