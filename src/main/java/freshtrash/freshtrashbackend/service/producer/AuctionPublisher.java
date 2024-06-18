@@ -77,4 +77,27 @@ public class AuctionPublisher {
                         biddingHistory.getAuction(),
                         biddingHistory.getMemberId())));
     }
+
+    public void publishForNotPaid(BiddingHistory biddingHistory) {
+        String auctionTitle = biddingHistory.getAuction().getTitle();
+        // 판매자에게 전송
+        mqPublisher.publish(AlarmEvent.of(
+                AUCTION_PAY.getRoutingKey(),
+                AuctionAlarmPayload.ofNotPaidToSeller(
+                        String.format(
+                                BUYER_NOT_PAID_MESSAGE.getMessage(),
+                                biddingHistory.getMember().getNickname(),
+                                auctionTitle),
+                        biddingHistory.getAuction(),
+                        biddingHistory.getMemberId())));
+        // 낙찰자에게 전송
+        mqPublisher.publish(AlarmEvent.of(
+                AUCTION_PAY.getRoutingKey(),
+                AuctionAlarmPayload.ofNotPaidToWonBidder(
+                        String.format(
+                                NOT_PAID_MESSAGE.getMessage(),
+                                auctionTitle),
+                        biddingHistory.getAuction(),
+                        biddingHistory.getMemberId())));
+    }
 }

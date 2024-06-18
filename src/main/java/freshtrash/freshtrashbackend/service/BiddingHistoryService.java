@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,14 @@ public class BiddingHistoryService {
                 .memberId(memberId)
                 .price(price)
                 .build());
+    }
+
+    /**
+     * 낙찰되었지만 결제되지않은 입찰 내역 조회
+     */
+    public List<BiddingHistory> getSuccessBiddingHistories() {
+        return biddingHistoryRepository.findAllNotPaidAnd24HoursAgo(
+                LocalDateTime.now().minusDays(1));
     }
 
     @Transactional
@@ -40,5 +51,9 @@ public class BiddingHistoryService {
         return biddingHistoryRepository
                 .findFirstByAuctionIdAndMemberIdOrderByPriceDesc(auctionId, memberId)
                 .orElseThrow(() -> new BiddingHistoryException(ErrorCode.NOT_FOUND_BIDDING_HISTORY));
+    }
+
+    public void deleteBiddingHistory(Long biddingHistoryId) {
+        biddingHistoryRepository.deleteById(biddingHistoryId);
     }
 }

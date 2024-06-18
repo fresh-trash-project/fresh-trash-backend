@@ -20,4 +20,9 @@ public interface BiddingHistoryRepository extends JpaRepository<BiddingHistory, 
     @Modifying
     @Query("update BiddingHistory bh set bh.successBidAt = current_timestamp where bh.auctionId = ?1")
     void updateSuccessBidAtByAuctionId(Long auctionId);
+
+    @EntityGraph(attributePaths = {"auction", "member"})
+    @Query(
+            "select bh from BiddingHistory bh where bh.isPay = false and bh.successBidAt is not null and bh.successBidAt < ?1")
+    List<BiddingHistory> findAllNotPaidAnd24HoursAgo(LocalDateTime dateTime24HoursAgo);
 }

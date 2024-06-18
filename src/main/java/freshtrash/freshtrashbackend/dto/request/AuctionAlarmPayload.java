@@ -91,6 +91,23 @@ public class AuctionAlarmPayload extends BaseAlarmPayload {
                 .build();
     }
 
+    /**
+     * 24시간 내에 결제되지 않아 경매 낙찰이 취소되었음을 알림
+     */
+    public static BaseAlarmPayload ofNotPaidToSeller(String message, Auction auction, Long buyerId) {
+        return ofAuction(message, auction, AlarmType.NOT_PAY)
+                .memberId(auction.getMemberId())
+                .fromMemberId(buyerId)
+                .build();
+    }
+
+    /**
+     * 24시간 내에 결제되지 않아 경매 낙찰이 취소되었음을 알림
+     */
+    public static BaseAlarmPayload ofNotPaidToWonBidder(String message, Auction auction, Long buyerId) {
+        return ofAuction(message, auction, AlarmType.NOT_PAY).memberId(buyerId).build();
+    }
+
     private static AuctionAlarmPayloadBuilder ofAuction(String message, Auction auction, AlarmType alarmType) {
         return AuctionAlarmPayload.builder()
                 .message(message)
