@@ -4,6 +4,7 @@ import com.rabbitmq.client.Channel;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
 import freshtrash.freshtrashbackend.dto.request.ProductAlarmPayload;
+import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.entity.Alarm;
 import freshtrash.freshtrashbackend.repository.EmitterRepository;
 import freshtrash.freshtrashbackend.service.AlarmService;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -47,16 +49,15 @@ class ProductAlarmConsumerTest {
         BaseAlarmPayload baseAlarmPayload = FixtureDto.createAlarmPayload();
         Long memberId = baseAlarmPayload.getMemberId();
         Alarm alarm = Alarm.fromAlarmPayload(baseAlarmPayload);
-        SseEmitter sseEmitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
         Channel channel = mock(Channel.class);
         long deliveryTag = 3;
         given(alarmService.saveAlarm(eq(baseAlarmPayload))).willReturn(alarm);
-        given(emitterRepository.findByMemberId(eq(memberId))).willReturn(Optional.of(sseEmitter));
+        willDoNothing().given(alarmService).receive(memberId, AlarmResponse.fromEntity(alarm));
         // whenxp
         productAlarmConsumer.consumeProductDealMessage(channel, deliveryTag, baseAlarmPayload);
         ArgumentCaptor<ProductAlarmPayload> alarmCaptor = ArgumentCaptor.forClass(ProductAlarmPayload.class);
         // then
         verify(alarmService, times(1)).saveAlarm(alarmCaptor.capture());
-        verify(emitterRepository, times(1)).findByMemberId(eq(memberId));
+        verify(alarmService, times(1)).receive(memberId, AlarmResponse.fromEntity(alarm));
     }
 }

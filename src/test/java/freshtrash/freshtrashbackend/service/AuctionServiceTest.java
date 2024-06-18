@@ -10,7 +10,6 @@ import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.entity.QAuction;
 import freshtrash.freshtrashbackend.repository.AuctionRepository;
-import freshtrash.freshtrashbackend.repository.BiddingHistoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +44,7 @@ class AuctionServiceTest {
     private LocalFileService fileService;
 
     @Mock
-    private BiddingHistoryRepository biddingHistoryRepository;
+    private BiddingHistoryService biddingHistoryService;
 
     @DisplayName("경매 추가")
     @Test
@@ -105,9 +104,8 @@ class AuctionServiceTest {
         Long auctionId = 1L, memberId = 3L;
         int biddingPrice = 10000;
         Auction auction = Fixture.createAuction();
-        BiddingHistory biddingHistory = Fixture.createBiddingHistory(auctionId, memberId, biddingPrice);
         given(auctionRepository.findById(eq(auctionId))).willReturn(Optional.of(auction));
-        given(biddingHistoryRepository.save(any(BiddingHistory.class))).willReturn(biddingHistory);
+        willDoNothing().given(biddingHistoryService).addBiddingHistory(auctionId, memberId, biddingPrice);
         // when
         auctionService.requestBidding(auctionId, biddingPrice, memberId);
         // then

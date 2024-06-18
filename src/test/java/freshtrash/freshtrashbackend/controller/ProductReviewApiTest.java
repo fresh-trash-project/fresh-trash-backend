@@ -52,7 +52,7 @@ class ProductReviewApiTest {
                         .content(objectMapper.writeValueAsString(reviewRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.memberId").value(memberId))
-                .andExpect(jsonPath("$.targetId").value(productId))
+                .andExpect(jsonPath("$.productId").value(productId))
                 .andExpect(jsonPath("$.rating").value(reviewRequest.rate()));
         // then
     }
