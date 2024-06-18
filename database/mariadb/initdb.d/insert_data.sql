@@ -188,10 +188,17 @@ values (1, 'test.png', 'title', 'content', 'CLOTHING', 'GOOD', 'ONGOING', 1000, 
         date_add(now(), interval 1 hour), now()),
        (3, 'test.png', 'title3', 'content3', 'SPORTS', 'GOOD', 'CLOSE', 3000, 5, now(),
         date_add(now(), interval 1 hour), now()),
-       (4, 'test.png', 'title4', 'content4', 'SPORTS', 'GOOD', 'ONGOING', 3000, 5, now(), now(), now());
+       (4, 'test.png', 'title4', 'content4', 'SPORTS', 'GOOD', 'ONGOING', 3000, 5, now(), now(), now()),
+       (5, 'test.png', 'title5', 'content5', 'CLOTHING', 'BEST', 'ONGOING', 3000, 5, now(), now(), now());
 
 insert into bidding_history(member_id, auction_id, price, is_pay, success_bid_at, created_at)
 values (2, 1, 1000, true, now(), now()),
        (1, 2, 1000, false, null, now()),
        (1, 2, 2000, false, null, now()),
        (1, 3, 3000, false, now(), now());
+
+insert into auction_reviews(member_id, auction_id, rating, content, created_at)
+values (1, 2, 3, 'good', now()),
+       (2, 3, 2, '.', now()),
+       (3, 4, 1, '좋음', now()),
+       (4, 1, 5, '', now());
