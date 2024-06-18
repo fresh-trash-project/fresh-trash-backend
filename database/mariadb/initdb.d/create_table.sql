@@ -163,6 +163,7 @@ CREATE TABLE `bidding_history`
     `auction_id` bigint                NOT NULL,
     `price`      integer               NOT NULL,
     `is_pay`     tinyint(1)            NOT NULL,
+    `success_bid_at` datetime,
     `created_at` datetime              NOT NULL,
     `deleted_at` datetime,
     PRIMARY KEY (`id`),
