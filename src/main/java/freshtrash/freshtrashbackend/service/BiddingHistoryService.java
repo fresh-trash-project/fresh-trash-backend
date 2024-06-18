@@ -34,6 +34,10 @@ public class BiddingHistoryService {
         auctionPublisher.publishForCompletedPayAndRequestDelivery(biddingHistory);
     }
 
+    public void updateSuccessBidAt(Long auctionId) {
+        biddingHistoryRepository.updateSuccessBidAtByAuctionId(auctionId);
+    }
+
     private BiddingHistory getBiddingHistoryByAuctionIdAndMemberId(Long auctionId, Long memberId) {
         return biddingHistoryRepository
                 .findFirstByAuctionIdAndMemberIdOrderByPriceDesc(auctionId, memberId)
