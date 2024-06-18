@@ -22,7 +22,7 @@ public class ProductReviewApi {
      * 폐기물 리뷰 작성
      */
     @PostMapping("/{productId}/reviews")
-    private ResponseEntity<ReviewResponse> addProductReview(
+    public ResponseEntity<ReviewResponse> addProductReview(
             @RequestBody @Valid ReviewRequest reviewRequest,
             @PathVariable Long productId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {

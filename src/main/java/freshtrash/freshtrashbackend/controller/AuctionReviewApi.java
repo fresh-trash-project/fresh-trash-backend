@@ -22,7 +22,7 @@ public class AuctionReviewApi {
      * 경매 낙찰 상품 리뷰 작성
      */
     @PostMapping("/{auctionId}/reviews")
-    private ResponseEntity<ReviewResponse> addAuctionReview(
+    public ResponseEntity<ReviewResponse> addAuctionReview(
             @RequestBody @Valid ReviewRequest reviewRequest,
             @PathVariable Long auctionId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
