@@ -102,6 +102,16 @@ public class AuctionAlarmPayload extends BaseAlarmPayload {
     }
 
     /**
+     * 리뷰 작성 & 상품 수령 알림
+     */
+    public static BaseAlarmPayload ofReview(String message, Auction auction, Long buyerId) {
+        return ofAuction(message, auction, AlarmType.RECEIVE)
+                .memberId(auction.getMemberId())
+                .fromMemberId(buyerId)
+                .build();
+    }
+
+    /**
      * 24시간 내에 결제되지 않아 경매 낙찰이 취소되었음을 알림
      */
     public static BaseAlarmPayload ofNotPaidToWonBidder(String message, Auction auction, Long buyerId) {

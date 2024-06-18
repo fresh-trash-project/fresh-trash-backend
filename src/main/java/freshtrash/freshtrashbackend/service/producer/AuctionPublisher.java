@@ -84,6 +84,12 @@ public class AuctionPublisher {
                         bidderMessage, biddingHistory.getAuction(), biddingHistory.getMemberId()));
     }
 
+    public void publishToSellerForReview(Auction auction, Long buyerId) {
+        publishAlarm(
+                REVIEW.getRoutingKey(),
+                AuctionAlarmPayload.ofReview(REVIEW_FROM_BUYER_MESSAGE.getMessage(), auction, buyerId));
+    }
+
     private void publishAlarm(String routingKey, BaseAlarmPayload payload) {
         mqPublisher.publish(AlarmEvent.of(routingKey, payload));
     }
