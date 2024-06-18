@@ -53,6 +53,11 @@ public class QueueConfig {
         return createQueueWithDLQ(AUCTION_PAY, DLQ_AUCTION_PAY);
     }
 
+    @Bean
+    Queue reviewQueue() {
+        return createQueueWithDLQ(REVIEW, DLQ_REVIEW);
+    }
+
     /**
      * DLQ
      */
@@ -89,6 +94,11 @@ public class QueueConfig {
     @Bean
     Queue dlqAuctionPayQueue() {
         return createQueue(DLQ_AUCTION_PAY);
+    }
+
+    @Bean
+    Queue dlqReviewQueue() {
+        return createQueue(DLQ_REVIEW);
     }
 
     /**

@@ -158,16 +158,30 @@ CREATE TABLE `auctions`
 
 CREATE TABLE `bidding_history`
 (
-    `id`         bigint AUTO_INCREMENT NOT NULL,
-    `member_id`  bigint                NOT NULL,
-    `auction_id` bigint                NOT NULL,
-    `price`      integer               NOT NULL,
-    `is_pay`     tinyint(1)            NOT NULL,
+    `id`             bigint AUTO_INCREMENT NOT NULL,
+    `member_id`      bigint                NOT NULL,
+    `auction_id`     bigint                NOT NULL,
+    `price`          integer               NOT NULL,
+    `is_pay`         tinyint(1)            NOT NULL,
     `success_bid_at` datetime,
-    `created_at` datetime              NOT NULL,
-    `deleted_at` datetime,
+    `created_at`     datetime              NOT NULL,
+    `deleted_at`     datetime,
     PRIMARY KEY (`id`),
     foreign key (`member_id`) references members (id) on delete cascade,
     foreign key (`auction_id`) references auctions (id) on delete cascade
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='입찰 내역';
+
+CREATE TABLE `auction_reviews`
+(
+    `id`         bigint AUTO_INCREMENT NOT NULL,
+    `member_id`  bigint                NOT NULL,
+    `auction_id` bigint                NOT NULL,
+    `rating`     integer               NOT NULL,
+    `content`    text,
+    `created_at` datetime              NOT NULL,
+    PRIMARY KEY (`id`),
+    foreign key (`member_id`) references members (id) on delete cascade,
+    foreign key (`auction_id`) references auctions (id) on delete cascade
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='경매 낙찰 리뷰';

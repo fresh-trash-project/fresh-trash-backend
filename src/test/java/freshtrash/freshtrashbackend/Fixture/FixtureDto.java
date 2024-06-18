@@ -67,7 +67,11 @@ public class FixtureDto {
     }
 
     public static ReviewRequest createReviewRequest(int rate) {
-        return new ReviewRequest(rate);
+        return new ReviewRequest(rate, "");
+    }
+
+    public static ReviewRequest createReviewRequest(int rate, String content) {
+        return new ReviewRequest(rate, content);
     }
 
     public static AuctionRequest createAuctionRequest() {

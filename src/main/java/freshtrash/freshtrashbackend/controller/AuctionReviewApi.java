@@ -3,7 +3,7 @@ package freshtrash.freshtrashbackend.controller;
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
 import freshtrash.freshtrashbackend.dto.response.ReviewResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.service.ProductReviewService;
+import freshtrash.freshtrashbackend.service.AuctionReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,22 +14,21 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/products")
-public class ProductReviewApi {
-    private final ProductReviewService productReviewService;
+@RequestMapping("/api/v1/auctions")
+public class AuctionReviewApi {
+    private final AuctionReviewService auctionReviewService;
 
     /**
-     * 폐기물 리뷰 작성
+     * 경매 낙찰 상품 리뷰 작성
      */
-    @PostMapping("/{productId}/reviews")
-    public ResponseEntity<ReviewResponse> addProductReview(
+    @PostMapping("/{auctionId}/reviews")
+    public ResponseEntity<ReviewResponse> addAuctionReview(
             @RequestBody @Valid ReviewRequest reviewRequest,
-            @PathVariable Long productId,
+            @PathVariable Long auctionId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 
-        // TODO : productDeal 거래 확인
         ReviewResponse reviewResponse = ReviewResponse.fromEntity(
-                productReviewService.insertProductReview(reviewRequest, productId, memberPrincipal.id()));
+                auctionReviewService.insertAuctionReview(reviewRequest, auctionId, memberPrincipal.id()));
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewResponse);
     }
 }

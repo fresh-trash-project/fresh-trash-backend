@@ -27,7 +27,8 @@ public class DeadLetterConsumer {
                 "#{dlqChatQueue.name}",
                 "#{dlqAuctionCompleteQueue.name}",
                 "#{dlqCancelAuctionQueue.name}",
-                "#{dlqAuctionPayQueue}"
+                "#{dlqAuctionPayQueue.name}",
+                "#{dlqReviewQueue.name}"
             })
     public void handleFailedProductDealMessage(
             Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, Message message) {

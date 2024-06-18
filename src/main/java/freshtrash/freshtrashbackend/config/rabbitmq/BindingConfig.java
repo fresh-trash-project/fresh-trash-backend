@@ -50,6 +50,11 @@ public class BindingConfig {
         return createBinding(auctionPayQueue, topicExchange, AUCTION_PAY.getRoutingKey());
     }
 
+    @Bean
+    Binding reviewBinding(Queue reviewQueue, TopicExchange topicExchange) {
+        return createBinding(reviewQueue, topicExchange, REVIEW.getRoutingKey());
+    }
+
     /**
      * DLQ Binding
      */
@@ -86,6 +91,11 @@ public class BindingConfig {
     @Bean
     Binding dlqAuctionPayBinding(Queue dlqAuctionPayQueue, TopicExchange dlqExchange) {
         return createBinding(dlqAuctionPayQueue, dlqExchange, DLQ_AUCTION_PAY.getRoutingKey());
+    }
+
+    @Bean
+    Binding dlqReviewBinding(Queue dlqReviewQueue, TopicExchange dlqExchange) {
+        return createBinding(dlqReviewQueue, dlqExchange, DLQ_REVIEW.getRoutingKey());
     }
 
     /**
