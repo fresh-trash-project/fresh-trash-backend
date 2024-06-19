@@ -13,8 +13,9 @@
   <img src="https://img.shields.io/badge/redis-v7.2.4-red?logo=redis" alt="redis"/>
 </p>
 
-**Fresh Trash는 중고 상품을 판매, 구매 할 수 있는 온라인 플랫폼입니다.**
+**Fresh Trash는 중고 상품을 판매, 구매, 경매 할 수 있는 온라인 플랫폼입니다.**
 - Fresh Trash에 가입해서 집안에 안쓰고 자리만 차지했던 중고상품을 **등록**하고 **판매, 나눔**하세요.
+- 판매하고 싶은 상품의 가치를 잘 모르겠다면 **경매**를 등록해보세요.
 - 다른 유저가 등록한 중고상품를 살펴보고 **구매**해 보세요.
 - 마음에 드는 중고상품를 **찜**하세요.
 - 중고상품에 대해 궁금한 점이 있으면 **실시간 채팅**으로 물어보세요.
@@ -90,8 +91,8 @@
 
 ## ERD
 
-<a href="https://www.erdcloud.com/p/LqYiHP7d8rbqdWR5E">
-   <img src="https://github.com/fresh-trash-project/fresh-trash-backend/assets/82129206/9e1478e4-e52d-4a04-9044-20e3a3d5782c" alt="ERD" />
+<a href="https://www.erdcloud.com/p/t6LvnnESYwAQtyfGX">
+   <img src="https://github.com/fresh-trash-project/fresh-trash-backend/assets/61103343/fb44c2b9-8151-4ff5-8648-052e67c2001f" alt="ERD" />
 </a>
 
 
@@ -103,7 +104,7 @@
 - [X] 중고상품 조회/등록/수정/삭제
 - [X] 알림 기능
 - [X] 1:1 채팅 기능 
-- [ ] 경매 조회/등록/삭제
-- [ ] 경매 입찰/낙찰
+- [X] 경매 조회/등록/삭제
+- [X] 경매 입찰/낙찰
 
 
