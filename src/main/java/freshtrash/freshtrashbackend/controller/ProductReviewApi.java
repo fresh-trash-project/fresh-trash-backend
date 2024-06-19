@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
-import freshtrash.freshtrashbackend.dto.response.ReviewResponse;
+import freshtrash.freshtrashbackend.dto.response.ProductReviewResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.service.ProductReviewService;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +22,14 @@ public class ProductReviewApi {
      * 폐기물 리뷰 작성
      */
     @PostMapping("/{productId}/reviews")
-    public ResponseEntity<ReviewResponse> addProductReview(
+    public ResponseEntity<ProductReviewResponse> addProductReview(
             @RequestBody @Valid ReviewRequest reviewRequest,
             @PathVariable Long productId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 
         // TODO : productDeal 거래 확인
-        ReviewResponse reviewResponse = ReviewResponse.fromEntity(
+        ProductReviewResponse productReviewResponse = ProductReviewResponse.fromEntity(
                 productReviewService.insertProductReview(reviewRequest, productId, memberPrincipal.id()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(reviewResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productReviewResponse);
     }
 }

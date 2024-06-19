@@ -1,7 +1,6 @@
 package freshtrash.freshtrashbackend.entity.constants;
 
 public enum AlarmType {
-    CHAT, // 채팅 알림
     TRANSACTION, // 거래 상태 변경 시 알림
     BOOKING_REQUEST, // 예약 요청 알림
     BIDDING, // 낙찰 알림

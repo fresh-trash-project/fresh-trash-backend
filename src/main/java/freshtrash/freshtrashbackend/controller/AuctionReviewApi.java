@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
-import freshtrash.freshtrashbackend.dto.response.ReviewResponse;
+import freshtrash.freshtrashbackend.dto.response.AuctionReviewResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.service.AuctionReviewService;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +22,13 @@ public class AuctionReviewApi {
      * 경매 낙찰 상품 리뷰 작성
      */
     @PostMapping("/{auctionId}/reviews")
-    public ResponseEntity<ReviewResponse> addAuctionReview(
+    public ResponseEntity<AuctionReviewResponse> addAuctionReview(
             @RequestBody @Valid ReviewRequest reviewRequest,
             @PathVariable Long auctionId,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
 
-        ReviewResponse reviewResponse = ReviewResponse.fromEntity(
+        AuctionReviewResponse auctionReviewResponse = AuctionReviewResponse.fromEntity(
                 auctionReviewService.insertAuctionReview(reviewRequest, auctionId, memberPrincipal.id()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(reviewResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(auctionReviewResponse);
     }
 }
