@@ -1,3 +1,0 @@
-[mariadb]
-port = 3307
-transaction_isolation = READ-COMMITTED
