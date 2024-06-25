@@ -21,8 +21,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @ExtendWith(MockitoExtension.class)
 class ChatRoomServiceTest {
@@ -74,5 +76,45 @@ class ChatRoomServiceTest {
         ChatRoom chatRoom = chatRoomService.getChatRoom(chatRoomId, memberId);
         // then
         assertThat(chatRoom).isNotNull();
+    }
+
+    @Test
+    @DisplayName("존재하는 채팅방이 없다면 새로 생성한다.")
+    void given_sellerIdAndBuyerIdAndProductId_when_notExistsChatRoom_then_createChatRoom() {
+        // given
+        Long sellerId = 1L, buyerId = 2L, productId = 3L;
+        ChatRoom chatRoom = Fixture.createChatRoom(productId, sellerId, buyerId, true, SellStatus.ONGOING);
+        given(chatRoomRepository.findBySellerIdAndBuyerIdAndProductId(sellerId, buyerId, productId))
+                .willReturn(Optional.empty());
+        given(chatRoomRepository.save(chatRoom)).willReturn(chatRoom);
+        // when
+        ChatRoom savedChatRoom = chatRoomService.getOrCreateChatRoom(sellerId, buyerId, productId);
+        // then
+        assertThat(savedChatRoom).isNotNull();
+    }
+
+    @Test
+    @DisplayName("존재하는 채팅방이 이미 있다면 바로 조회해서 반환한다.")
+    void given_sellerIdAndBuyerIdAndProductId_when_existsChatRoom_then_returnChatRoom() {
+        // given
+        Long sellerId = 1L, buyerId = 2L, productId = 3L;
+        ChatRoom chatRoom = Fixture.createChatRoom(productId, sellerId, buyerId, true, SellStatus.ONGOING);
+        given(chatRoomRepository.findBySellerIdAndBuyerIdAndProductId(sellerId, buyerId, productId))
+                .willReturn(Optional.of(chatRoom));
+        // when
+        ChatRoom savedChatRoom = chatRoomService.getOrCreateChatRoom(sellerId, buyerId, productId);
+        // then
+        assertThat(savedChatRoom).isNotNull();
+    }
+
+    @Test
+    @DisplayName("chatRoomId를 받아 채팅방의 OpenOrClose 값을 false로 업데이트한다.")
+    void given_chatRoomId_when_then_closeChatRoom() {
+        // given
+        Long chatRoomId = 1L;
+        willDoNothing().given(chatRoomRepository).updateOpenOrClose(chatRoomId);
+        // when
+        assertThatCode(() -> chatRoomService.closeChatRoom(chatRoomId)).doesNotThrowAnyException();
+        // then
     }
 }

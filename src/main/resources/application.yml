@@ -67,6 +67,11 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
   sql.init.mode: always
+logging:
+  level:
+    org.springframework.transaction: debug
+    org.springframework.orm.jpa: debug
+    freshtrash.freshtrashbackend: debug
 
 ---
 

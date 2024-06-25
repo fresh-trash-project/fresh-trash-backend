@@ -160,14 +160,41 @@ public class Fixture {
         ReflectionTestUtils.setField(auction, "id", 1L);
         ReflectionTestUtils.setField(auction, "member", Fixture.createMember());
         ReflectionTestUtils.setField(auction, "viewCount", 2);
+        auction.getBiddingHistories().add(Fixture.createBiddingHistoryWithAuctionAndMember(1L, 1L, 1000));
         return auction;
     }
 
-    public static BiddingHistory createBiddingHistory(Long auctionId, Long memberId, int biddingPrice) {
-        return BiddingHistory.builder()
+    public static BiddingHistory createBiddingHistoryWithAuctionAndMember(
+            Long auctionId, Long memberId, int biddingPrice) {
+        BiddingHistory biddingHistory = BiddingHistory.builder()
                 .auctionId(auctionId)
                 .memberId(memberId)
                 .price(biddingPrice)
                 .build();
+        Auction auction = Auction.builder()
+                .title("title")
+                .content("content")
+                .productCategory(ProductCategory.BEAUTY)
+                .productStatus(ProductStatus.GOOD)
+                .auctionStatus(AuctionStatus.CANCEL)
+                .finalBid(1000)
+                .startedAt(LocalDateTime.now())
+                .endedAt(LocalDateTime.now().plusDays(1))
+                .fileName("test.png")
+                .memberId(123L)
+                .build();
+        ReflectionTestUtils.setField(biddingHistory, "auction", auction);
+        ReflectionTestUtils.setField(biddingHistory, "member", Fixture.createMember());
+        return biddingHistory;
+    }
+
+    public static BiddingHistory createBiddingHistory(Long auctionId, Long memberId, int biddingPrice) {
+        BiddingHistory biddingHistory = BiddingHistory.builder()
+                .auctionId(auctionId)
+                .memberId(memberId)
+                .price(biddingPrice)
+                .build();
+        ReflectionTestUtils.setField(biddingHistory, "id", 1L);
+        return biddingHistory;
     }
 }

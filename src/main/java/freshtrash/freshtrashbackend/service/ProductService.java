@@ -10,7 +10,7 @@ import freshtrash.freshtrashbackend.exception.FileException;
 import freshtrash.freshtrashbackend.exception.ProductException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.ProductRepository;
-import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
+import freshtrash.freshtrashbackend.dto.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -79,13 +79,6 @@ public class ProductService {
         return productRepository
                 .findFileNameById(productId)
                 .orElseThrow(() -> new ProductException(ErrorCode.NOT_FOUND_PRODUCT));
-    }
-
-    /**
-     * 작성자인지 확인
-     */
-    public boolean isWriterOfArticle(Long productId, Long memberId) {
-        return productRepository.existsByIdAndMember_Id(productId, memberId);
     }
 
     public void updateViewCount(Long productId) {

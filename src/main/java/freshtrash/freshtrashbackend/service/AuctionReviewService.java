@@ -6,7 +6,7 @@ import freshtrash.freshtrashbackend.entity.AuctionReview;
 import freshtrash.freshtrashbackend.exception.ReviewException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.AuctionReviewRepository;
-import freshtrash.freshtrashbackend.service.producer.AuctionPublisher;
+import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuctionReviewService {
     private final AuctionReviewRepository auctionReviewRepository;
     private final AuctionService auctionService;
-    private final AuctionPublisher auctionPublisher;
+    private final AuctionProducer auctionProducer;
 
     @Transactional
     public AuctionReview insertAuctionReview(ReviewRequest reviewRequest, Long auctionId, Long memberId) {
@@ -32,7 +32,7 @@ public class AuctionReviewService {
 
         log.debug("판매자에게 리뷰 알림 전송");
         Auction auction = auctionService.getAuction(auctionId);
-        auctionPublisher.publishToSellerForReview(auction, memberId);
+        auctionProducer.publishToSellerForReview(auction, memberId);
         return auctionReview;
     }
 }

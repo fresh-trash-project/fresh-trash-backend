@@ -2,7 +2,7 @@ package freshtrash.freshtrashbackend.service.alarm.template;
 
 import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.service.AuctionService;
-import freshtrash.freshtrashbackend.service.producer.AuctionPublisher;
+import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,15 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public abstract class AuctionAlarmTemplate {
     protected final AuctionService auctionService;
-    protected final AuctionPublisher producer;
+    protected final AuctionProducer producer;
 
-    public final void sendAlarm(Auction auction) {
+    public void sendAlarm(Auction auction) {
         update(auction.getId());
-        auction.getBiddingHistories().stream()
-                .findFirst()
-                .ifPresentOrElse(
-                        biddingHistory -> publishEvent(auction, biddingHistory.getMemberId()),
-                        () -> publishEvent(auction));
+        auction.getBiddingHistories().forEach(biddingHistory -> publishEvent(auction, biddingHistory.getMemberId()));
+        publishEvent(auction);
     }
 
     protected abstract void update(Long targetId);

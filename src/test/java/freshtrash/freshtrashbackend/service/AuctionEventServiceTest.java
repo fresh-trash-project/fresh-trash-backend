@@ -7,7 +7,6 @@ import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.service.alarm.CancelAuctionAlarm;
 import freshtrash.freshtrashbackend.service.alarm.CompleteBidAuctionAlarm;
 import freshtrash.freshtrashbackend.service.alarm.NotPaidAuctionAlarm;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,7 +76,7 @@ class AuctionEventServiceTest {
         // given
         Long auctionId = 2L, memberId = 123L;
         int price = 1000;
-        BiddingHistory biddingHistory = Fixture.createBiddingHistory(auctionId, memberId, price);
+        BiddingHistory biddingHistory = Fixture.createBiddingHistoryWithAuctionAndMember(auctionId, memberId, price);
         given(biddingHistoryService.getSuccessBiddingHistories()).willReturn(List.of(biddingHistory));
         willDoNothing().given(notPaidAuctionAlarm).sendAlarm(biddingHistory);
         // when

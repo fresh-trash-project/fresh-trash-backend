@@ -1,5 +1,7 @@
 package freshtrash.freshtrashbackend.service;
 
+import freshtrash.freshtrashbackend.dto.projections.FileNameSummary;
+import freshtrash.freshtrashbackend.dto.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.dto.request.ChangePasswordRequest;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
@@ -10,8 +12,6 @@ import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.repository.MemberCacheRepository;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
-import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
-import freshtrash.freshtrashbackend.repository.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -89,13 +89,6 @@ public class MemberService {
     }
 
     /**
-     * member 정보 조회
-     */
-    public Member getMember(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
-    }
-
-    /**
      * member 정보 수정
      */
     @Transactional
@@ -112,6 +105,7 @@ public class MemberService {
 
         // 파일은 유효할 경우에만 수정
         if (FileUtils.isValid(imgFile)) {
+            log.debug("프로필 이미지를 수정합니다.");
             String updatedFileName = FileUtils.generateUniqueFileName(imgFile);
             member.setFileName(updatedFileName);
             // 수정된 파일 저장

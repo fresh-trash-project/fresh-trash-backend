@@ -46,7 +46,7 @@ public interface AuctionRepository
     List<Auction> findAllEndedAuctions();
 
     @Query(nativeQuery = true, value = "update auctions a set a.auction_status = 'CLOSE' where a.id = ?1")
-    void closeAuctionById(Long id);
+    void closeAuctionById(Long auctionId);
 
     @Query(nativeQuery = true, value = "update auctions a set a.auction_status = 'CANCEL' where a.id = ?1")
     void cancelAuctionById(Long auctionId);

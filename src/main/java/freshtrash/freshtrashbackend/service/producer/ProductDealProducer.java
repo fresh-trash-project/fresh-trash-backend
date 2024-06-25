@@ -19,22 +19,26 @@ public class ProductDealProducer {
     private final MQPublisher mqPublisher;
 
     public void publishForCompletedProductDeal(ChatRoom chatRoom) {
-        mqPublisher.publish(AlarmEvent.of(
+        publishAlarmEvent(AlarmEvent.of(
                 PRODUCT_TRANSACTION_COMPLETE.getRoutingKey(),
                 ProductAlarmPayload.ofCompletedProductDeal(
                         COMPLETED_SELL_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION)));
     }
 
     public void publishToBuyerForRequestReview(ChatRoom chatRoom) {
-        mqPublisher.publish(AlarmEvent.of(
+        publishAlarmEvent(AlarmEvent.of(
                 PRODUCT_TRANSACTION_COMPLETE.getRoutingKey(),
                 ProductAlarmPayload.ofRequestReview(
                         REQUEST_REVIEW_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION)));
     }
 
     public void publishForUpdatedSellStatus(ChatRoom chatRoom, String message, AlarmType alarmType) {
-        mqPublisher.publish(AlarmEvent.of(
+        publishAlarmEvent(AlarmEvent.of(
                 PRODUCT_CHANGE_SELL_STATUS.getRoutingKey(),
                 ProductAlarmPayload.ofUpdatedSellStatus(message, chatRoom, alarmType)));
+    }
+
+    private void publishAlarmEvent(AlarmEvent alarmEvent) {
+        mqPublisher.publish(alarmEvent);
     }
 }

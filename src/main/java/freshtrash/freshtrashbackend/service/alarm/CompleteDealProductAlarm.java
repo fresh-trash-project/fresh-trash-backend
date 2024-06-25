@@ -38,7 +38,7 @@ public class CompleteDealProductAlarm extends ProductAlarmTemplate {
 
         // 그 밖의 채팅 요청한 사용자들에게 알람 전송
         log.debug("채팅 요청했던 사용자들에게 판매 완료 알림 전송");
-        chatRoomService
+        this.chatRoomService
                 .getNotClosedChatRoomsByProductId(closedChatRoom.getProductId())
                 .forEach(this.producer::publishForCompletedProductDeal);
     }

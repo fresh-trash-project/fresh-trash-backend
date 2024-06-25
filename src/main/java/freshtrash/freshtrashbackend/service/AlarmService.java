@@ -107,7 +107,7 @@ public class AlarmService {
                                         .id(String.valueOf(alarmResponse.id()))
                                         .name(alarmResponse.alarmType().name())
                                         .data(alarmResponse));
-                            } catch (IOException e) {
+                            } catch (IOException | IllegalStateException e) {
                                 emitterRepository.deleteByMemberId(memberId);
                                 throw new AlarmException(ErrorCode.ALARM_CONNECT_ERROR, e);
                             }

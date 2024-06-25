@@ -30,8 +30,7 @@ public class MailApi {
     @PostMapping("/send-code")
     public ResponseEntity<EmailResponse> sendMailWithCode(@RequestBody @Valid EmailRequest request) {
         memberService.checkEmailDuplication(request.email());
-        // TODO 이메일 검증 주석 풀기
-        // mailService.isValidMail(request.email());
+        // TODO: 이메일 Validation API를 사용 (MailValidationUtils) (사용 제한이 있음)
 
         String code = UUID.randomUUID().toString().substring(0, 8);
         String subject = "fresh-trash 메일 인증";

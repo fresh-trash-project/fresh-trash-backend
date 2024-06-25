@@ -2,7 +2,7 @@ package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.service.alarm.template.BiddingHistoryAlarmTemplate;
-import freshtrash.freshtrashbackend.service.producer.AuctionPublisher;
+import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompletePayAuctionAlarm extends BiddingHistoryAlarmTemplate {
 
-    public CompletePayAuctionAlarm(AuctionPublisher producer) {
+    public CompletePayAuctionAlarm(AuctionProducer producer) {
         super(producer);
     }
 

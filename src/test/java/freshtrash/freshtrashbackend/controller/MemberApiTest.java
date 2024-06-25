@@ -8,7 +8,7 @@ import freshtrash.freshtrashbackend.dto.request.ChangePasswordRequest;
 import freshtrash.freshtrashbackend.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
+import freshtrash.freshtrashbackend.dto.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.service.LocalFileService;
 import freshtrash.freshtrashbackend.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +54,7 @@ class MemberApiTest {
         Long memberId = 123L;
         Member member = Fixture.createMember();
         // given
-        given(memberService.getMember(eq(memberId))).willReturn(member);
+        given(memberService.getMemberById(eq(memberId))).willReturn(member);
         // when
         mvc.perform(get("/api/v1/members"))
                 .andExpect(status().isOk())

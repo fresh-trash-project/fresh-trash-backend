@@ -6,7 +6,7 @@ import freshtrash.freshtrashbackend.entity.Product;
 import freshtrash.freshtrashbackend.entity.QProduct;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.repository.custom.CustomProductRepository;
-import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
+import freshtrash.freshtrashbackend.dto.projections.FileNameSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;

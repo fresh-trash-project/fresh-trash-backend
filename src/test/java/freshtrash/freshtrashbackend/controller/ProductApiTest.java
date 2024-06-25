@@ -15,7 +15,7 @@ import freshtrash.freshtrashbackend.entity.constants.ProductCategory;
 import freshtrash.freshtrashbackend.entity.constants.ProductStatus;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
-import freshtrash.freshtrashbackend.repository.projections.FileNameSummary;
+import freshtrash.freshtrashbackend.dto.projections.FileNameSummary;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.LocalFileService;
 import freshtrash.freshtrashbackend.service.ProductService;

@@ -3,7 +3,7 @@ package freshtrash.freshtrashbackend.service.alarm;
 import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import freshtrash.freshtrashbackend.service.alarm.template.AuctionAlarmTemplate;
-import freshtrash.freshtrashbackend.service.producer.AuctionPublisher;
+import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CancelAuctionAlarm extends AuctionAlarmTemplate {
 
-    public CancelAuctionAlarm(AuctionService auctionService, AuctionPublisher producer) {
+    public CancelAuctionAlarm(AuctionService auctionService, AuctionProducer producer) {
         super(auctionService, producer);
     }
 

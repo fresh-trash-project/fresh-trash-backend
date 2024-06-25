@@ -1,8 +1,10 @@
 package freshtrash.freshtrashbackend.Fixture;
 
 import freshtrash.freshtrashbackend.dto.request.*;
+import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Address;
+import freshtrash.freshtrashbackend.entity.AlarmArgs;
 import freshtrash.freshtrashbackend.entity.constants.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -92,5 +94,33 @@ public class FixtureDto {
 
     public static ChangePasswordRequest createChangePasswordRequest(String oldPassword, String newPassword) {
         return new ChangePasswordRequest(oldPassword, newPassword);
+    }
+
+    public static ProductAlarmPayload createProductAlarmPayload() {
+        return ProductAlarmPayload.builder()
+                .alarmType(AlarmType.TRANSACTION)
+                .fromMemberId(1L)
+                .memberId(3L)
+                .message("message")
+                .targetId(2L)
+                .build();
+    }
+
+    public static AlarmResponse createAlarmResponse() {
+        return AlarmResponse.builder()
+                .id(12L)
+                .message("message")
+                .alarmArgs(AlarmArgs.of(2L))
+                .alarmType(AlarmType.TRANSACTION)
+                .readAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static SignUpRequest createSignUpRequest() {
+        return new SignUpRequest("testUser", "testUser@gmail.com", "1234asdf@");
+    }
+
+    public static LoginRequest createLoginRequest() {
+        return new LoginRequest("testUser@gmail.com", "1234asdr@");
     }
 }

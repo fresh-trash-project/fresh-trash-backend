@@ -6,7 +6,7 @@ import freshtrash.freshtrashbackend.service.AuctionService;
 import freshtrash.freshtrashbackend.service.BiddingHistoryService;
 import freshtrash.freshtrashbackend.service.MemberService;
 import freshtrash.freshtrashbackend.service.alarm.template.BiddingHistoryAlarmTemplate;
-import freshtrash.freshtrashbackend.service.producer.AuctionPublisher;
+import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ public class NotPaidAuctionAlarm extends BiddingHistoryAlarmTemplate {
     private final BiddingHistoryService biddingHistoryService;
 
     public NotPaidAuctionAlarm(
-            AuctionPublisher producer,
+            AuctionProducer producer,
             MemberService memberService,
             AuctionService auctionService,
             BiddingHistoryService biddingHistoryService) {

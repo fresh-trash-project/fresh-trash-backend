@@ -16,7 +16,7 @@ import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AuctionPublisher {
+public class AuctionProducer {
     private final MQPublisher mqPublisher;
 
     public void publishToSellerForNotExistBidders(Auction auction) {

@@ -4,7 +4,7 @@ import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import freshtrash.freshtrashbackend.service.BiddingHistoryService;
 import freshtrash.freshtrashbackend.service.alarm.template.AuctionAlarmTemplate;
-import freshtrash.freshtrashbackend.service.producer.AuctionPublisher;
+import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +15,18 @@ public class CompleteBidAuctionAlarm extends AuctionAlarmTemplate {
     private final BiddingHistoryService biddingHistoryService;
 
     public CompleteBidAuctionAlarm(
-            AuctionService auctionService, AuctionPublisher producer, BiddingHistoryService biddingHistoryService) {
+            AuctionService auctionService, AuctionProducer producer, BiddingHistoryService biddingHistoryService) {
         super(auctionService, producer);
         this.biddingHistoryService = biddingHistoryService;
+    }
+
+    public final void sendAlarm(Auction auction) {
+        update(auction.getId());
+        auction.getBiddingHistories().stream()
+                .findFirst()
+                .ifPresentOrElse(
+                        biddingHistory -> publishEvent(auction, biddingHistory.getMemberId()),
+                        () -> publishEvent(auction));
     }
 
     @Transactional
