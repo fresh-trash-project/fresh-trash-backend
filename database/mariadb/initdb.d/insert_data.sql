@@ -183,13 +183,22 @@ values (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 1), '거래 완료
 insert into auctions(member_id, file_name, title, content, product_category, product_status, auction_status, final_bid,
                      view_count, started_at, ended_at, created_at)
 values (1, 'test.png', 'title', 'content', 'CLOTHING', 'GOOD', 'ONGOING', 1000, 1, now(),
-        date_add(now(), interval 1 hour), now()),
+        date_add(now(), interval 1 month), now()),
        (2, 'test.png', 'title2', 'content2', 'HEALTH', 'GOOD', 'ONGOING', 1000, 3, now(),
-        date_add(now(), interval 1 hour), now()),
+        date_add(now(), interval 1 month), now()),
        (3, 'test.png', 'title3', 'content3', 'SPORTS', 'GOOD', 'CLOSE', 3000, 5, now(),
-        date_add(now(), interval 1 hour), now()),
-       (4, 'test.png', 'title4', 'content4', 'SPORTS', 'GOOD', 'ONGOING', 3000, 5, now(), now(), now()),
-       (5, 'test.png', 'title5', 'content5', 'CLOTHING', 'BEST', 'ONGOING', 3000, 5, now(), now(), now());
+        date_add(now(), interval 1 month), now()),
+       (4, 'test.png', 'title4', 'content4', 'SPORTS', 'GOOD', 'ONGOING', 3000, 6, now(), now(), now()),
+       (5, 'test.png', 'title5', 'content5', 'CLOTHING', 'BEST', 'ONGOING', 3000, 7, now(),
+        date_add(now(), interval 1 month), now()),
+       (1, 'test.png', 'title6', 'content6', 'CLOTHING', 'GOOD', 'ONGOING', 4000, 8, now(),
+        date_add(now(), interval 1 month), now()),
+       (2, 'test.png', 'title7', 'content7', 'CLOTHING', 'BEST', 'ONGOING', 5000, 9, now(),
+        date_add(now(), interval 1 month), now()),
+       (3, 'test.png', 'title8', 'content8', 'CLOTHING', 'GOOD', 'ONGOING', 6000, 10, now(),
+        date_add(now(), interval 1 month), now()),
+       (4, 'test.png', 'title9', 'content9', 'CLOTHING', 'GOOD', 'ONGOING', 7000, 11, now(),
+        date_add(now(), interval 1 month), now());
 
 insert into bidding_history(member_id, auction_id, price, is_pay, success_bid_at, created_at)
 values (2, 1, 1000, true, now(), now()),
