@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.EnumExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.entity.QAuction;
+import freshtrash.freshtrashbackend.entity.constants.AuctionStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -32,6 +33,9 @@ public interface AuctionRepository
 
     @EntityGraph(attributePaths = "member")
     Page<Auction> findAll(Predicate predicate, Pageable pageable);
+
+    @EntityGraph(attributePaths = "member")
+    Page<Auction> findAllByMemberIdAndAuctionStatus(Long memberId, AuctionStatus auctionStatus, Pageable pageable);
 
     @EntityGraph(attributePaths = "member")
     Optional<Auction> findById(Long auctionId);

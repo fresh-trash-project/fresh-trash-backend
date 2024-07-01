@@ -7,6 +7,8 @@ import freshtrash.freshtrashbackend.repository.BiddingHistoryRepository;
 import freshtrash.freshtrashbackend.service.alarm.CompletePayAuctionAlarm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +41,7 @@ public class BiddingHistoryService {
     @Transactional
     public void updateToCompletedPayAndNotify(Long auctionId, Long memberId) {
         log.debug("auctionId {} 경매에 입찰한 memberId {} 유저가 입찰한 내역 중 가장 큰 금액으로 입찰한 내역 조회", auctionId, memberId);
-        BiddingHistory biddingHistory = getBiddingHistoryByAuctionIdAndMemberId(auctionId, memberId);
+        BiddingHistory biddingHistory = getWinningBiddingHistoryByAuctionIdAndMemberId(auctionId, memberId);
         completePayAuctionAlarm.sendAlarm(biddingHistory);
     }
 
@@ -47,10 +49,14 @@ public class BiddingHistoryService {
         biddingHistoryRepository.updateSuccessBidAtByAuctionId(auctionId);
     }
 
-    public BiddingHistory getBiddingHistoryByAuctionIdAndMemberId(Long auctionId, Long memberId) {
+    public BiddingHistory getWinningBiddingHistoryByAuctionIdAndMemberId(Long auctionId, Long memberId) {
         return biddingHistoryRepository
                 .findFirstByAuctionIdAndMemberIdOrderByPriceDesc(auctionId, memberId)
                 .orElseThrow(() -> new BiddingHistoryException(ErrorCode.NOT_FOUND_BIDDING_HISTORY));
+    }
+
+    public Page<BiddingHistory> getWinningBiddingHistoriesByMemberId(Long memberId, Pageable pageable) {
+        return biddingHistoryRepository.findAllByMemberIdAndSuccessBidAtNotNull(memberId, pageable);
     }
 
     public void deleteBiddingHistory(Long biddingHistoryId) {
