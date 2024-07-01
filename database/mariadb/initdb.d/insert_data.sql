@@ -144,14 +144,14 @@ values (5, 1, 2, now()),
        (20, 1, 2, now());
 
 insert into alarms(member_id, alarm_type, alarm_args, message, created_at, read_at, deleted_at)
-values (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 1), '거래 완료되었습니다.', now(), null, null),
-       (1, 'CHAT', json_object('fromMemberId', 1, 'targetId', 2), '알람 테스트', now(), null, null),
+values (1, 'TRANSACTION', json_object('fromMemberId', 2, 'targetId', 1), '거래 완료되었습니다.', now(), null, null),
+       (1, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 2), '알람 테스트', now(), null, null),
        (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), 'user123님이 예약중으로 변경하였습니다.', now(), null, null),
        (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), 'user123님이 판매중으로 변경하였습니다.', now(), null, null),
        (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), 'user123님이 예약중으로 변경하였습니다.', now(), null, null),
        (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 1), 'user123님이 판매중으로 변경하였습니다.', now(), null, null),
-       (1, 'CHAT', json_object('fromMemberId', 2, 'targetId', 5), '거래 완료되었습니다.', now(), now(), null),
-       (1, 'CHAT', json_object('fromMemberId', 1, 'targetId', 6), '알람 테스트', now(), now(), null),
+       (1, 'TRANSACTION', json_object('fromMemberId', 2, 'targetId', 5), '거래 완료되었습니다.', now(), now(), null),
+       (1, 'TRANSACTION', json_object('fromMemberId', 1, 'targetId', 6), '알람 테스트', now(), now(), null),
        (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 예약중으로 변경하였습니다.', now(), now(),
         null),
        (1, 'TRANSACTION', json_object('fromMemberId', 3, 'targetId', 5), 'user123님이 판매중으로 변경하였습니다.', now(), now(),
