@@ -223,6 +223,7 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,maven,intellij+all,macos,windows
 .env
 **/imgs/
+**/*.png
 
 ### Querydsl
 /src/main/generated

@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.controller;
 
 import com.querydsl.core.types.Predicate;
+import freshtrash.freshtrashbackend.controller.constants.AuctionMemberType;
 import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.dto.request.BiddingRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
@@ -44,6 +45,16 @@ public class AuctionApi {
     public ResponseEntity<AuctionResponse> getAuction(@PathVariable Long auctionId) {
         AuctionResponse auctionResponse = AuctionResponse.fromEntity(auctionService.getAuction(auctionId));
         return ResponseEntity.ok(auctionResponse);
+    }
+
+    @GetMapping("/logs")
+    public ResponseEntity<Page<AuctionResponse>> getAuctionLogs(
+            @RequestParam AuctionMemberType memberType,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal,
+            @PageableDefault(size = 6, sort = "createdAt", direction = DESC) Pageable pageable) {
+
+        Page<AuctionResponse> auctions = auctionService.getAuctionLogs(memberPrincipal.id(), memberType, pageable);
+        return ResponseEntity.ok(auctions);
     }
 
     @PostMapping

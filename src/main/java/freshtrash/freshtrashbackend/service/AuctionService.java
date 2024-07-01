@@ -1,10 +1,12 @@
 package freshtrash.freshtrashbackend.service;
 
 import com.querydsl.core.types.Predicate;
+import freshtrash.freshtrashbackend.controller.constants.AuctionMemberType;
 import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.AuctionException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
@@ -122,6 +124,21 @@ public class AuctionService {
                 userRole);
         if (userRole != UserRole.ADMIN && !isSeller(auctionId, memberId))
             throw new AuctionException(ErrorCode.FORBIDDEN_AUCTION);
+    }
+
+    public Page<AuctionResponse> getAuctionLogs(Long memberId, AuctionMemberType memberType, Pageable pageable) {
+        // 구매자의 낙찰 내역 조회
+        if (memberType == AuctionMemberType.WINNING_BID) {
+            return biddingHistoryService
+                    .getWinningBiddingHistoriesByMemberId(memberId, pageable)
+                    .map(BiddingHistory::getAuction)
+                    .map(AuctionResponse::fromEntity);
+        }
+
+        // 판매자의 경매 중/경매 완료 내역 조회
+        return auctionRepository
+                .findAllByMemberIdAndAuctionStatus(memberId, memberType.getAuctionStatus(), pageable)
+                .map(AuctionResponse::fromEntity);
     }
 
     private void validateBiddingRequest(Auction auction, int biddingPrice, Long memberId) {
