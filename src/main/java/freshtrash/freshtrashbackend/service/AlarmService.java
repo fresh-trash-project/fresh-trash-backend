@@ -105,7 +105,7 @@ public class AlarmService {
                             try {
                                 sseEmitter.send(SseEmitter.event()
                                         .id(String.valueOf(alarmResponse.id()))
-                                        .name(alarmResponse.alarmType().name())
+                                        .name(alarmResponse.alarmType().getEventName())
                                         .data(alarmResponse));
                             } catch (IOException | IllegalStateException e) {
                                 emitterRepository.deleteByMemberId(memberId);
