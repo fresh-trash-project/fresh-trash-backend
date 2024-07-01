@@ -3,6 +3,7 @@ package freshtrash.freshtrashbackend.service;
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
+import freshtrash.freshtrashbackend.controller.constants.AuctionMemberType;
 import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
 import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
@@ -14,6 +15,8 @@ import freshtrash.freshtrashbackend.repository.AuctionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -199,5 +202,27 @@ class AuctionServiceTest {
         assertThatCode(() -> auctionService.checkIfWriterOrAdmin(auctionId, userRole, memberId))
                 .doesNotThrowAnyException();
         // then
+    }
+
+    @DisplayName("memberId, memberType을 입력받아 경매 내역을 조회한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"WINNING_BID", "AUCTION_ONGOING", "AUCTION_CLOSE"})
+    void given_memberIdAndMemberType_when_checkMemberType_then_returnAuctionResponses(AuctionMemberType memberType) {
+        // given
+        Long memberId = 123L;
+        Pageable pageable = PageRequest.of(0, 6);
+        if (memberType == AuctionMemberType.WINNING_BID) {
+            given(biddingHistoryService.getWinningBiddingHistoriesByMemberId(memberId, pageable))
+                    .willReturn(new PageImpl<>(
+                            List.of(Fixture.createBiddingHistoryWithAuctionAndMember(1L, memberId, 10000))));
+        } else {
+            given(auctionRepository.findAllByMemberIdAndAuctionStatus(
+                            memberId, memberType.getAuctionStatus(), pageable))
+                    .willReturn(new PageImpl<>(List.of(Fixture.createAuction())));
+        }
+        // when
+        Page<AuctionResponse> auctionLogs = auctionService.getAuctionLogs(memberId, memberType, pageable);
+        // then
+        assertThat(auctionLogs.getTotalElements()).isEqualTo(1);
     }
 }

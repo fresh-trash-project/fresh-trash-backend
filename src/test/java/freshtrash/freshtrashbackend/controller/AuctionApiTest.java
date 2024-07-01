@@ -5,6 +5,7 @@ import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
+import freshtrash.freshtrashbackend.controller.constants.AuctionMemberType;
 import freshtrash.freshtrashbackend.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.dto.request.BiddingRequest;
 import freshtrash.freshtrashbackend.dto.response.AuctionResponse;
@@ -21,7 +22,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -161,5 +164,22 @@ class AuctionApiTest {
         mvc.perform(put("/api/v1/auctions/" + auctionId + "/pay")).andExpect(status().isOk());
         // then
         then(biddingHistoryService).should().updateToCompletedPayAndNotify(auctionId, memberId);
+    }
+
+    @DisplayName("경매 내역 조회 요청")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    void given_memberTypeAndLoginMember_when_then_returnAuctionResponses() throws Exception {
+        // given
+        Long memberId = 123L;
+        AuctionMemberType memberType = AuctionMemberType.WINNING_BID;
+        Pageable pageable = PageRequest.of(0, 6, Sort.Direction.DESC, "createdAt");
+        given(auctionService.getAuctionLogs(memberId, memberType, pageable))
+                .willReturn(new PageImpl<>(List.of(AuctionResponse.fromEntity(Fixture.createAuction()))));
+        // when
+        mvc.perform(get("/api/v1/auctions/logs").queryParam("memberType", memberType.name()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.numberOfElements").value(1));
+        // then
     }
 }

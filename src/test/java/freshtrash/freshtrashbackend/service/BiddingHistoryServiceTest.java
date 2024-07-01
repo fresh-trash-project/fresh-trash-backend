@@ -12,6 +12,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -102,7 +106,7 @@ class BiddingHistoryServiceTest {
                 .willReturn(Optional.of(biddingHistory));
         // when
         BiddingHistory foundBiddingHistory =
-                biddingHistoryService.getBiddingHistoryByAuctionIdAndMemberId(auctionId, memberId);
+                biddingHistoryService.getWinningBiddingHistoryByAuctionIdAndMemberId(auctionId, memberId);
         // then
         assertThat(foundBiddingHistory).isNotNull();
     }
@@ -117,5 +121,20 @@ class BiddingHistoryServiceTest {
         assertThatCode(() -> biddingHistoryService.deleteBiddingHistory(biddingHistoryId))
                 .doesNotThrowAnyException();
         // then
+    }
+
+    @Test
+    @DisplayName("memberId를 입력받아 낙찰된 입찰 내역을 모두 조회한다.")
+    void given_memberId_when_winningBid_then_returnBiddingHistories() {
+        // given
+        Long memberId = 12L, auctionId = 1L;
+        Pageable pageable = PageRequest.of(0, 6);
+        given(biddingHistoryRepository.findAllByMemberIdAndSuccessBidAtNotNull(memberId, pageable))
+                .willReturn(new PageImpl<>(List.of(Fixture.createBiddingHistory(auctionId, memberId, 10000))));
+        // when
+        Page<BiddingHistory> biddingHistories =
+                biddingHistoryService.getWinningBiddingHistoriesByMemberId(memberId, pageable);
+        // then
+        assertThat(biddingHistories.getTotalElements()).isEqualTo(1);
     }
 }

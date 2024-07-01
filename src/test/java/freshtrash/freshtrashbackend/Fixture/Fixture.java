@@ -183,6 +183,10 @@ public class Fixture {
                 .fileName("test.png")
                 .memberId(123L)
                 .build();
+        ReflectionTestUtils.setField(
+                auction,
+                "member",
+                Fixture.createMember(123L, "seller@gmail.com", "pw", "seller", LoginType.EMAIL, AccountStatus.ACTIVE));
         ReflectionTestUtils.setField(biddingHistory, "auction", auction);
         ReflectionTestUtils.setField(biddingHistory, "member", Fixture.createMember());
         return biddingHistory;
