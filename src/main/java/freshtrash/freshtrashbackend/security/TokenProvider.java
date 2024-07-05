@@ -1,6 +1,5 @@
 package freshtrash.freshtrashbackend.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import freshtrash.freshtrashbackend.dto.properties.JwtProperties;
 import freshtrash.freshtrashbackend.exception.AuthException;
 import io.jsonwebtoken.Claims;
@@ -22,7 +21,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TokenProvider {
     private static final String KEY_ID = "id";
-    private final ObjectMapper mapper;
     private final JwtProperties jwtProperties;
 
     /**
