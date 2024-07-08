@@ -52,7 +52,7 @@ class RequestBookingProductAlarmTest {
                 .willReturn(List.of(otherChatRoom));
         willDoNothing()
                 .given(producer)
-                .publishForUpdatedSellStatus(otherChatRoom, "seller님이 예약중으로 판매상태를 변경하였습니다.", AlarmType.BOOKING_REQUEST);
+                .publishForUpdatedSellStatus(otherChatRoom, "🛒seller님이 예약중으로 변경하였습니다.", AlarmType.REQUEST_BOOKING);
         // when
         assertThatCode(() -> requestBookingProductAlarm.sendAlarm(chatRomId, memberId))
                 .doesNotThrowAnyException();

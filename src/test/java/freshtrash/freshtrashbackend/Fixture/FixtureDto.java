@@ -60,7 +60,7 @@ public class FixtureDto {
                 .targetId(1L)
                 .memberId(123L)
                 .fromMemberId(3L)
-                .alarmType(AlarmType.TRANSACTION)
+                .alarmType(AlarmType.COMPLETE_TRANSACTION)
                 .build();
     }
 
@@ -98,7 +98,7 @@ public class FixtureDto {
 
     public static ProductAlarmPayload createProductAlarmPayload() {
         return ProductAlarmPayload.builder()
-                .alarmType(AlarmType.TRANSACTION)
+                .alarmType(AlarmType.COMPLETE_TRANSACTION)
                 .fromMemberId(1L)
                 .memberId(3L)
                 .message("message")
@@ -111,7 +111,7 @@ public class FixtureDto {
                 .id(12L)
                 .message("message")
                 .alarmArgs(AlarmArgs.of(2L))
-                .alarmType(AlarmType.TRANSACTION)
+                .alarmType(AlarmType.COMPLETE_TRANSACTION)
                 .readAt(LocalDateTime.now())
                 .build();
     }

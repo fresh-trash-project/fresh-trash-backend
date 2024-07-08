@@ -56,7 +56,7 @@ class ProductDealProducerTest {
         // given
         ChatRoom chatRoom = Fixture.createChatRoom();
         String message = "message";
-        AlarmType alarmType = AlarmType.TRANSACTION;
+        AlarmType alarmType = AlarmType.COMPLETE_TRANSACTION;
         publishAlarmEvent();
         // when
         assertThatCode(() -> productDealProducer.publishForUpdatedSellStatus(chatRoom, message, alarmType))

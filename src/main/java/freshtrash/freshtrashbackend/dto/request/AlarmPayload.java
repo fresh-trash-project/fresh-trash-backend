@@ -85,7 +85,7 @@ public record AlarmPayload(String message, Long targetId, Long memberId, Long fr
      * 경매가 취소되었음을 입찰자들에게 알림
      */
     public static AlarmPayload ofCancelAuction(String message, Auction auction, Long fromMemberId) {
-        return ofAuctionBid(message, auction, AlarmType.CANCEL)
+        return ofAuctionBid(message, auction, AlarmType.CANCEL_AUCTION)
                 .memberId(fromMemberId)
                 .fromMemberId(auction.getMemberId())
                 .build();
@@ -95,7 +95,7 @@ public record AlarmPayload(String message, Long targetId, Long memberId, Long fr
      * 경매가 취소되었음을 판매자에게 알림
      */
     public static AlarmPayload ofCancelAuction(String message, Auction auction) {
-        return ofAuctionBid(message, auction, AlarmType.CANCEL)
+        return ofAuctionBid(message, auction, AlarmType.CANCEL_AUCTION)
                 .memberId(auction.getMemberId())
                 .build();
     }

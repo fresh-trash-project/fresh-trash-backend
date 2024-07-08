@@ -29,7 +29,7 @@ public class CancelAuctionAlarm extends AuctionAlarmTemplate {
 
     @Override
     protected void publishEvent(Auction auction) {
-        log.debug("구매자에게 경매 취소되었음을 알림");
+        log.debug("판매자에게 경매 취소되었음을 알림");
         this.producer.publishToSellerForCancelAuction(auction);
     }
 }

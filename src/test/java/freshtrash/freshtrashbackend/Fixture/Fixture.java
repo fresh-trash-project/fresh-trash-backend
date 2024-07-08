@@ -90,7 +90,7 @@ public class Fixture {
         return Alarm.builder()
                 .memberId(1L)
                 .alarmArgs(AlarmArgs.of(3L, 2L))
-                .alarmType(AlarmType.TRANSACTION)
+                .alarmType(AlarmType.COMPLETE_TRANSACTION)
                 .build();
     }
 

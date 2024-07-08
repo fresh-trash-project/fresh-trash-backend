@@ -55,7 +55,7 @@ public class AuctionAlarmPayload extends BaseAlarmPayload {
      * 경매가 취소되었음을 입찰자들에게 알림
      */
     public static BaseAlarmPayload ofCancelAuctionToBidders(String message, Auction auction, Long fromMemberId) {
-        return ofAuction(message, auction, AlarmType.CANCEL)
+        return ofAuction(message, auction, AlarmType.CANCEL_AUCTION)
                 .memberId(fromMemberId)
                 .fromMemberId(auction.getMemberId())
                 .build();
@@ -65,7 +65,7 @@ public class AuctionAlarmPayload extends BaseAlarmPayload {
      * 경매가 취소되었음을 판매자에게 알림
      */
     public static BaseAlarmPayload ofCancelAuctionToSeller(String message, Auction auction) {
-        return ofAuction(message, auction, AlarmType.CANCEL)
+        return ofAuction(message, auction, AlarmType.CANCEL_AUCTION)
                 .memberId(auction.getMemberId())
                 .build();
     }

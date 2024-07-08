@@ -44,7 +44,7 @@ class UserFlagChatAlarmTest {
                         chatRoom.getProductId(),
                         chatRoom.getSellerId(),
                         chatRoom.getBuyerId(),
-                        "3번 신고받은 내역이 있습니다. 신고받은 횟수가 10번이상 되면 서비스를 이용하실 수 없습니다.");
+                        "🚩3번 경고를 받으셨습니다. 경고가 10번 누적되면 서비스를 이용하실 수 없습니다.");
         // when
         assertThatCode(() -> userFlagChatAlarm.sendAlarm(chatRoom, memberId)).doesNotThrowAnyException();
         // then

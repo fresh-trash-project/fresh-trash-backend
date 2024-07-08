@@ -22,14 +22,14 @@ public class ProductDealProducer {
         publishAlarmEvent(AlarmEvent.of(
                 PRODUCT_TRANSACTION_COMPLETE.getRoutingKey(),
                 ProductAlarmPayload.ofCompletedProductDeal(
-                        COMPLETED_SELL_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION)));
+                        COMPLETED_SELL_MESSAGE.getMessage(), chatRoom, AlarmType.COMPLETE_TRANSACTION)));
     }
 
     public void publishToBuyerForRequestReview(ChatRoom chatRoom) {
         publishAlarmEvent(AlarmEvent.of(
                 PRODUCT_TRANSACTION_COMPLETE.getRoutingKey(),
                 ProductAlarmPayload.ofRequestReview(
-                        REQUEST_REVIEW_MESSAGE.getMessage(), chatRoom, AlarmType.TRANSACTION)));
+                        REQUEST_REVIEW_MESSAGE.getMessage(), chatRoom, AlarmType.REQUEST_REVIEW)));
     }
 
     public void publishForUpdatedSellStatus(ChatRoom chatRoom, String message, AlarmType alarmType) {
