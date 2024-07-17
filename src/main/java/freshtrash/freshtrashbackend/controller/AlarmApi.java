@@ -23,8 +23,10 @@ public class AlarmApi {
      */
     @GetMapping
     public ResponseEntity<Page<AlarmResponse>> getAlarms(
-            @PageableDefault Pageable pageable, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        return ResponseEntity.ok(alarmService.getAlarms(memberPrincipal.id(), pageable));
+            @RequestParam Boolean isRead,
+            @PageableDefault Pageable pageable,
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        return ResponseEntity.ok(alarmService.getAlarms(memberPrincipal.id(), isRead, pageable));
     }
 
     /**

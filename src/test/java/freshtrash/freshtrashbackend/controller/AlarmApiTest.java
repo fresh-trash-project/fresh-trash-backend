@@ -6,6 +6,8 @@ import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.service.AlarmService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,17 +40,18 @@ class AlarmApiTest {
     @MockBean
     private AlarmService alarmService;
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"true", "false"})
     @DisplayName("알람 목록 조회")
     @WithUserDetails(value = "testUser@gmail.com", setupBefore = TEST_EXECUTION)
-    void given_loginUserAndPageable_when_then_getPagingNotis() throws Exception {
+    void given_loginUserAndPageable_when_then_getPagingNotis(Boolean isRead) throws Exception {
         // given
         Long memberId = 123L;
         Pageable pageable = PageRequest.of(0, 10);
-        given(alarmService.getAlarms(eq(memberId), eq(pageable)))
+        given(alarmService.getAlarms(eq(memberId), eq(isRead), eq(pageable)))
                 .willReturn(new PageImpl<>(List.of(AlarmResponse.fromEntity(Fixture.createAlarm()))));
         // when
-        mvc.perform(get("/api/v1/notis"))
+        mvc.perform(get("/api/v1/notis?isRead=" + isRead))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size").value(1));
         // then

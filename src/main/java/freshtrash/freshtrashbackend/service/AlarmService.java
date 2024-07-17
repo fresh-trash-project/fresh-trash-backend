@@ -33,8 +33,8 @@ public class AlarmService {
      * 전체 알람 조회
      * - 읽지 않은 알람도 같이 조회
      */
-    public Page<AlarmResponse> getAlarms(Long memberId, Pageable pageable) {
-        return alarmRepository.findAllByMember_Id(memberId, pageable).map(AlarmResponse::fromEntity);
+    public Page<AlarmResponse> getAlarms(Long memberId, Boolean isRead, Pageable pageable) {
+        return alarmRepository.findAllByMember_Id(memberId, isRead, pageable).map(AlarmResponse::fromEntity);
     }
 
     /**

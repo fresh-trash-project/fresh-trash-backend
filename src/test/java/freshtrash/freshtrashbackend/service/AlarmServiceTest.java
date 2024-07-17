@@ -12,6 +12,8 @@ import freshtrash.freshtrashbackend.repository.EmitterRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -45,17 +47,18 @@ class AlarmServiceTest {
     @Mock
     private EmitterRepository emitterRepository;
 
-    @Test
     @DisplayName("전체 알람 조회")
-    void given_memberIdAndPageable_when_then_getPagingAlarms() {
+    @ParameterizedTest
+    @CsvSource(value = {"true", "false"})
+    void given_memberIdAndPageable_when_then_getPagingAlarms(Boolean isRead) {
         // given
         Long memberId = 1L;
         int expectedSize = 1;
         Pageable pageable = PageRequest.of(0, 10);
-        given(alarmRepository.findAllByMember_Id(eq(memberId), eq(pageable)))
+        given(alarmRepository.findAllByMember_Id(eq(memberId), eq(isRead), eq(pageable)))
                 .willReturn(new PageImpl<>(List.of(Fixture.createAlarm())));
         // when
-        Page<AlarmResponse> alarms = alarmService.getAlarms(memberId, pageable);
+        Page<AlarmResponse> alarms = alarmService.getAlarms(memberId, isRead, pageable);
         // then
         assertThat(alarms.getSize()).isEqualTo(expectedSize);
     }
