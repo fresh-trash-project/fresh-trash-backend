@@ -27,7 +27,9 @@ public class CustomAlarmRepositoryImpl implements CustomAlarmRepository {
     public Page<Alarm> findAllByMember_Id(Long memberId, Boolean isRead, Pageable pageable) {
         QAlarm alarm = QAlarm.alarm;
         // where
-        Predicate predicate = isRead ? alarm.readAt.isNotNull() : alarm.readAt.isNull();
+        Predicate predicate = isRead
+                ? alarm.readAt.isNotNull().and(alarm.memberId.eq(memberId))
+                : alarm.readAt.isNull().and(alarm.memberId.eq(memberId));
         // count
         Long NotReadAlarmCount = jpaQueryFactory
                 .select(alarm.count())
