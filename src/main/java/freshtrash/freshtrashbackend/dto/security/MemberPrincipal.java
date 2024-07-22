@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Builder
-@RedisHash(value = "Member")
+@RedisHash(value = "Member", timeToLive = 24 * 60 * 60)
 public record MemberPrincipal(
         @Id Long id,
         String email,

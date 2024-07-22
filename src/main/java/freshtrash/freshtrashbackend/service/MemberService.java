@@ -16,6 +16,7 @@ import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -145,6 +146,10 @@ public class MemberService {
         }
         // 비밀번호 변경
         updatePassword(memberPrincipal.email(), changePasswordRequest.newPassword());
+    }
+
+    public void logout(Long memberId) {
+        memberCacheRepository.deleteById(memberId);
     }
 
     /**

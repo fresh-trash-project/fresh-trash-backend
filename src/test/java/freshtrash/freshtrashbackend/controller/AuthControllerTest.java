@@ -15,13 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -80,6 +81,18 @@ class AuthControllerTest {
         mvc.perform(get("/api/v1/auth/check-nickname").queryParam("nickname", nickname))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").value("사용가능한 닉네임입니다."));
+        // then
+    }
+
+    @Test
+    @DisplayName("로그아웃 요청")
+    @WithUserDetails(value = "testUser@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    void given_loginMember_when_then_logout() throws Exception {
+        // given
+        Long memberId = 123L;
+        willDoNothing().given(memberService).logout(memberId);
+        // when
+        mvc.perform(delete("/api/v1/auth/logout")).andExpect(status().isNoContent());
         // then
     }
 }
