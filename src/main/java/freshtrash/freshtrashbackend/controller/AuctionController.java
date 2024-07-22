@@ -28,7 +28,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auctions")
-public class AuctionApi {
+public class AuctionController {
     private final AuctionService auctionService;
     private final AuctionEventService auctionEventService;
     private final BiddingHistoryService biddingHistoryService;

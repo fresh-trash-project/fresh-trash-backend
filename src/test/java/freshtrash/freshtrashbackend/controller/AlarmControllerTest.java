@@ -31,9 +31,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AlarmApi.class)
+@WebMvcTest(AlarmController.class)
 @Import(TestSecurityConfig.class)
-class AlarmApiTest {
+class AlarmControllerTest {
     @Autowired
     private MockMvc mvc;
 

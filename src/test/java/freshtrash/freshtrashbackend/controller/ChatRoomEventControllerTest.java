@@ -31,9 +31,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(ChatRoomEventApi.class)
+@WebMvcTest(ChatRoomEventController.class)
 @Import(TestSecurityConfig.class)
-class ChatRoomEventApiTest {
+class ChatRoomEventControllerTest {
     @Autowired
     private MockMvc mvc;
 

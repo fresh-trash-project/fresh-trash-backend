@@ -23,7 +23,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
-public class ProductLikeApi {
+public class ProductLikeController {
     private final ProductLikeService productLikeService;
 
     @GetMapping("/likes")

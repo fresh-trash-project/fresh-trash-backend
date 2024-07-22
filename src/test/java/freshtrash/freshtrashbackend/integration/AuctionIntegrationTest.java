@@ -2,7 +2,7 @@ package freshtrash.freshtrashbackend.integration;
 
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.controller.AuctionApi;
+import freshtrash.freshtrashbackend.controller.AuctionController;
 import freshtrash.freshtrashbackend.dto.request.BiddingRequest;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.exception.AuctionException;
@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @Import(TestSecurityConfig.class)
 public class AuctionIntegrationTest {
     @Autowired
-    AuctionApi auctionApi;
+    AuctionController auctionController;
 
     @Autowired
     AuctionService auctionService;
@@ -63,7 +63,7 @@ public class AuctionIntegrationTest {
                     int price = random.nextInt((5000 - 1000) + 1) + 1000;
                     price -= price % 10;
                     log.info("Bidding price: {}", price);
-                    auctionApi.placeBidding(auctionId, new BiddingRequest(price), FixtureDto.createMemberPrincipal());
+                    auctionController.placeBidding(auctionId, new BiddingRequest(price), FixtureDto.createMemberPrincipal());
                     latch.countDown();
                     latch.await();
                 } catch (InterruptedException e) {

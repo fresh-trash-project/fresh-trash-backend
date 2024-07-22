@@ -15,7 +15,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
-public class ProductReviewApi {
+public class ProductReviewController {
     private final ProductReviewService productReviewService;
 
     /**

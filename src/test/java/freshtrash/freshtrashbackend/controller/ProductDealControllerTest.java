@@ -31,8 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @Import(TestSecurityConfig.class)
-@WebMvcTest(ProductDealApi.class)
-class ProductDealApiTest {
+@WebMvcTest(ProductDealController.class)
+class ProductDealControllerTest {
     @Autowired
     private MockMvc mvc;
 

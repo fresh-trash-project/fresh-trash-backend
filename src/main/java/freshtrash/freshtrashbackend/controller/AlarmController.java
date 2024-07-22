@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/notis")
-public class AlarmApi {
+public class AlarmController {
     private final AlarmService alarmService;
 
     /**

@@ -31,9 +31,9 @@ import static org.springframework.security.test.context.support.TestExecutionEve
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(MemberApi.class)
+@WebMvcTest(MemberController.class)
 @Import(TestSecurityConfig.class)
-class MemberApiTest {
+class MemberControllerTest {
 
     @Autowired
     private MockMvc mvc;
