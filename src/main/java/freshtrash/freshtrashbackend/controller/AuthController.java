@@ -4,11 +4,13 @@ import freshtrash.freshtrashbackend.dto.request.LoginRequest;
 import freshtrash.freshtrashbackend.dto.request.SignUpRequest;
 import freshtrash.freshtrashbackend.dto.response.ApiResponse;
 import freshtrash.freshtrashbackend.dto.response.LoginResponse;
+import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,6 +37,15 @@ public class AuthController {
     public ResponseEntity<LoginResponse> signIn(@RequestBody @Valid LoginRequest loginRequest) {
         LoginResponse loginResponse = memberService.signIn(loginRequest.email(), loginRequest.password());
         return ResponseEntity.ok(loginResponse);
+    }
+
+    /**
+     * 로그아웃
+     */
+    @DeleteMapping("/logout")
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
+        memberService.logout(memberPrincipal.id());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     /**

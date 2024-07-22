@@ -264,4 +264,15 @@ class MemberServiceTest {
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.UNMATCHED_PASSWORD);
         // then
     }
+
+    @Test
+    @DisplayName("로그아웃 시 캐싱되어있는 유저 정보를 삭제한다.")
+    void given_memberId_when_then_deleteUserCache() {
+        //given
+        Long memberId = 123L;
+        willDoNothing().given(memberCacheRepository).deleteById(memberId);
+        //when
+        assertThatCode(() -> memberService.logout(memberId)).doesNotThrowAnyException();
+        //then
+    }
 }
