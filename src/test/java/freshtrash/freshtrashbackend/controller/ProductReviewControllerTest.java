@@ -22,9 +22,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ProductReviewApi.class)
+@WebMvcTest(ProductReviewController.class)
 @Import(TestSecurityConfig.class)
-class ProductReviewApiTest {
+class ProductReviewControllerTest {
     @Autowired
     private MockMvc mvc;
 

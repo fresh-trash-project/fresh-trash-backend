@@ -22,7 +22,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/productDeals")
-public class ProductDealApi {
+public class ProductDealController {
     private final ProductDealService productDealService;
 
     @GetMapping

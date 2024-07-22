@@ -24,9 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(AuctionReviewApi.class)
+@WebMvcTest(AuctionReviewController.class)
 @Import(TestSecurityConfig.class)
-class AuctionReviewApiTest {
+class AuctionReviewControllerTest {
     @Autowired
     private MockMvc mvc;
 

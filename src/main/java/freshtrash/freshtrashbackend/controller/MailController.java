@@ -20,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/mail")
-public class MailApi {
+public class MailController {
     private final MailService mailService;
     private final MemberService memberService;
 
