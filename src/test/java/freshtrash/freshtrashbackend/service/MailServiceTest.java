@@ -64,12 +64,24 @@ class MailServiceTest {
     }
 
     @Test
+    @DisplayName("email을 입력받아 캐싱한 인증 코드를 삭제한다.")
+    void given_email_when_then_deleteEmailCodeCache() {
+        // given
+        String email = "testUser@gmail.com";
+        willDoNothing().given(emailCodeCacheRepository).deleteById(email);
+        // when
+        assertThatCode(() -> mailService.deleteEmailCodeCache(email)).doesNotThrowAnyException();
+        // then
+    }
+
+    @Test
     @DisplayName("email과 인증 코드를 입력받아 전송한 인증 코드와 일치한다면 아무것도 반환하지 않는다.")
     void given_emailAndCode_when_equalsCode_then_notAnyReturn() {
         // given
         String email = "testUser@gmail.com", code = "12345";
         EmailCodeCache emailCodeCache = new EmailCodeCache(email, code);
         given(emailCodeCacheRepository.findById(email)).willReturn(Optional.of(emailCodeCache));
+        willDoNothing().given(emailCodeCacheRepository).deleteById(email);
         // when
         assertThatCode(() -> mailService.verifyEmailCode(email, code)).doesNotThrowAnyException();
         // then

@@ -37,6 +37,10 @@ public class MailService {
                 .orElseThrow(() -> new MailException(ErrorCode.NOT_FOUND_AUTH_CODE));
     }
 
+    public void deleteEmailCodeCache(String email) {
+        emailCodeCacheRepository.deleteById(email);
+    }
+
     public void verifyEmailCode(String email, String code) {
         EmailCodeCache emailCodeCache = getEmailCodeCache(email);
         if (!StringUtils.hasText(code)) {
@@ -46,6 +50,7 @@ public class MailService {
         if (!emailCodeCache.code().equals(code)) {
             throw new MailException(ErrorCode.UNMATCHED_AUTH_CODE);
         }
+        deleteEmailCodeCache(email);
     }
 
     @Async
