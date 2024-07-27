@@ -54,7 +54,7 @@ public class ProductService {
     @Transactional
     public ProductResponse updateProduct(
             Long productId, MultipartFile imgFile, ProductRequest productRequest, MemberPrincipal memberPrincipal) {
-        checkIfWriterOrAdmin(productId, memberPrincipal.getUserRole(), memberPrincipal.id());
+        checkIfWriterOrAdmin(productId, memberPrincipal.userRole(), memberPrincipal.id());
         if (!FileUtils.isValid(imgFile)) {
             throw new FileException(ErrorCode.INVALID_FIlE);
         }

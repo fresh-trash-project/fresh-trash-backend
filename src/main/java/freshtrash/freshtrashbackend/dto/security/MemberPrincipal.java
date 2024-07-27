@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import freshtrash.freshtrashbackend.entity.Address;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.entity.constants.UserRole;
-import freshtrash.freshtrashbackend.security.TokenInfo;
 import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,15 +12,16 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Builder
-@RedisHash(value = "Member", timeToLive = 24 * 60 * 60)
 public record MemberPrincipal(
-        @Id Long id,
+        Long id,
         String email,
         @JsonIgnore String password,
         @JsonIgnore Collection<? extends GrantedAuthority> authorities,
+        UserRole userRole,
         String nickname,
         double rating,
         String fileName,
@@ -38,6 +36,7 @@ public record MemberPrincipal(
         }
     }
 
+    @JsonIgnore
     public static MemberPrincipal fromEntity(Member member) {
         return MemberPrincipal.builder()
                 .id(member.getId())
@@ -45,36 +44,28 @@ public record MemberPrincipal(
                 .password(member.getPassword())
                 .nickname(member.getNickname())
                 .authorities(member.getUserRole())
+                .userRole(member.getUserRole())
                 .rating(member.getRating())
                 .fileName(member.getFileName())
                 .address(member.getAddress())
                 .build();
     }
 
-    public static MemberPrincipal fromTokenInfo(TokenInfo tokenInfo) {
-        return MemberPrincipal.builder()
-                .id(tokenInfo.id())
-                .email(tokenInfo.email())
-                .nickname(tokenInfo.fileName())
-                .authorities(tokenInfo.userRole())
-                .rating(tokenInfo.rating())
-                .fileName(tokenInfo.fileName())
-                .address(tokenInfo.address())
-                .build();
-    }
+//    @JsonIgnore
+//    public UserRole getUserRole() {
+//        return authorities.stream()
+//                .map(r -> UserRole.valueOf(r.getAuthority().substring(5)))
+//                .findFirst()
+//                .orElse(UserRole.ANONYMOUS);
+//    }
 
-    public UserRole getUserRole() {
-        return authorities.stream()
-                .map(r -> UserRole.valueOf(r.getAuthority().substring(5)))
-                .findFirst()
-                .orElse(UserRole.ANONYMOUS);
-    }
-
+    @JsonIgnore
     @Override
     public Map<String, Object> getAttributes() {
         return oAuth2Attributes;
     }
 
+    @JsonIgnore
     @Override
     public String getName() {
         return email;
@@ -82,34 +73,42 @@ public record MemberPrincipal(
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return Objects.isNull(authorities) || authorities.isEmpty()
+                ? Set.of(new SimpleGrantedAuthority(userRole.getName()))
+                : authorities;
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return password;
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return email;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
