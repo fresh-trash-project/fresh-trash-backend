@@ -4,7 +4,16 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./rabbitmq
-    image: fresh-trash-rabbitmq:0.1
+    cpus: 1
+    mem_limit: 1g
+    healthcheck:
+      # https://www.rabbitmq.com/docs/monitoring#health-checks
+      test: rabbitmq-diagnostics -q ping
+      interval: 40s # healthcheck 실행 간격
+      timeout: 30s # healthcheck 완료되기 기다리는 시간
+      retries: 3 # healthcheck 실패한 후 재시도할 횟수
+      start_period: 60s # 초기화 시간 (안정적으로 실행되기까지 대기하는 시간)
+    image: fresh-trash-rabbitmq:0.0.1
     environment:
       - RABBITMQ_DEFAULT_USER=${AMQP_USER}
       - RABBITMQ_DEFAULT_PASS=${AMQP_PASS}
@@ -16,14 +25,61 @@ services:
       - docker_app
   fresh-trash-nginx:
     container_name: fresh-trash-nginx
-    image: fresh-trash-nginx:0.1
+    image: fresh-trash-nginx:0.0.1
     build:
       dockerfile: Dockerfile
       context: ./nginx
+    cpus: 1
+    mem_limit: 1g
+    depends_on:
+      - fresh-trash-api
     ports:
       - "80:80"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - docker_app
+  fresh-trash-api:
+    image: fresh-trash-api:1.0.0
+    container_name: fresh-trash-api
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    cpus: 2
+    mem_limit: 4g
+    depends_on:
+      fresh-trash-rabbitmq:
+        condition: service_healthy
+    environment:
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - LOCAL_FILE_ABS_PATH=${LOCAL_FILE_ABS_PATH}
+      - TOKEN_SECRET_KEY=${TOKEN_SECRET_KEY}
+      - TOKEN_ACCESS_EXPIRED_MS=${TOKEN_ACCESS_EXPIRED_MS}
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET}
+      - NAVER_OAUTH_CLIENT_ID=${NAVER_OAUTH_CLIENT_ID}
+      - NAVER_OAUTH_CLIENT_SECRET=${NAVER_OAUTH_CLIENT_SECRET}
+      - KAKAO_OAUTH_CLIENT_ID=${KAKAO_OAUTH_CLIENT_ID}
+      - KAKAO_OAUTH_CLIENT_SECRET=${KAKAO_OAUTH_CLIENT_SECRET}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - AMQP_HOST=${AMQP_HOST}
+      - AMQP_PORT=${AMQP_PORT}
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASS=${AMQP_PASS}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - OAUTH2_REDIRECT_URI=${OAUTH2_REDIRECT_URI}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - API_KEY=${API_KEY}
+      - WEBHOOK_SLACK_URL=${WEBHOOK_SLACK_URL}
+    ports:
+      - "8080:8080"
+      - "8090:8090"
     networks:
       - docker_app
 

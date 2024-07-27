@@ -1,3 +1,7 @@
+server:
+  tomcat:
+    mbeanregistry.enabled: true
+
 spring:
   config.activate.on-profile: common
   web:

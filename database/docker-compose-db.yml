@@ -4,7 +4,9 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./mariadb
-    image: mariadb:10
+    cpus: 1
+    mem_limit: 1g
+    image: fresh-trash-database:0.0.1
     environment:
       - MARIADB_DATABASE=fresh_trash
       - MARIADB_USER=${SPRING_DATASOURCE_USER}
@@ -22,7 +24,9 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./redis
-    image: fresh-trash-redis:0.1
+    cpus: 1
+    mem_limit: 500m
+    image: fresh-trash-redis:0.0.1
     ports:
       - "6379:6379"
     networks:
