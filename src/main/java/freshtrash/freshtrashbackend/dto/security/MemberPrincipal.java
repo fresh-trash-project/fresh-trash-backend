@@ -51,14 +51,6 @@ public record MemberPrincipal(
                 .build();
     }
 
-//    @JsonIgnore
-//    public UserRole getUserRole() {
-//        return authorities.stream()
-//                .map(r -> UserRole.valueOf(r.getAuthority().substring(5)))
-//                .findFirst()
-//                .orElse(UserRole.ANONYMOUS);
-//    }
-
     @JsonIgnore
     @Override
     public Map<String, Object> getAttributes() {
