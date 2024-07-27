@@ -10,13 +10,13 @@ import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.exception.AuthException;
 import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.repository.MemberCacheRepository;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import freshtrash.freshtrashbackend.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final MemberCacheRepository memberCacheRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
     private final FileService fileService;
@@ -42,10 +41,9 @@ public class MemberService {
         return memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
+    @Cacheable(value = "memberCache", key = "#memberId")
     public MemberPrincipal getMemberCache(Long memberId) {
-        return memberCacheRepository
-                .findById(memberId)
-                .orElseGet(() -> MemberPrincipal.fromEntity(getMemberById(memberId)));
+        return MemberPrincipal.fromEntity(getMemberById(memberId));
     }
 
     /**
@@ -67,7 +65,6 @@ public class MemberService {
 
         // 토큰 발급
         String accessToken = tokenProvider.generateAccessToken(member.getId());
-        memberCacheRepository.save(MemberPrincipal.fromEntity(member));
         return LoginResponse.of(accessToken);
     }
 
@@ -93,6 +90,7 @@ public class MemberService {
      * member 정보 수정
      */
     @Transactional
+    @CacheEvict(value = "memberCache", key = "#memberPrincipal.id")
     public Member updateMember(MemberPrincipal memberPrincipal, MemberRequest memberRequest, MultipartFile imgFile) {
         if (!Objects.equals(memberPrincipal.nickname(), memberRequest.nickname())) {
             checkNicknameDuplication(memberRequest.nickname());
@@ -116,7 +114,6 @@ public class MemberService {
         else {
             member.setFileName(null);
         }
-        memberCacheRepository.save(MemberPrincipal.fromEntity(member));
 
         return member;
     }
@@ -148,9 +145,8 @@ public class MemberService {
         updatePassword(memberPrincipal.email(), changePasswordRequest.newPassword());
     }
 
-    public void logout(Long memberId) {
-        memberCacheRepository.deleteById(memberId);
-    }
+    @CacheEvict(value = "memberCache", key = "#memberId")
+    public void logout(Long memberId) {}
 
     /**
      * 비밀번호 일치 확인

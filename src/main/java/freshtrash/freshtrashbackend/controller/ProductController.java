@@ -92,7 +92,7 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(
             @PathVariable Long productId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         String savedFileName = productService.findFileNameOfProduct(productId).fileName();
-        productService.deleteProduct(productId, memberPrincipal.getUserRole(), memberPrincipal.id());
+        productService.deleteProduct(productId, memberPrincipal.userRole(), memberPrincipal.id());
         fileService.deleteFileIfExists(savedFileName);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);

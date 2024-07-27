@@ -82,7 +82,7 @@ class MemberServiceTest {
     void given_memberId_when_getMemberCache_then_returnMemberPrincipal() {
         // given
         Long memberId = 1L;
-        given(memberCacheRepository.findById(memberId)).willReturn(Optional.of(FixtureDto.createMemberPrincipal()));
+        given(memberRepository.findById(memberId)).willReturn(Optional.of(Fixture.createMember()));
         // when
         MemberPrincipal memberPrincipal = memberService.getMemberCache(memberId);
         // then
@@ -112,11 +112,9 @@ class MemberServiceTest {
         String email = "testUser@gmail.com", password = "pw";
         Member member = Fixture.createMember();
         String accessToken = "accessToken";
-        MemberPrincipal memberPrincipal = MemberPrincipal.fromEntity(member);
         given(memberRepository.findByEmail(email)).willReturn(Optional.of(member));
         given(encoder.matches(password, member.getPassword())).willReturn(true);
         given(tokenProvider.generateAccessToken(member.getId())).willReturn(accessToken);
-        given(memberCacheRepository.save(memberPrincipal)).willReturn(memberPrincipal);
         // when
         LoginResponse loginResponse = memberService.signIn(email, password);
         // then
@@ -180,7 +178,6 @@ class MemberServiceTest {
         MockMultipartFile imgFile = Fixture.createMultipartFileOfImage("test_image_content");
         MemberRequest memberRequest = FixtureDto.createMemberRequest();
         given(memberRepository.findById(memberId)).willReturn(Optional.of(Fixture.createMember()));
-        given(memberCacheRepository.save(any(MemberPrincipal.class))).willReturn(memberPrincipal);
         willDoNothing().given(fileService).uploadFile(eq(imgFile), anyString());
         // when
         Member member = memberService.updateMember(memberPrincipal, memberRequest, imgFile);
@@ -270,7 +267,6 @@ class MemberServiceTest {
     void given_memberId_when_then_deleteUserCache() {
         //given
         Long memberId = 123L;
-        willDoNothing().given(memberCacheRepository).deleteById(memberId);
         //when
         assertThatCode(() -> memberService.logout(memberId)).doesNotThrowAnyException();
         //then

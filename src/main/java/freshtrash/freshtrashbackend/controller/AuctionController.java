@@ -69,7 +69,7 @@ public class AuctionController {
     @DeleteMapping("/{auctionId}")
     public ResponseEntity<Void> cancelAuction(
             @PathVariable Long auctionId, @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        auctionEventService.cancelAuction(auctionId, memberPrincipal.getUserRole(), memberPrincipal.id());
+        auctionEventService.cancelAuction(auctionId, memberPrincipal.userRole(), memberPrincipal.id());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
