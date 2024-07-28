@@ -11,7 +11,6 @@ import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.exception.MemberException;
 import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.repository.MemberCacheRepository;
 import freshtrash.freshtrashbackend.repository.MemberRepository;
 import freshtrash.freshtrashbackend.security.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +27,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 
@@ -43,9 +43,6 @@ class MemberServiceTest {
 
     @Mock
     private FileService fileService;
-
-    @Mock
-    private MemberCacheRepository memberCacheRepository;
 
     @Mock
     private PasswordEncoder encoder;
@@ -265,10 +262,10 @@ class MemberServiceTest {
     @Test
     @DisplayName("로그아웃 시 캐싱되어있는 유저 정보를 삭제한다.")
     void given_memberId_when_then_deleteUserCache() {
-        //given
+        // given
         Long memberId = 123L;
-        //when
+        // when
         assertThatCode(() -> memberService.logout(memberId)).doesNotThrowAnyException();
-        //then
+        // then
     }
 }
