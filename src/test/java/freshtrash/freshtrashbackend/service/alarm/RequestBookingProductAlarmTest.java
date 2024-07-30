@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -59,5 +60,16 @@ class RequestBookingProductAlarmTest {
         assertThatCode(() -> requestBookingProductAlarm.sendAlarm(productAlarmParameter))
                 .doesNotThrowAnyException();
         // then
+    }
+
+    @DisplayName("REQUEST_BOOKING 타입의 알람 전송을 수행하는 작업을 지원한다.")
+    @Test
+    void given_alarmType_when_supported_then_returnTrue() {
+        //given
+        AlarmType alarmType = AlarmType.REQUEST_BOOKING;
+        //when
+        boolean isSupport = requestBookingProductAlarm.supports(alarmType);
+        //then
+        assertThat(isSupport).isTrue();
     }
 }

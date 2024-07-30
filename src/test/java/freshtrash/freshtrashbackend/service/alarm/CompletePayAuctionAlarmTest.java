@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.alarm.parameter.BiddingHistoryAlarmParameter;
 import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
@@ -39,5 +40,16 @@ class CompletePayAuctionAlarmTest {
                 .doesNotThrowAnyException();
         // then
         assertThat(biddingHistory.isPay()).isTrue();
+    }
+
+    @DisplayName("PAY 타입의 알람 전송을 수행하는 작업을 지원한다.")
+    @Test
+    void given_alarmType_when_supported_then_returnTrue() {
+        //given
+        AlarmType alarmType = AlarmType.PAY;
+        //when
+        boolean isSupport = completePayAuctionAlarm.supports(alarmType);
+        //then
+        assertThat(isSupport).isTrue();
     }
 }

@@ -3,6 +3,7 @@ package freshtrash.freshtrashbackend.service.alarm;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import freshtrash.freshtrashbackend.service.alarm.parameter.AuctionAlarmParameter;
 import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.BDDMockito.willDoNothing;
 
@@ -43,5 +45,16 @@ class CancelAuctionAlarmTest {
         // when
         assertThatCode(() -> cancelAuctionAlarm.sendAlarm(auctionAlarmParameter)).doesNotThrowAnyException();
         // then
+    }
+
+    @DisplayName("CANCEL_AUCTION 타입의 알람 전송을 수행하는 작업을 지원한다.")
+    @Test
+    void given_alarmType_when_supported_then_returnTrue() {
+        //given
+        AlarmType alarmType = AlarmType.CANCEL_AUCTION;
+        //when
+        boolean isSupport = cancelAuctionAlarm.supports(alarmType);
+        //then
+        assertThat(isSupport).isTrue();
     }
 }
