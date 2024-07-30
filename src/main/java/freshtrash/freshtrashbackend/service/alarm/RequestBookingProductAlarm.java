@@ -37,4 +37,9 @@ public class RequestBookingProductAlarm extends ProductAlarmTemplate {
     private String generateMessage(String nickname) {
         return String.format(UPDATED_BOOKING_MESSAGE.getMessage(), nickname);
     }
+
+    @Override
+    public boolean supports(AlarmType alarmType) {
+        return alarmType == AlarmType.REQUEST_BOOKING;
+    }
 }

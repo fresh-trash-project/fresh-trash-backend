@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import freshtrash.freshtrashbackend.service.BiddingHistoryService;
 import freshtrash.freshtrashbackend.service.alarm.template.AuctionAlarmTemplate;
@@ -47,5 +48,10 @@ public class CompleteBidAuctionAlarm extends AuctionAlarmTemplate {
     public void publishEvent(Auction auction) {
         log.debug("입찰자가 없음을 판매자에게 알림");
         this.producer.publishToSellerForNotExistBidders(auction);
+    }
+
+    @Override
+    public boolean supports(AlarmType alarmType) {
+        return alarmType == AlarmType.BIDDING;
     }
 }

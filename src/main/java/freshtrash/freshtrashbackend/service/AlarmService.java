@@ -112,7 +112,7 @@ public class AlarmService {
                                 throw new AlarmException(ErrorCode.ALARM_CONNECT_ERROR, e);
                             }
                         },
-                        () -> log.error("Emiter를 찾을 수 없습니다."));
+                        () -> log.error("Emiter를 찾을 수 없습니다. \n Alarm Message: {}", alarmResponse.message()));
     }
 
     /**

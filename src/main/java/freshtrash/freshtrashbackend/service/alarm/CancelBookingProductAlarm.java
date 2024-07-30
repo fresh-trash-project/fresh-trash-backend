@@ -37,4 +37,9 @@ public class CancelBookingProductAlarm extends ProductAlarmTemplate {
     private String generateMessage(String nickname) {
         return String.format(UPDATED_ONGOING_MESSAGE.getMessage(), nickname);
     }
+
+    @Override
+    public boolean supports(AlarmType alarmType) {
+        return alarmType == AlarmType.CANCEL_BOOKING;
+    }
 }

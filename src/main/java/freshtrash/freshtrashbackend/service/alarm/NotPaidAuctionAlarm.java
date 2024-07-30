@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.entity.Member;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import freshtrash.freshtrashbackend.service.BiddingHistoryService;
 import freshtrash.freshtrashbackend.service.MemberService;
@@ -44,5 +45,10 @@ public class NotPaidAuctionAlarm extends BiddingHistoryAlarmTemplate {
     @Override
     public void publishEvent(BiddingHistory biddingHistory) {
         this.producer.publishForNotPaid(biddingHistory);
+    }
+
+    @Override
+    public boolean supports(AlarmType alarmType) {
+        return alarmType == AlarmType.NOT_PAY;
     }
 }

@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.entity.Auction;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import freshtrash.freshtrashbackend.service.alarm.template.AuctionAlarmTemplate;
 import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
@@ -31,5 +32,10 @@ public class CancelAuctionAlarm extends AuctionAlarmTemplate {
     protected void publishEvent(Auction auction) {
         log.debug("판매자에게 경매 취소되었음을 알림");
         this.producer.publishToSellerForCancelAuction(auction);
+    }
+
+    @Override
+    public boolean supports(AlarmType alarmType) {
+        return alarmType == AlarmType.CANCEL_AUCTION;
     }
 }

@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.entity.ChatRoom;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.ProductDealService;
@@ -41,5 +42,10 @@ public class CompleteDealProductAlarm extends ProductAlarmTemplate {
         this.chatRoomService
                 .getNotClosedChatRoomsByProductId(closedChatRoom.getProductId())
                 .forEach(this.producer::publishForCompletedProductDeal);
+    }
+
+    @Override
+    public boolean supports(AlarmType alarmType) {
+        return alarmType == AlarmType.COMPLETE_TRANSACTION;
     }
 }
