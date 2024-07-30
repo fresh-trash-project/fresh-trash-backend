@@ -41,6 +41,7 @@ public enum ErrorCode {
     // Alarm
     ALARM_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알람을 위한 연결 시도 실패"),
     FORBIDDEN_ALARM(HttpStatus.FORBIDDEN, "알람에 대한 권한이 없습니다."),
+    NOT_FOUND_ALARM_TEMPLATE(HttpStatus.NOT_FOUND, "알림 프로세스를 실행할 AlarmTemplate을 찾을 수 없습니다."),
 
     // Chat
     NOT_FOUND_CHAT_ROOM(HttpStatus.NOT_FOUND, "채팅방이 존재하지 않습니다."),

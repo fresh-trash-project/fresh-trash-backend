@@ -4,7 +4,9 @@ import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.dto.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.Member;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.MemberService;
+import freshtrash.freshtrashbackend.service.alarm.parameter.ChatAlarmParameter;
 import freshtrash.freshtrashbackend.service.producer.ChatProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -36,6 +39,7 @@ class UserFlagChatAlarmTest {
         // given
         ChatRoom chatRoom = Fixture.createChatRoom();
         Long memberId = 2L;
+        ChatAlarmParameter chatAlarmParameter = new ChatAlarmParameter(chatRoom, memberId);
         given(memberService.updateFlagCount(chatRoom.getSellerId(), Member.USER_FLAG_LIMIT))
                 .willReturn(new FlagCountSummary(3));
         willDoNothing()
@@ -46,7 +50,18 @@ class UserFlagChatAlarmTest {
                         chatRoom.getBuyerId(),
                         "🚩3번 경고를 받으셨습니다. 경고가 10번 누적되면 서비스를 이용하실 수 없습니다.");
         // when
-        assertThatCode(() -> userFlagChatAlarm.sendAlarm(chatRoom, memberId)).doesNotThrowAnyException();
+        assertThatCode(() -> userFlagChatAlarm.sendAlarm(chatAlarmParameter)).doesNotThrowAnyException();
         // then
+    }
+
+    @DisplayName("FLAG 타입의 알람 전송을 수행하는 작업을 지원한다.")
+    @Test
+    void given_alarmType_when_supported_then_returnTrue() {
+        //given
+        AlarmType alarmType = AlarmType.FLAG;
+        //when
+        boolean isSupport = userFlagChatAlarm.supports(alarmType);
+        //then
+        assertThat(isSupport).isTrue();
     }
 }

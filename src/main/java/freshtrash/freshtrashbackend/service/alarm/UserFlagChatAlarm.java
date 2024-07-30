@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.entity.Member;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.MemberService;
 import freshtrash.freshtrashbackend.service.alarm.template.ChatAlarmTemplate;
 import freshtrash.freshtrashbackend.service.producer.ChatProducer;
@@ -40,5 +41,10 @@ public class UserFlagChatAlarm extends ChatAlarmTemplate {
         return flagCount >= Member.USER_FLAG_LIMIT
                 ? EXCEED_FLAG_MESSAGE.getMessage()
                 : String.format(FLAG_MESSAGE.getMessage(), flagCount);
+    }
+
+    @Override
+    public boolean supports(AlarmType alarmType) {
+        return alarmType == AlarmType.FLAG;
     }
 }

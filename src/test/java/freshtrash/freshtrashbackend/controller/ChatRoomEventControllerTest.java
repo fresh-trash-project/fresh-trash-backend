@@ -4,12 +4,14 @@ import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.controller.constants.ProductEventType;
 import freshtrash.freshtrashbackend.entity.ChatRoom;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.alarm.CancelBookingProductAlarm;
 import freshtrash.freshtrashbackend.service.alarm.CompleteDealProductAlarm;
 import freshtrash.freshtrashbackend.service.alarm.RequestBookingProductAlarm;
 import freshtrash.freshtrashbackend.service.alarm.UserFlagChatAlarm;
+import freshtrash.freshtrashbackend.service.alarm.adapter.AlarmMappingHandlerAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,16 +43,7 @@ class ChatRoomEventControllerTest {
     private ChatRoomService chatRoomService;
 
     @MockBean
-    private UserFlagChatAlarm userFlagChatAlarm;
-
-    @MockBean
-    private CancelBookingProductAlarm cancelBookingProductAlarm;
-
-    @MockBean
-    private CompleteDealProductAlarm completeDealProductAlarm;
-
-    @MockBean
-    private RequestBookingProductAlarm requestBookingProductAlarm;
+    private AlarmMappingHandlerAdapter alarmMappingHandlerAdapter;
 
     @Test
     @DisplayName("신고하기")
@@ -61,7 +54,7 @@ class ChatRoomEventControllerTest {
         ChatRoom chatRoom =
                 Fixture.createChatRoom(productId, targetMemberId, currentMemberId, true, SellStatus.ONGOING);
         given(chatRoomService.getChatRoom(eq(chatRoomId), eq(currentMemberId))).willReturn(chatRoom);
-        willDoNothing().given(userFlagChatAlarm).sendAlarm(eq(chatRoom), eq(currentMemberId));
+        willDoNothing().given(alarmMappingHandlerAdapter).handle(eq(chatRoom), eq(currentMemberId), eq(AlarmType.FLAG));
         // when
         mvc.perform(post("/api/v1/chats/" + chatRoomId + "/flag")).andExpect(status().isOk());
         // then
@@ -75,15 +68,7 @@ class ChatRoomEventControllerTest {
             throws Exception {
         // given
         Long chatRoomId = 2L, memberId = 123L;
-        switch (productEventType) {
-            case CANCEL_BOOKING -> willDoNothing()
-                    .given(cancelBookingProductAlarm)
-                    .sendAlarm(eq(chatRoomId), eq(memberId));
-            case REQUEST_BOOKING -> willDoNothing()
-                    .given(requestBookingProductAlarm)
-                    .sendAlarm(eq(chatRoomId), eq(memberId));
-            default -> willDoNothing().given(completeDealProductAlarm).sendAlarm(chatRoomId, memberId);
-        }
+        willDoNothing().given(alarmMappingHandlerAdapter).handle(chatRoomId, memberId, productEventType.getAlarmType());
         // when
         mvc.perform(post("/api/v1/chats/" + chatRoomId + "/productDeal")
                         .param("productEventType", productEventType.name()))

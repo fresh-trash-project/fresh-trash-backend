@@ -1,6 +1,7 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.service.alarm.template.BiddingHistoryAlarmTemplate;
 import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import lombok.extern.slf4j.Slf4j;
@@ -24,5 +25,10 @@ public class CompletePayAuctionAlarm extends BiddingHistoryAlarmTemplate {
     public void publishEvent(BiddingHistory biddingHistory) {
         log.debug("결제한 유저와 판매자에게 결제 완료 알림 전송");
         this.producer.publishForCompletedPayAndRequestDelivery(biddingHistory);
+    }
+
+    @Override
+    public boolean supports(AlarmType alarmType) {
+        return alarmType == AlarmType.PAY;
     }
 }

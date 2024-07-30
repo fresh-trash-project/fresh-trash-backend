@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.ProductDealService;
+import freshtrash.freshtrashbackend.service.alarm.parameter.ProductAlarmParameter;
 import freshtrash.freshtrashbackend.service.producer.ProductDealProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -41,6 +43,7 @@ class RequestBookingProductAlarmTest {
     void given_chatRomIdAndMemberId_when_requestBooking_then_updateSellStatusAndSendAlarm() {
         // given
         Long chatRomId = 1L, memberId = 2L;
+        ProductAlarmParameter productAlarmParameter = new ProductAlarmParameter(chatRomId, memberId);
         ChatRoom chatRoom = Fixture.createChatRoom();
         given(chatRoomService.getChatRoom(chatRomId, memberId)).willReturn(chatRoom);
         willDoNothing()
@@ -54,8 +57,19 @@ class RequestBookingProductAlarmTest {
                 .given(producer)
                 .publishForUpdatedSellStatus(otherChatRoom, "🛒seller님이 예약중으로 변경하였습니다.", AlarmType.REQUEST_BOOKING);
         // when
-        assertThatCode(() -> requestBookingProductAlarm.sendAlarm(chatRomId, memberId))
+        assertThatCode(() -> requestBookingProductAlarm.sendAlarm(productAlarmParameter))
                 .doesNotThrowAnyException();
         // then
+    }
+
+    @DisplayName("REQUEST_BOOKING 타입의 알람 전송을 수행하는 작업을 지원한다.")
+    @Test
+    void given_alarmType_when_supported_then_returnTrue() {
+        //given
+        AlarmType alarmType = AlarmType.REQUEST_BOOKING;
+        //when
+        boolean isSupport = requestBookingProductAlarm.supports(alarmType);
+        //then
+        assertThat(isSupport).isTrue();
     }
 }
