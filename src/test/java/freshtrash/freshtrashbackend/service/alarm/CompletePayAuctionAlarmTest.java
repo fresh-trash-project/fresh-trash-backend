@@ -2,6 +2,7 @@ package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.service.alarm.parameter.BiddingHistoryAlarmParameter;
 import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,9 +32,11 @@ class CompletePayAuctionAlarmTest {
         Long auctionId = 1L, memberId = 2L;
         int price = 1000;
         BiddingHistory biddingHistory = Fixture.createBiddingHistory(auctionId, memberId, price);
+        BiddingHistoryAlarmParameter biddingHistoryAlarmParameter = new BiddingHistoryAlarmParameter(biddingHistory);
         willDoNothing().given(producer).publishForCompletedPayAndRequestDelivery(biddingHistory);
         // when
-        assertThatCode(() -> completePayAuctionAlarm.sendAlarm(biddingHistory)).doesNotThrowAnyException();
+        assertThatCode(() -> completePayAuctionAlarm.sendAlarm(biddingHistoryAlarmParameter))
+                .doesNotThrowAnyException();
         // then
         assertThat(biddingHistory.isPay()).isTrue();
     }

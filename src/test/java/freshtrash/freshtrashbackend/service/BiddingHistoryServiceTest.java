@@ -2,8 +2,10 @@ package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.repository.BiddingHistoryRepository;
 import freshtrash.freshtrashbackend.service.alarm.CompletePayAuctionAlarm;
+import freshtrash.freshtrashbackend.service.alarm.adapter.AlarmMappingHandlerAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +39,7 @@ class BiddingHistoryServiceTest {
     private BiddingHistoryRepository biddingHistoryRepository;
 
     @Mock
-    private CompletePayAuctionAlarm completePayAuctionAlarm;
+    private AlarmMappingHandlerAdapter alarmMappingHandlerAdapter;
 
     @Test
     @DisplayName("auctionId, memberId, 입찰가격(price)를 입력받아 BiddingHistory를 생성하고 저장한다.")
@@ -76,12 +78,12 @@ class BiddingHistoryServiceTest {
         BiddingHistory biddingHistory = Fixture.createBiddingHistoryWithAuctionAndMember(auctionId, memberId, 1000);
         given(biddingHistoryRepository.findFirstByAuctionIdAndMemberIdOrderByPriceDesc(auctionId, memberId))
                 .willReturn(Optional.of(biddingHistory));
-        willDoNothing().given(completePayAuctionAlarm).sendAlarm(biddingHistory);
+        willDoNothing().given(alarmMappingHandlerAdapter).handle(biddingHistory, AlarmType.PAY);
         // when
         biddingHistoryService.updateToCompletedPayAndNotify(auctionId, memberId);
         // then
         then(biddingHistoryRepository).should().findFirstByAuctionIdAndMemberIdOrderByPriceDesc(auctionId, memberId);
-        then(completePayAuctionAlarm).should().sendAlarm(biddingHistory);
+        then(alarmMappingHandlerAdapter).should().handle(biddingHistory, AlarmType.PAY);
     }
 
     @Test

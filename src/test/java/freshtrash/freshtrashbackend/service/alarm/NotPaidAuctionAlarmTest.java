@@ -7,6 +7,7 @@ import freshtrash.freshtrashbackend.entity.Member;
 import freshtrash.freshtrashbackend.service.AuctionService;
 import freshtrash.freshtrashbackend.service.BiddingHistoryService;
 import freshtrash.freshtrashbackend.service.MemberService;
+import freshtrash.freshtrashbackend.service.alarm.parameter.BiddingHistoryAlarmParameter;
 import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,13 +44,15 @@ class NotPaidAuctionAlarmTest {
     void given_biddingHistory_when_notPaid_then_cancelAuctionAndDeleteBiddingHistoryANdSendAlarm() {
         // given
         BiddingHistory biddingHistory = Fixture.createBiddingHistory(1L, 2L, 1000);
+        BiddingHistoryAlarmParameter biddingHistoryAlarmParameter = new BiddingHistoryAlarmParameter(biddingHistory);
         given(memberService.updateFlagCount(biddingHistory.getMemberId(), Member.USER_FLAG_LIMIT))
                 .willReturn(new FlagCountSummary(3));
         willDoNothing().given(auctionService).cancelAuction(biddingHistory.getAuctionId());
         willDoNothing().given(biddingHistoryService).deleteBiddingHistory(biddingHistory.getId());
         willDoNothing().given(producer).publishForNotPaid(biddingHistory);
         // when
-        assertThatCode(() -> notPaidAuctionAlarm.sendAlarm(biddingHistory)).doesNotThrowAnyException();
+        assertThatCode(() -> notPaidAuctionAlarm.sendAlarm(biddingHistoryAlarmParameter))
+                .doesNotThrowAnyException();
         // then
     }
 }

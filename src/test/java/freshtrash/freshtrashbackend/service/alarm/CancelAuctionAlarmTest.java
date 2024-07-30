@@ -4,6 +4,7 @@ import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.entity.Auction;
 import freshtrash.freshtrashbackend.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.service.AuctionService;
+import freshtrash.freshtrashbackend.service.alarm.parameter.AuctionAlarmParameter;
 import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,13 +34,14 @@ class CancelAuctionAlarmTest {
     void given_auction_when_cancelAuction_then_sendAlarmToSellerAndBuyer() {
         // given
         Auction auction = Fixture.createAuction();
+        AuctionAlarmParameter auctionAlarmParameter = new AuctionAlarmParameter(auction);
         BiddingHistory biddingHistory =
                 auction.getBiddingHistories().stream().findFirst().get();
         willDoNothing().given(auctionService).deleteAuction(auction.getId());
         willDoNothing().given(producer).publishToBiddersForCancelAuction(auction, biddingHistory.getMemberId());
         willDoNothing().given(producer).publishToSellerForCancelAuction(auction);
         // when
-        assertThatCode(() -> cancelAuctionAlarm.sendAlarm(auction)).doesNotThrowAnyException();
+        assertThatCode(() -> cancelAuctionAlarm.sendAlarm(auctionAlarmParameter)).doesNotThrowAnyException();
         // then
     }
 }

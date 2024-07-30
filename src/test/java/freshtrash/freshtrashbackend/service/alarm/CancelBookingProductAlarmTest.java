@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.ProductDealService;
+import freshtrash.freshtrashbackend.service.alarm.parameter.ProductAlarmParameter;
 import freshtrash.freshtrashbackend.service.producer.ProductDealProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,7 @@ class CancelBookingProductAlarmTest {
     void given_chatRoomIdAndMemberId_when_cancelBooking_then_updateSellStatusAndSendAlarmToAllChatUsers() {
         // given
         Long chatRoomId = 1L, memberId = 2L;
+        ProductAlarmParameter productAlarmParameter = new ProductAlarmParameter(chatRoomId, memberId);
         ChatRoom chatRoom = Fixture.createChatRoom();
         given(chatRoomService.getChatRoom(chatRoomId, memberId)).willReturn(chatRoom);
         willDoNothing()
@@ -54,7 +56,7 @@ class CancelBookingProductAlarmTest {
                 .given(producer)
                 .publishForUpdatedSellStatus(otherChatRoom, "🛒seller님이 판매중으로 변경하였습니다.", AlarmType.CANCEL_BOOKING);
         // when
-        assertThatCode(() -> cancelBookingProductAlarm.sendAlarm(chatRoomId, memberId))
+        assertThatCode(() -> cancelBookingProductAlarm.sendAlarm(productAlarmParameter))
                 .doesNotThrowAnyException();
         // then
     }

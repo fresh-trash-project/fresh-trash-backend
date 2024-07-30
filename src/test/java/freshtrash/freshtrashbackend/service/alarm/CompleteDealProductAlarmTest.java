@@ -5,6 +5,7 @@ import freshtrash.freshtrashbackend.entity.ChatRoom;
 import freshtrash.freshtrashbackend.entity.constants.SellStatus;
 import freshtrash.freshtrashbackend.service.ChatRoomService;
 import freshtrash.freshtrashbackend.service.ProductDealService;
+import freshtrash.freshtrashbackend.service.alarm.parameter.ProductAlarmParameter;
 import freshtrash.freshtrashbackend.service.producer.ProductDealProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,7 @@ class CompleteDealProductAlarmTest {
     void given_chatRoomIdAndMemberId_when_completeDeal_then_updateSellStatusAndSaveLogAndSendAlarmToSellerAndBuyer() {
         // given
         Long chatRomId = 1L, memberId = 2L;
+        ProductAlarmParameter productAlarmParameter = new ProductAlarmParameter(chatRomId, memberId);
         ChatRoom chatRoom = Fixture.createChatRoom();
         given(chatRoomService.getChatRoom(chatRomId, memberId)).willReturn(chatRoom);
         willDoNothing()
@@ -56,7 +58,7 @@ class CompleteDealProductAlarmTest {
         given(chatRoomService.getNotClosedChatRoomsByProductId(chatRoom.getProductId()))
                 .willReturn(List.of(otherChatRoom));
         // when
-        assertThatCode(() -> completeDealProductAlarm.sendAlarm(chatRomId, memberId))
+        assertThatCode(() -> completeDealProductAlarm.sendAlarm(productAlarmParameter))
                 .doesNotThrowAnyException();
         // then
         then(producer).should(times(2)).publishForCompletedProductDeal(any(ChatRoom.class));
