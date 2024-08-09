@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.utils;
 
+import freshtrash.freshtrashbackend.global.utils.PasswordGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

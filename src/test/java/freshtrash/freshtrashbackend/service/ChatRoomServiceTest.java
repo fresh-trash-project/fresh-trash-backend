@@ -1,10 +1,11 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.dto.response.ChatRoomResponse;
-import freshtrash.freshtrashbackend.entity.ChatRoom;
-import freshtrash.freshtrashbackend.entity.constants.SellStatus;
-import freshtrash.freshtrashbackend.repository.ChatRoomRepository;
+import freshtrash.freshtrashbackend.domain.chatRoom.dto.response.ChatRoomResponse;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.constants.ChatRoomSellStatus;
+import freshtrash.freshtrashbackend.domain.chatRoom.repository.ChatRoomRepository;
+import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,9 +40,9 @@ class ChatRoomServiceTest {
     void given_productIdAndSellStatus_when_then_getChatRoomList() {
         // given
         Long productId = 1L;
-        SellStatus sellStatus = SellStatus.CLOSE;
+        ChatRoomSellStatus chatRoomSellStatus = ChatRoomSellStatus.CLOSE;
         int expectedSize = 1;
-        given(chatRoomRepository.findByProduct_IdAndSellStatusNot(eq(productId), eq(sellStatus)))
+        given(chatRoomRepository.findByProduct_IdAndSellStatusNot(eq(productId), eq(chatRoomSellStatus)))
                 .willReturn(List.of(Fixture.createChatRoom()));
         // when
         List<ChatRoom> chatRooms = chatRoomService.getNotClosedChatRoomsByProductId(productId);
@@ -83,7 +84,7 @@ class ChatRoomServiceTest {
     void given_sellerIdAndBuyerIdAndProductId_when_notExistsChatRoom_then_createChatRoom() {
         // given
         Long sellerId = 1L, buyerId = 2L, productId = 3L;
-        ChatRoom chatRoom = Fixture.createChatRoom(productId, sellerId, buyerId, true, SellStatus.ONGOING);
+        ChatRoom chatRoom = Fixture.createChatRoom(productId, sellerId, buyerId, true, ChatRoomSellStatus.ONGOING);
         given(chatRoomRepository.findBySellerIdAndBuyerIdAndProductId(sellerId, buyerId, productId))
                 .willReturn(Optional.empty());
         given(chatRoomRepository.save(chatRoom)).willReturn(chatRoom);
@@ -98,7 +99,7 @@ class ChatRoomServiceTest {
     void given_sellerIdAndBuyerIdAndProductId_when_existsChatRoom_then_returnChatRoom() {
         // given
         Long sellerId = 1L, buyerId = 2L, productId = 3L;
-        ChatRoom chatRoom = Fixture.createChatRoom(productId, sellerId, buyerId, true, SellStatus.ONGOING);
+        ChatRoom chatRoom = Fixture.createChatRoom(productId, sellerId, buyerId, true, ChatRoomSellStatus.ONGOING);
         given(chatRoomRepository.findBySellerIdAndBuyerIdAndProductId(sellerId, buyerId, productId))
                 .willReturn(Optional.of(chatRoom));
         // when

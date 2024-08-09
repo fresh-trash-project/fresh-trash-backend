@@ -3,17 +3,19 @@ package freshtrash.freshtrashbackend.service;
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.projections.FileNameSummary;
-import freshtrash.freshtrashbackend.dto.request.ProductRequest;
-import freshtrash.freshtrashbackend.dto.response.ProductResponse;
-import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.entity.Product;
-import freshtrash.freshtrashbackend.entity.QProduct;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
-import freshtrash.freshtrashbackend.exception.FileException;
-import freshtrash.freshtrashbackend.exception.ProductException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.repository.ProductRepository;
+import freshtrash.freshtrashbackend.domain.product.dto.projections.ProductFileNameSummary;
+import freshtrash.freshtrashbackend.domain.product.dto.request.ProductRequest;
+import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.product.entity.Product;
+import freshtrash.freshtrashbackend.domain.product.entity.QProduct;
+import freshtrash.freshtrashbackend.domain.product.service.ProductService;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.global.exception.FileException;
+import freshtrash.freshtrashbackend.global.exception.ProductException;
+import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
+import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -91,7 +93,7 @@ class ProductServiceTest {
         assertThat(productResponse.content()).isEqualTo(productRequest.content());
         assertThat(productResponse.productCategory()).isEqualTo(productRequest.productCategory());
         assertThat(productResponse.productStatus()).isEqualTo(productRequest.productStatus());
-        assertThat(productResponse.sellStatus()).isEqualTo(productRequest.sellStatus());
+        assertThat(productResponse.sellStatus()).isEqualTo(productRequest.productSellStatus());
         assertThat(productResponse.productPrice()).isEqualTo(productRequest.productPrice());
         assertThat(productResponse.address()).isEqualTo(productRequest.address());
     }
@@ -120,7 +122,7 @@ class ProductServiceTest {
         assertThat(productResponse.content()).isEqualTo(productRequest.content());
         assertThat(productResponse.productCategory()).isEqualTo(productRequest.productCategory());
         assertThat(productResponse.productStatus()).isEqualTo(productRequest.productStatus());
-        assertThat(productResponse.sellStatus()).isEqualTo(productRequest.sellStatus());
+        assertThat(productResponse.sellStatus()).isEqualTo(productRequest.productSellStatus());
         assertThat(productResponse.productPrice()).isEqualTo(productRequest.productPrice());
         assertThat(productResponse.address()).isEqualTo(productRequest.address());
         assertThat(productResponse.fileName()).isNotEqualTo(savedFileName);
@@ -182,11 +184,11 @@ class ProductServiceTest {
         // given
         Long productId = 1L;
         String fileName = "file";
-        given(productRepository.findFileNameById(productId)).willReturn(Optional.of(new FileNameSummary(fileName)));
+        given(productRepository.findFileNameById(productId)).willReturn(Optional.of(new ProductFileNameSummary(fileName)));
         // when
-        FileNameSummary fileNameSummary = productService.findFileNameOfProduct(productId);
+        ProductFileNameSummary productFileNameSummary = productService.findFileNameOfProduct(productId);
         // then
-        assertThat(fileNameSummary.fileName()).isEqualTo(fileName);
+        assertThat(productFileNameSummary.fileName()).isEqualTo(fileName);
     }
 
     @Test

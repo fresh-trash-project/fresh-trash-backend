@@ -1,9 +1,11 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.entity.ChatMessage;
-import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.repository.ChatMessageRepository;
+import freshtrash.freshtrashbackend.domain.chatMessage.entity.ChatMessage;
+import freshtrash.freshtrashbackend.domain.chatMessage.service.ChatMessageService;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.chatMessage.repository.ChatMessageRepository;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

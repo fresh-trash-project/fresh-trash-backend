@@ -1,13 +1,14 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.dto.projections.FlagCountSummary;
-import freshtrash.freshtrashbackend.entity.ChatRoom;
-import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.service.MemberService;
-import freshtrash.freshtrashbackend.service.alarm.parameter.ChatAlarmParameter;
-import freshtrash.freshtrashbackend.service.producer.ChatProducer;
+import freshtrash.freshtrashbackend.domain.alarm.service.UserFlagChatAlarm;
+import freshtrash.freshtrashbackend.domain.alarm.service.parameter.ChatAlarmParameter;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
+import freshtrash.freshtrashbackend.producer.ChatProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

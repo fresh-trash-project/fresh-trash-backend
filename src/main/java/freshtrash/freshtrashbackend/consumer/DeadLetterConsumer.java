@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.consumer;
 
 import com.rabbitmq.client.Channel;
-import freshtrash.freshtrashbackend.aspect.annotation.ManualAcknowledge;
-import freshtrash.freshtrashbackend.config.rabbitmq.RabbitMQConfig;
+import freshtrash.freshtrashbackend.consumer.aspect.annotation.ManualAcknowledge;
+import freshtrash.freshtrashbackend.global.config.rabbitmq.RabbitMQConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;

@@ -2,9 +2,10 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.controller.constants.ProductDealMemberType;
-import freshtrash.freshtrashbackend.dto.response.ProductResponse;
-import freshtrash.freshtrashbackend.service.ProductDealService;
+import freshtrash.freshtrashbackend.domain.product.controller.constants.ProductDealMemberType;
+import freshtrash.freshtrashbackend.domain.product.controller.ProductDealController;
+import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
+import freshtrash.freshtrashbackend.domain.product.service.ProductDealService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

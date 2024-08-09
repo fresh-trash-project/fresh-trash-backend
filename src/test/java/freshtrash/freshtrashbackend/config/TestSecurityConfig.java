@@ -1,14 +1,14 @@
 package freshtrash.freshtrashbackend.config;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.entity.constants.AccountStatus;
-import freshtrash.freshtrashbackend.entity.constants.LoginType;
-import freshtrash.freshtrashbackend.security.CustomOAuth2SuccessHandler;
-import freshtrash.freshtrashbackend.security.Http401UnauthorizedAuthenticationEntryPoint;
-import freshtrash.freshtrashbackend.security.SecurityConfig;
-import freshtrash.freshtrashbackend.security.TokenProvider;
-import freshtrash.freshtrashbackend.service.MemberService;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.AccountStatus;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.LoginType;
+import freshtrash.freshtrashbackend.global.config.security.CustomOAuth2SuccessHandler;
+import freshtrash.freshtrashbackend.global.config.security.Http401UnauthorizedAuthenticationEntryPoint;
+import freshtrash.freshtrashbackend.global.config.security.SecurityConfig;
+import freshtrash.freshtrashbackend.domain.member.service.TokenProvider;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.event.annotation.BeforeTestMethod;

@@ -1,8 +1,9 @@
 package freshtrash.freshtrashbackend.service.producer.publisher;
 
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.events.AlarmEvent;
-import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
+import freshtrash.freshtrashbackend.domain.alarm.dto.events.AlarmEvent;
+import freshtrash.freshtrashbackend.domain.alarm.dto.request.BaseAlarmPayload;
+import freshtrash.freshtrashbackend.producer.publisher.RabbitMQPublisher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

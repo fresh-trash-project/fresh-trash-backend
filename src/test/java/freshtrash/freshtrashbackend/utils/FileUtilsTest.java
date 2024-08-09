@@ -1,8 +1,9 @@
 package freshtrash.freshtrashbackend.utils;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.exception.FileException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.global.exception.FileException;
+import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.global.utils.FileUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;

@@ -2,9 +2,10 @@ package freshtrash.freshtrashbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.request.EmailRequest;
-import freshtrash.freshtrashbackend.service.MailService;
-import freshtrash.freshtrashbackend.service.MemberService;
+import freshtrash.freshtrashbackend.domain.mail.controller.MailController;
+import freshtrash.freshtrashbackend.domain.mail.dto.request.EmailRequest;
+import freshtrash.freshtrashbackend.domain.mail.service.MailService;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

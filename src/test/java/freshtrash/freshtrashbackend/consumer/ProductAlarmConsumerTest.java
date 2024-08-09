@@ -2,12 +2,12 @@ package freshtrash.freshtrashbackend.consumer;
 
 import com.rabbitmq.client.Channel;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
-import freshtrash.freshtrashbackend.dto.request.ProductAlarmPayload;
-import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
-import freshtrash.freshtrashbackend.entity.Alarm;
-import freshtrash.freshtrashbackend.repository.EmitterRepository;
-import freshtrash.freshtrashbackend.service.AlarmService;
+import freshtrash.freshtrashbackend.domain.alarm.dto.request.BaseAlarmPayload;
+import freshtrash.freshtrashbackend.domain.alarm.dto.request.ProductAlarmPayload;
+import freshtrash.freshtrashbackend.domain.alarm.dto.response.AlarmResponse;
+import freshtrash.freshtrashbackend.domain.alarm.entity.Alarm;
+import freshtrash.freshtrashbackend.domain.alarm.repository.EmitterRepository;
+import freshtrash.freshtrashbackend.domain.alarm.service.AlarmService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,10 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;

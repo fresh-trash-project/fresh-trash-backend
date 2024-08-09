@@ -1,0 +1,54 @@
+package freshtrash.freshtrashbackend.domain.auction.dto.response;
+
+import freshtrash.freshtrashbackend.domain.member.dto.response.MemberResponse;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
+import freshtrash.freshtrashbackend.domain.auction.entity.constants.AuctionStatus;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductCategory;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductStatus;
+import lombok.Builder;
+
+import java.time.LocalDateTime;
+
+@Builder
+public record AuctionResponse(
+        Long id,
+        String title,
+        String content,
+        Integer viewCount,
+        String fileName,
+        ProductCategory productCategory,
+        ProductStatus productStatus,
+        AuctionStatus auctionStatus,
+        int finalBid,
+        LocalDateTime startedAt,
+        LocalDateTime endedAt,
+        LocalDateTime createdAt,
+        MemberResponse memberResponse) {
+
+    public static AuctionResponse fromEntity(Auction auction) {
+        return AuctionResponse.of(auction, MemberResponse.fromEntity(auction.getMember()));
+    }
+
+    public static AuctionResponse fromEntity(Auction auction, MemberPrincipal memberPrincipal) {
+        return AuctionResponse.of(auction, MemberResponse.fromPrincipal(memberPrincipal));
+    }
+
+    public static AuctionResponse of(Auction auction, MemberResponse memberResponse) {
+        return AuctionResponse.builder()
+                .id(auction.getId())
+                .title(auction.getTitle())
+                .content(auction.getContent())
+                .viewCount(auction.getViewCount())
+                .fileName(auction.getFileName())
+                .productCategory(auction.getProductCategory())
+                .productStatus(auction.getProductStatus())
+                .auctionStatus(auction.getAuctionStatus())
+                .finalBid(auction.getFinalBid())
+                .startedAt(auction.getStartedAt())
+                .endedAt(auction.getEndedAt())
+                .createdAt(auction.getCreatedAt())
+                .memberResponse(memberResponse)
+                .build();
+    }
+}

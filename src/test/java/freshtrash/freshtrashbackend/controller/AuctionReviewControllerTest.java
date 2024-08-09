@@ -3,9 +3,10 @@ package freshtrash.freshtrashbackend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
-import freshtrash.freshtrashbackend.entity.AuctionReview;
-import freshtrash.freshtrashbackend.service.AuctionReviewService;
+import freshtrash.freshtrashbackend.domain.auction.controller.AuctionReviewController;
+import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionReviewRequest;
+import freshtrash.freshtrashbackend.domain.auction.entity.AuctionReview;
+import freshtrash.freshtrashbackend.domain.auction.service.AuctionReviewService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,16 +43,17 @@ class AuctionReviewControllerTest {
     void given_reviewRequestAndAuctionIdAndLoginUser_when_then_insertReview() throws Exception {
         // given
         Long auctionId = 2L, memberId = 123L;
-        ReviewRequest reviewRequest = FixtureDto.createReviewRequest(3, "content");
-        AuctionReview auctionReview = AuctionReview.fromRequest(reviewRequest, auctionId, memberId);
-        given(auctionReviewService.insertAuctionReview(reviewRequest, auctionId, memberId)).willReturn(auctionReview);
+        AuctionReviewRequest auctionReviewRequest = FixtureDto.createAuctionReviewRequest(3, "content");
+        AuctionReview auctionReview = AuctionReview.fromRequest(auctionReviewRequest, auctionId, memberId);
+        given(auctionReviewService.insertAuctionReview(auctionReviewRequest, auctionId, memberId))
+                .willReturn(auctionReview);
         // when
         mvc.perform(post("/api/v1/auctions/" + auctionId + "/reviews")
-                        .content(objectMapper.writeValueAsString(reviewRequest))
+                        .content(objectMapper.writeValueAsString(auctionReviewRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.rating").value(reviewRequest.rate()))
-                .andExpect(jsonPath("$.content").value(reviewRequest.content()));
+                .andExpect(jsonPath("$.rating").value(auctionReviewRequest.rate()))
+                .andExpect(jsonPath("$.content").value(auctionReviewRequest.content()));
         // then
     }
 }

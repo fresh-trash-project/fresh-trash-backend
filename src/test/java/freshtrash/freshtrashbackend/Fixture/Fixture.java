@@ -1,7 +1,25 @@
 package freshtrash.freshtrashbackend.Fixture;
 
-import freshtrash.freshtrashbackend.entity.*;
-import freshtrash.freshtrashbackend.entity.constants.*;
+import freshtrash.freshtrashbackend.domain.alarm.entity.Alarm;
+import freshtrash.freshtrashbackend.domain.alarm.entity.AlarmArgs;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.domain.auction.entity.constants.AuctionStatus;
+import freshtrash.freshtrashbackend.domain.chatMessage.entity.ChatMessage;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.constants.ChatRoomSellStatus;
+import freshtrash.freshtrashbackend.domain.member.entity.Address;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.AccountStatus;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.LoginType;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.domain.product.entity.Product;
+import freshtrash.freshtrashbackend.domain.product.entity.ProductDealLog;
+import freshtrash.freshtrashbackend.domain.product.entity.ProductLike;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductCategory;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellStatus;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -18,7 +36,7 @@ public class Fixture {
                 .fileName("test.png")
                 .productCategory(ProductCategory.BEAUTY)
                 .productStatus(ProductStatus.BEST)
-                .sellStatus(SellStatus.CLOSE)
+                .sellStatus(ProductSellStatus.CLOSE)
                 .address(createAddress())
                 .memberId(1L)
                 .build();
@@ -74,7 +92,7 @@ public class Fixture {
     }
 
     public static ChatRoom createChatRoom(
-            Long productId, Long sellerId, Long buyerId, boolean openOrClose, SellStatus sellStatus) {
+            Long productId, Long sellerId, Long buyerId, boolean openOrClose, ChatRoomSellStatus sellStatus) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .buyerId(buyerId)
                 .sellerId(sellerId)
@@ -99,7 +117,7 @@ public class Fixture {
         Long buyerId = 2L;
         Long sellerId = 3L;
         ChatRoom chatRoom = ChatRoom.builder()
-                .sellStatus(SellStatus.ONGOING)
+                .sellStatus(ChatRoomSellStatus.ONGOING)
                 .openOrClose(true)
                 .productId(productId)
                 .buyerId(buyerId)

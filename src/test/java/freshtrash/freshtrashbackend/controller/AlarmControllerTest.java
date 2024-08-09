@@ -2,8 +2,9 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
-import freshtrash.freshtrashbackend.service.AlarmService;
+import freshtrash.freshtrashbackend.domain.alarm.controller.AlarmController;
+import freshtrash.freshtrashbackend.domain.alarm.dto.response.AlarmResponse;
+import freshtrash.freshtrashbackend.domain.alarm.service.AlarmService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,7 +1,8 @@
 package freshtrash.freshtrashbackend.service.producer;
 
-import freshtrash.freshtrashbackend.dto.events.AlarmEvent;
-import freshtrash.freshtrashbackend.service.producer.publisher.MQPublisher;
+import freshtrash.freshtrashbackend.domain.alarm.dto.events.AlarmEvent;
+import freshtrash.freshtrashbackend.producer.ChatProducer;
+import freshtrash.freshtrashbackend.producer.publisher.MQPublisher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

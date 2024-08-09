@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.repository;
 
-import freshtrash.freshtrashbackend.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.domain.auction.repository.BiddingHistoryRepository;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

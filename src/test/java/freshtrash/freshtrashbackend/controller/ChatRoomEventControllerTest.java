@@ -2,16 +2,14 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.controller.constants.ProductEventType;
-import freshtrash.freshtrashbackend.entity.ChatRoom;
-import freshtrash.freshtrashbackend.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.entity.constants.SellStatus;
-import freshtrash.freshtrashbackend.service.ChatRoomService;
-import freshtrash.freshtrashbackend.service.alarm.CancelBookingProductAlarm;
-import freshtrash.freshtrashbackend.service.alarm.CompleteDealProductAlarm;
-import freshtrash.freshtrashbackend.service.alarm.RequestBookingProductAlarm;
-import freshtrash.freshtrashbackend.service.alarm.UserFlagChatAlarm;
-import freshtrash.freshtrashbackend.service.alarm.adapter.AlarmMappingHandlerAdapter;
+import freshtrash.freshtrashbackend.domain.chatRoom.controller.constants.ProductEventType;
+import freshtrash.freshtrashbackend.domain.chatRoom.controller.ChatRoomEventController;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.constants.ChatRoomSellStatus;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellStatus;
+import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
+import freshtrash.freshtrashbackend.domain.alarm.service.adapter.AlarmMappingHandlerAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -52,7 +50,7 @@ class ChatRoomEventControllerTest {
         // given
         Long currentMemberId = 123L, chatRoomId = 2L, productId = 1L, targetMemberId = 321L;
         ChatRoom chatRoom =
-                Fixture.createChatRoom(productId, targetMemberId, currentMemberId, true, SellStatus.ONGOING);
+                Fixture.createChatRoom(productId, targetMemberId, currentMemberId, true, ChatRoomSellStatus.ONGOING);
         given(chatRoomService.getChatRoom(eq(chatRoomId), eq(currentMemberId))).willReturn(chatRoom);
         willDoNothing().given(alarmMappingHandlerAdapter).handle(eq(chatRoom), eq(currentMemberId), eq(AlarmType.FLAG));
         // when

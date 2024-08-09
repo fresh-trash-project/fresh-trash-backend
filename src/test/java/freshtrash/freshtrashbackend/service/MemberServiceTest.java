@@ -2,17 +2,19 @@ package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.projections.FileNameSummary;
-import freshtrash.freshtrashbackend.dto.projections.FlagCountSummary;
-import freshtrash.freshtrashbackend.dto.request.ChangePasswordRequest;
-import freshtrash.freshtrashbackend.dto.request.MemberRequest;
-import freshtrash.freshtrashbackend.dto.response.LoginResponse;
-import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.exception.MemberException;
-import freshtrash.freshtrashbackend.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.repository.MemberRepository;
-import freshtrash.freshtrashbackend.security.TokenProvider;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.MemberFileNameSummary;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
+import freshtrash.freshtrashbackend.domain.member.dto.request.ChangePasswordRequest;
+import freshtrash.freshtrashbackend.domain.member.dto.request.MemberRequest;
+import freshtrash.freshtrashbackend.domain.member.dto.response.LoginResponse;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
+import freshtrash.freshtrashbackend.global.exception.MemberException;
+import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.domain.member.repository.MemberRepository;
+import freshtrash.freshtrashbackend.domain.member.service.TokenProvider;
+import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -189,11 +191,11 @@ class MemberServiceTest {
         // given
         Long memberId = 1L;
         String fileName = "file";
-        given(memberRepository.findFileNameById(memberId)).willReturn(Optional.of(new FileNameSummary(fileName)));
+        given(memberRepository.findFileNameById(memberId)).willReturn(Optional.of(new MemberFileNameSummary(fileName)));
         // when
-        FileNameSummary fileNameSummary = memberService.findFileNameOfMember(memberId);
+        MemberFileNameSummary memberFileNameSummary = memberService.findFileNameOfMember(memberId);
         // then
-        assertThat(fileNameSummary.fileName()).isEqualTo(fileName);
+        assertThat(memberFileNameSummary.fileName()).isEqualTo(fileName);
     }
 
     @Test

@@ -1,11 +1,11 @@
 package freshtrash.freshtrashbackend.consumer;
 
 import com.rabbitmq.client.Channel;
-import freshtrash.freshtrashbackend.aspect.annotation.ManualAcknowledge;
-import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
-import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
-import freshtrash.freshtrashbackend.entity.Alarm;
-import freshtrash.freshtrashbackend.service.AlarmService;
+import freshtrash.freshtrashbackend.consumer.aspect.annotation.ManualAcknowledge;
+import freshtrash.freshtrashbackend.domain.alarm.dto.request.BaseAlarmPayload;
+import freshtrash.freshtrashbackend.domain.alarm.dto.response.AlarmResponse;
+import freshtrash.freshtrashbackend.domain.alarm.entity.Alarm;
+import freshtrash.freshtrashbackend.domain.alarm.service.AlarmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

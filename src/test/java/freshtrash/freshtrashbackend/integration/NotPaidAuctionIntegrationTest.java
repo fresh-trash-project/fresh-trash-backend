@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.integration;
 
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.service.AuctionEventService;
+import freshtrash.freshtrashbackend.domain.auction.service.AuctionEventService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

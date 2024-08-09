@@ -1,13 +1,15 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.controller.constants.ProductDealMemberType;
-import freshtrash.freshtrashbackend.dto.response.ProductResponse;
-import freshtrash.freshtrashbackend.entity.ProductDealLog;
-import freshtrash.freshtrashbackend.entity.constants.SellStatus;
-import freshtrash.freshtrashbackend.repository.ChatRoomRepository;
-import freshtrash.freshtrashbackend.repository.ProductDealLogRepository;
-import freshtrash.freshtrashbackend.repository.ProductRepository;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.constants.ChatRoomSellStatus;
+import freshtrash.freshtrashbackend.domain.chatRoom.repository.ChatRoomRepository;
+import freshtrash.freshtrashbackend.domain.product.controller.constants.ProductDealMemberType;
+import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
+import freshtrash.freshtrashbackend.domain.product.entity.ProductDealLog;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellStatus;
+import freshtrash.freshtrashbackend.domain.product.repository.ProductDealLogRepository;
+import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
+import freshtrash.freshtrashbackend.domain.product.service.ProductDealService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,13 +56,14 @@ class ProductDealServiceTest {
         Long chatRoomId = 3L;
         Long sellerId = 1L;
         Long buyerId = 2L;
-        SellStatus sellStatus = SellStatus.CLOSE;
+        ProductSellStatus productSellStatus = ProductSellStatus.CLOSE;
+        ChatRoomSellStatus chatRoomSellStatus = ChatRoomSellStatus.CLOSE;
         given(productDealLogRepository.save(any(ProductDealLog.class)))
                 .willReturn(Fixture.createProductDealLog(productId, sellerId, buyerId));
-        willDoNothing().given(productRepository).updateSellStatus(eq(productId), eq(sellStatus));
-        willDoNothing().given(chatRoomRepository).updateSellStatus(eq(chatRoomId), eq(sellStatus));
+        willDoNothing().given(productRepository).updateSellStatus(eq(productId), eq(productSellStatus));
+        willDoNothing().given(chatRoomRepository).updateSellStatus(eq(chatRoomId), eq(chatRoomSellStatus));
         // when
-        productDealService.completeProductDeal(productId, chatRoomId, sellerId, buyerId, sellStatus);
+        productDealService.completeProductDeal(productId, chatRoomId, sellerId, buyerId, productSellStatus, chatRoomSellStatus);
         ArgumentCaptor<ProductDealLog> captor = ArgumentCaptor.forClass(ProductDealLog.class);
         // then
         verify(productDealLogRepository, times(1)).save(captor.capture());
@@ -85,7 +88,8 @@ class ProductDealServiceTest {
             given(productDealLogRepository.findAllByBuyer_Id(eq(memberId), eq(pageable)))
                     .willReturn(new PageImpl<>(List.of(Fixture.createProductDealLog())));
         } else {
-            given(productRepository.findAllByMemberIdAndSellStatusNot(eq(memberId), eq(SellStatus.CLOSE), eq(pageable)))
+            given(productRepository.findAllByMemberIdAndSellStatusNot(
+                            eq(memberId), eq(ProductSellStatus.CLOSE), eq(pageable)))
                     .willReturn(new PageImpl<>(List.of(Fixture.createProduct())));
         }
         // when

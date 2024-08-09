@@ -1,10 +1,11 @@
 package freshtrash.freshtrashbackend.service.producer;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.dto.events.AlarmEvent;
-import freshtrash.freshtrashbackend.entity.ChatRoom;
-import freshtrash.freshtrashbackend.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.service.producer.publisher.MQPublisher;
+import freshtrash.freshtrashbackend.domain.alarm.dto.events.AlarmEvent;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.producer.ProductDealProducer;
+import freshtrash.freshtrashbackend.producer.publisher.MQPublisher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

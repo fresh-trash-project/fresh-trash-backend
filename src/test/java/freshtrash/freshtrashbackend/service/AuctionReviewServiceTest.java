@@ -2,11 +2,13 @@ package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.request.ReviewRequest;
-import freshtrash.freshtrashbackend.entity.Auction;
-import freshtrash.freshtrashbackend.entity.AuctionReview;
-import freshtrash.freshtrashbackend.repository.AuctionReviewRepository;
-import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
+import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionReviewRequest;
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
+import freshtrash.freshtrashbackend.domain.auction.entity.AuctionReview;
+import freshtrash.freshtrashbackend.domain.auction.repository.AuctionReviewRepository;
+import freshtrash.freshtrashbackend.domain.auction.service.AuctionReviewService;
+import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
+import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,8 +43,8 @@ class AuctionReviewServiceTest {
     void given_reviewRequestAndAuctionIdAndMemberId_when_notWroteReview_then_insertReviewAndNotify() {
         // given
         Long auctionId = 2L, memberId = 123L;
-        ReviewRequest reviewRequest = FixtureDto.createReviewRequest(3, "content");
-        AuctionReview auctionReview = AuctionReview.fromRequest(reviewRequest, auctionId, memberId);
+        AuctionReviewRequest auctionReviewRequest = FixtureDto.createAuctionReviewRequest(3, "content");
+        AuctionReview auctionReview = AuctionReview.fromRequest(auctionReviewRequest, auctionId, memberId);
         Auction auction = Fixture.createAuction();
         ReflectionTestUtils.setField(auctionReview, "auction", auction);
         given(auctionReviewRepository.existsByAuctionId(auctionId)).willReturn(false);
@@ -50,9 +52,9 @@ class AuctionReviewServiceTest {
         given(auctionService.getAuction(auctionId)).willReturn(auction);
         willDoNothing().given(auctionProducer).publishToSellerForReview(auctionReview.getAuction(), memberId);
         // when
-        AuctionReview savedAuctionReview = auctionReviewService.insertAuctionReview(reviewRequest, auctionId, memberId);
+        AuctionReview savedAuctionReview = auctionReviewService.insertAuctionReview(auctionReviewRequest, auctionId, memberId);
         // then
-        assertThat(savedAuctionReview.getContent()).isEqualTo(reviewRequest.content());
-        assertThat(savedAuctionReview.getRating()).isEqualTo(reviewRequest.rate());
+        assertThat(savedAuctionReview.getContent()).isEqualTo(auctionReviewRequest.content());
+        assertThat(savedAuctionReview.getRating()).isEqualTo(auctionReviewRequest.rate());
     }
 }

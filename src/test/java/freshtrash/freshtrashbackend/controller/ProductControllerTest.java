@@ -5,20 +5,21 @@ import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.request.ProductRequest;
-import freshtrash.freshtrashbackend.dto.response.ProductResponse;
-import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.entity.Address;
-import freshtrash.freshtrashbackend.entity.ChatRoom;
-import freshtrash.freshtrashbackend.entity.Product;
-import freshtrash.freshtrashbackend.entity.constants.ProductCategory;
-import freshtrash.freshtrashbackend.entity.constants.ProductStatus;
-import freshtrash.freshtrashbackend.entity.constants.SellStatus;
-import freshtrash.freshtrashbackend.entity.constants.UserRole;
-import freshtrash.freshtrashbackend.dto.projections.FileNameSummary;
-import freshtrash.freshtrashbackend.service.ChatRoomService;
-import freshtrash.freshtrashbackend.service.LocalFileService;
-import freshtrash.freshtrashbackend.service.ProductService;
+import freshtrash.freshtrashbackend.domain.product.controller.ProductController;
+import freshtrash.freshtrashbackend.domain.product.dto.projections.ProductFileNameSummary;
+import freshtrash.freshtrashbackend.domain.product.dto.request.ProductRequest;
+import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.member.entity.Address;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.product.entity.Product;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductCategory;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductStatus;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellStatus;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
+import freshtrash.freshtrashbackend.global.infra.file.LocalFileService;
+import freshtrash.freshtrashbackend.domain.product.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -137,7 +138,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.productStatus")
                         .value(productRequest.productStatus().name()))
                 .andExpect(jsonPath("$.sellStatus")
-                        .value(productRequest.sellStatus().name()));
+                        .value(productRequest.productSellStatus().name()));
         // then
     }
 
@@ -159,7 +160,7 @@ class ProductControllerTest {
             String content,
             ProductCategory productCategory,
             ProductStatus productStatus,
-            SellStatus sellStatus,
+            ProductSellStatus productSellStatus,
             Integer productPrice,
             String zipcode,
             String state,
@@ -174,7 +175,7 @@ class ProductControllerTest {
                 content,
                 productCategory,
                 productStatus,
-                sellStatus,
+                productSellStatus,
                 productPrice,
                 Address.builder()
                         .zipcode(zipcode)
@@ -209,7 +210,7 @@ class ProductControllerTest {
         Product product = Product.fromRequest(productRequest, imgFile.getOriginalFilename(), memberId);
         ReflectionTestUtils.setField(product, "member", Fixture.createMember());
         ProductResponse productResponse = ProductResponse.fromEntity(product);
-        given(productService.findFileNameOfProduct(eq(productId))).willReturn(new FileNameSummary(fileName));
+        given(productService.findFileNameOfProduct(eq(productId))).willReturn(new ProductFileNameSummary(fileName));
         given(productService.updateProduct(
                         eq(productId), any(MultipartFile.class), any(ProductRequest.class), any(MemberPrincipal.class)))
                 .willReturn(productResponse);
@@ -233,7 +234,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.productStatus")
                         .value(productRequest.productStatus().name()))
                 .andExpect(jsonPath("$.sellStatus")
-                        .value(productRequest.sellStatus().name()));
+                        .value(productRequest.productSellStatus().name()));
         // then
     }
 
@@ -245,7 +246,7 @@ class ProductControllerTest {
         Long productId = 1L, memberId = 123L;
         UserRole userRole = UserRole.USER;
         String fileName = "test.png";
-        given(productService.findFileNameOfProduct(eq(productId))).willReturn(new FileNameSummary(fileName));
+        given(productService.findFileNameOfProduct(eq(productId))).willReturn(new ProductFileNameSummary(fileName));
         willDoNothing().given(localFileService).deleteFileIfExists(eq(fileName));
         willDoNothing().given(productService).deleteProduct(eq(productId), eq(userRole), eq(memberId));
         // when

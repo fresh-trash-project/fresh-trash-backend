@@ -4,13 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.request.ChangePasswordRequest;
-import freshtrash.freshtrashbackend.dto.request.MemberRequest;
-import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.dto.projections.FileNameSummary;
-import freshtrash.freshtrashbackend.service.LocalFileService;
-import freshtrash.freshtrashbackend.service.MemberService;
+import freshtrash.freshtrashbackend.domain.member.controller.MemberController;
+import freshtrash.freshtrashbackend.domain.member.dto.request.ChangePasswordRequest;
+import freshtrash.freshtrashbackend.domain.member.dto.request.MemberRequest;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.MemberFileNameSummary;
+import freshtrash.freshtrashbackend.global.infra.file.LocalFileService;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,7 @@ class MemberControllerTest {
         member.setNickname(memberRequest.nickname());
         member.setAddress(memberRequest.address());
         member.setFileName(imgFile.getOriginalFilename());
-        given(memberService.findFileNameOfMember(eq(memberId))).willReturn(new FileNameSummary(oldFile));
+        given(memberService.findFileNameOfMember(eq(memberId))).willReturn(new MemberFileNameSummary(oldFile));
         given(memberService.updateMember(
                         any(MemberPrincipal.class), any(MemberRequest.class), any(MultipartFile.class)))
                 .willReturn(member);

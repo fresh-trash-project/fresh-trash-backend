@@ -1,13 +1,15 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.entity.ChatRoom;
-import freshtrash.freshtrashbackend.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.entity.constants.SellStatus;
-import freshtrash.freshtrashbackend.service.ChatRoomService;
-import freshtrash.freshtrashbackend.service.ProductDealService;
-import freshtrash.freshtrashbackend.service.alarm.parameter.ProductAlarmParameter;
-import freshtrash.freshtrashbackend.service.producer.ProductDealProducer;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.domain.alarm.service.RequestBookingProductAlarm;
+import freshtrash.freshtrashbackend.domain.alarm.service.parameter.ProductAlarmParameter;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.constants.ChatRoomSellStatus;
+import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellStatus;
+import freshtrash.freshtrashbackend.domain.product.service.ProductDealService;
+import freshtrash.freshtrashbackend.producer.ProductDealProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,9 +50,13 @@ class RequestBookingProductAlarmTest {
         given(chatRoomService.getChatRoom(chatRomId, memberId)).willReturn(chatRoom);
         willDoNothing()
                 .given(productDealService)
-                .updateSellStatus(chatRoom.getProductId(), chatRoom.getId(), SellStatus.BOOKING);
-        ChatRoom otherChatRoom =
-                Fixture.createChatRoom(chatRoom.getProductId(), chatRoom.getSellerId(), 123L, true, SellStatus.ONGOING);
+                .updateSellStatus(
+                        chatRoom.getProductId(),
+                        chatRoom.getId(),
+                        ProductSellStatus.BOOKING,
+                        ChatRoomSellStatus.BOOKING);
+        ChatRoom otherChatRoom = Fixture.createChatRoom(
+                chatRoom.getProductId(), chatRoom.getSellerId(), 123L, true, ChatRoomSellStatus.ONGOING);
         given(chatRoomService.getNotClosedChatRoomsByProductId(chatRoom.getProductId()))
                 .willReturn(List.of(otherChatRoom));
         willDoNothing()
@@ -65,11 +71,11 @@ class RequestBookingProductAlarmTest {
     @DisplayName("REQUEST_BOOKING 타입의 알람 전송을 수행하는 작업을 지원한다.")
     @Test
     void given_alarmType_when_supported_then_returnTrue() {
-        //given
+        // given
         AlarmType alarmType = AlarmType.REQUEST_BOOKING;
-        //when
+        // when
         boolean isSupport = requestBookingProductAlarm.supports(alarmType);
-        //then
+        // then
         assertThat(isSupport).isTrue();
     }
 }

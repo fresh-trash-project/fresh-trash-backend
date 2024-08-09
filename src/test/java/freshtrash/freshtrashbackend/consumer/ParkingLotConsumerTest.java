@@ -2,8 +2,8 @@ package freshtrash.freshtrashbackend.consumer;
 
 import com.rabbitmq.client.Channel;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
-import freshtrash.freshtrashbackend.service.SlackService;
+import freshtrash.freshtrashbackend.domain.alarm.dto.request.BaseAlarmPayload;
+import freshtrash.freshtrashbackend.global.infra.SlackService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

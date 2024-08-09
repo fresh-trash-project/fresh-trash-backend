@@ -1,10 +1,11 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.entity.BiddingHistory;
-import freshtrash.freshtrashbackend.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.service.alarm.parameter.BiddingHistoryAlarmParameter;
-import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
+import freshtrash.freshtrashbackend.domain.alarm.service.CompletePayAuctionAlarm;
+import freshtrash.freshtrashbackend.domain.alarm.service.parameter.BiddingHistoryAlarmParameter;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

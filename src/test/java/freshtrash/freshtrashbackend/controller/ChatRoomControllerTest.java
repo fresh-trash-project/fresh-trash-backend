@@ -2,9 +2,10 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.dto.response.ChatRoomResponse;
-import freshtrash.freshtrashbackend.entity.ChatRoom;
-import freshtrash.freshtrashbackend.service.ChatRoomService;
+import freshtrash.freshtrashbackend.domain.chatRoom.controller.ChatRoomController;
+import freshtrash.freshtrashbackend.domain.chatRoom.dto.response.ChatRoomResponse;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

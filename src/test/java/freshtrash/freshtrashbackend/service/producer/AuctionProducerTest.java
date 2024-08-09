@@ -1,12 +1,13 @@
 package freshtrash.freshtrashbackend.service.producer;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.dto.events.AlarmEvent;
-import freshtrash.freshtrashbackend.dto.request.AuctionAlarmPayload;
-import freshtrash.freshtrashbackend.dto.request.BaseAlarmPayload;
-import freshtrash.freshtrashbackend.entity.Auction;
-import freshtrash.freshtrashbackend.entity.BiddingHistory;
-import freshtrash.freshtrashbackend.service.producer.publisher.MQPublisher;
+import freshtrash.freshtrashbackend.domain.alarm.dto.events.AlarmEvent;
+import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionAlarmPayload;
+import freshtrash.freshtrashbackend.domain.alarm.dto.request.BaseAlarmPayload;
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.producer.AuctionProducer;
+import freshtrash.freshtrashbackend.producer.publisher.MQPublisher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import static freshtrash.freshtrashbackend.config.rabbitmq.QueueType.*;
-import static freshtrash.freshtrashbackend.dto.constants.AlarmMessage.*;
+import static freshtrash.freshtrashbackend.domain.alarm.dto.constants.AlarmMessage.*;
+import static freshtrash.freshtrashbackend.global.config.rabbitmq.QueueType.*;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 @ActiveProfiles("test")

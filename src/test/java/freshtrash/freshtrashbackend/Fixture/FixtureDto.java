@@ -1,11 +1,26 @@
 package freshtrash.freshtrashbackend.Fixture;
 
-import freshtrash.freshtrashbackend.dto.request.*;
-import freshtrash.freshtrashbackend.dto.response.AlarmResponse;
-import freshtrash.freshtrashbackend.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.entity.Address;
-import freshtrash.freshtrashbackend.entity.AlarmArgs;
-import freshtrash.freshtrashbackend.entity.constants.*;
+import freshtrash.freshtrashbackend.domain.alarm.dto.request.BaseAlarmPayload;
+import freshtrash.freshtrashbackend.domain.alarm.dto.request.ProductAlarmPayload;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionRequest;
+import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionReviewRequest;
+import freshtrash.freshtrashbackend.domain.auction.entity.constants.AuctionStatus;
+import freshtrash.freshtrashbackend.domain.member.dto.request.ChangePasswordRequest;
+import freshtrash.freshtrashbackend.domain.member.dto.request.LoginRequest;
+import freshtrash.freshtrashbackend.domain.member.dto.request.MemberRequest;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.domain.product.dto.request.ProductRequest;
+import freshtrash.freshtrashbackend.domain.product.dto.request.ProductReviewRequest;
+import freshtrash.freshtrashbackend.domain.auction.dto.request.BiddingRequest;
+import freshtrash.freshtrashbackend.domain.member.dto.request.SignUpRequest;
+import freshtrash.freshtrashbackend.domain.alarm.dto.response.AlarmResponse;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.member.entity.Address;
+import freshtrash.freshtrashbackend.domain.alarm.entity.AlarmArgs;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductCategory;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductStatus;
+import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -17,7 +32,7 @@ public class FixtureDto {
             String content,
             ProductCategory productCategory,
             ProductStatus productStatus,
-            SellStatus sellStatus,
+            ProductSellStatus productSellStatus,
             Integer productPrice,
             Address address) {
         return new ProductRequest(
@@ -25,7 +40,7 @@ public class FixtureDto {
                 content,
                 productCategory,
                 productStatus,
-                sellStatus,
+                productSellStatus,
                 productPrice,
                 address.allBlank() ? null : address);
     }
@@ -36,7 +51,7 @@ public class FixtureDto {
                 "content",
                 ProductCategory.BEAUTY,
                 ProductStatus.BEST,
-                SellStatus.CLOSE,
+                ProductSellStatus.CLOSE,
                 0,
                 Fixture.createAddress());
     }
@@ -68,12 +83,12 @@ public class FixtureDto {
         return new MemberRequest("user111", Fixture.createAddress());
     }
 
-    public static ReviewRequest createReviewRequest(int rate) {
-        return new ReviewRequest(rate, "");
+    public static ProductReviewRequest createProductReviewRequest(int rate) {
+        return new ProductReviewRequest(rate, "");
     }
 
-    public static ReviewRequest createReviewRequest(int rate, String content) {
-        return new ReviewRequest(rate, content);
+    public static AuctionReviewRequest createAuctionReviewRequest(int rate, String content) {
+        return new AuctionReviewRequest(rate, content);
     }
 
     public static AuctionRequest createAuctionRequest() {

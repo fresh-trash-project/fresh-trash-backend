@@ -1,7 +1,8 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.dto.properties.LocalFileProperties;
+import freshtrash.freshtrashbackend.global.config.properties.LocalFileProperties;
+import freshtrash.freshtrashbackend.global.infra.file.LocalFileService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,15 +1,16 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.dto.projections.FlagCountSummary;
-import freshtrash.freshtrashbackend.entity.BiddingHistory;
-import freshtrash.freshtrashbackend.entity.Member;
-import freshtrash.freshtrashbackend.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.service.AuctionService;
-import freshtrash.freshtrashbackend.service.BiddingHistoryService;
-import freshtrash.freshtrashbackend.service.MemberService;
-import freshtrash.freshtrashbackend.service.alarm.parameter.BiddingHistoryAlarmParameter;
-import freshtrash.freshtrashbackend.service.producer.AuctionProducer;
+import freshtrash.freshtrashbackend.domain.alarm.service.NotPaidAuctionAlarm;
+import freshtrash.freshtrashbackend.domain.alarm.service.parameter.BiddingHistoryAlarmParameter;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
+import freshtrash.freshtrashbackend.domain.auction.service.BiddingHistoryService;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
+import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
