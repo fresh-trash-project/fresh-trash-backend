@@ -2,10 +2,10 @@ package freshtrash.freshtrashbackend.domain.member.entity;
 
 import freshtrash.freshtrashbackend.domain.member.dto.request.SignUpRequest;
 import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.global.common.audit.AuditingAt;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.LoginType;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.global.common.audit.AuditingAt;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import org.hibernate.annotations.Type;
