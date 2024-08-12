@@ -19,6 +19,18 @@
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='멤버';
 
+CREATE TABLE `member_purchase_profiles`
+(
+    `id`                     bigint AUTO_INCREMENT NOT NULL,
+    `member_id`              bigint                NOT NULL,
+    `product_cumulative_sum` mediumblob,
+    `purchase_count`         integer               NOT NULL,
+    `created_at`             datetime              NOT NULL,
+    `modified_at`            datetime,
+    PRIMARY KEY (`id`),
+    foreign key (`member_id`) references members (id) on delete cascade
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='추천을 위한 회원 구매 프로필 정보';
 
 CREATE TABLE `products`
 (
@@ -42,6 +54,17 @@ CREATE TABLE `products`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='폐기물';
 
+CREATE TABLE `product_profiles`
+(
+    `id`         bigint AUTO_INCREMENT NOT NULL,
+    `product_id` bigint                NOT NULL,
+    `profile`          mediumblob,
+    `created_at`       datetime              NOT NULL,
+    `modified_at`      datetime,
+    PRIMARY KEY (`id`),
+    foreign key (`product_id`) references products (id) on delete cascade
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='추천을 위한 상품 프로필 정보';
 
 CREATE TABLE `product_reviews`
 (
