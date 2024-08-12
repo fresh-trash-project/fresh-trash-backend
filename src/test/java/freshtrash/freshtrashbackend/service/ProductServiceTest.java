@@ -15,6 +15,7 @@ import freshtrash.freshtrashbackend.global.exception.FileException;
 import freshtrash.freshtrashbackend.global.exception.ProductException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
+import freshtrash.freshtrashbackend.global.infra.RecSysService;
 import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -47,6 +49,9 @@ class ProductServiceTest {
 
     @Mock
     private FileService fileService;
+
+    @Mock
+    private RecSysService recSysService;
 
     @Test
     @DisplayName("Product 단일 조회")
@@ -85,6 +90,7 @@ class ProductServiceTest {
         Product product = Product.fromRequest(productRequest, "test.png", memberPrincipal.id());
         given(productRepository.save(any(Product.class))).willReturn(product);
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
+        willDoNothing().given(recSysService).createProduct(product);
         // when
         ProductResponse productResponse =
                 productService.addProduct(Fixture.createMultipartFileOfImage("image"), productRequest, memberPrincipal);
@@ -109,10 +115,12 @@ class ProductServiceTest {
         String updatedFileName = "updated.png";
         MemberPrincipal memberPrincipal = FixtureDto.createMemberPrincipal();
         Product product = Product.fromRequest(productRequest, updatedFileName, memberPrincipal.id());
+        ReflectionTestUtils.setField(product, "id", productId);
         given(productRepository.existsByIdAndMember_Id(eq(productId), eq(memberPrincipal.id())))
                 .willReturn(true);
         given(productRepository.save(any(Product.class))).willReturn(product);
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
+        willDoNothing().given(recSysService).updateProduct(product);
         // when
         ProductResponse productResponse =
                 productService.updateProduct(productId, multipartFile, productRequest, memberPrincipal);
