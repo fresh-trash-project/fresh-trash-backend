@@ -7,6 +7,8 @@ import freshtrash.freshtrashbackend.domain.member.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.domain.member.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.member.entity.MemberPurchaseProfile;
+import freshtrash.freshtrashbackend.domain.member.repository.MemberPurchaseProfileRepository;
 import freshtrash.freshtrashbackend.global.exception.AuthException;
 import freshtrash.freshtrashbackend.global.exception.MemberException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
@@ -29,6 +31,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final MemberPurchaseProfileRepository memberPurchaseProfileRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
     private final FileService fileService;
@@ -49,11 +52,14 @@ public class MemberService {
     /**
      * 회원 가입
      */
+    @Transactional
     public Member registerMember(Member member) {
         checkEmailDuplication(member.getEmail());
         checkNicknameDuplication(member.getNickname());
         member.setPassword(encoder.encode(member.getPassword()));
-        return memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
+        memberPurchaseProfileRepository.save(MemberPurchaseProfile.of(savedMember.getId()));
+        return member;
     }
 
     /**
