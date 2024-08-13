@@ -8,6 +8,7 @@ import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellS
 import freshtrash.freshtrashbackend.domain.chatRoom.repository.ChatRoomRepository;
 import freshtrash.freshtrashbackend.domain.product.repository.ProductDealLogRepository;
 import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
+import freshtrash.freshtrashbackend.global.infra.RecSysService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ public class ProductDealService {
     private final ProductDealLogRepository productDealLogRepository;
     private final ProductRepository productRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final RecSysService recSysService;
 
     public Page<ProductResponse> getTransactedProducts(
             Long memberId, ProductDealMemberType memberType, Pageable pageable) {
@@ -53,6 +55,7 @@ public class ProductDealService {
             Long productId, Long chatRoomId, Long sellerId, Long buyerId, ProductSellStatus productSellStatus, ChatRoomSellStatus chatRoomSellStatus) {
         updateSellStatus(productId, chatRoomId, productSellStatus, chatRoomSellStatus);
         saveProductDealLog(productId, sellerId, buyerId);
+        recSysService.purchaseProduct(productId, buyerId);
     }
 
     @Transactional

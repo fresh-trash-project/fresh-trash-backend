@@ -8,6 +8,8 @@ import freshtrash.freshtrashbackend.global.infra.file.S3Service;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -34,6 +36,11 @@ public class AppConfig {
     @Bean
     public Slack slackClient() {
         return Slack.getInstance();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate(new SimpleClientHttpRequestFactory());
     }
 
     private <T> T selectBean(Environment env, T prodBean, T localBean) {

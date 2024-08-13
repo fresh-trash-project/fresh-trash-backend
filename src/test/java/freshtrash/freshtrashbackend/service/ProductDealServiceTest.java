@@ -10,6 +10,7 @@ import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellS
 import freshtrash.freshtrashbackend.domain.product.repository.ProductDealLogRepository;
 import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
 import freshtrash.freshtrashbackend.domain.product.service.ProductDealService;
+import freshtrash.freshtrashbackend.global.infra.RecSysService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +49,9 @@ class ProductDealServiceTest {
     @Mock
     private ChatRoomRepository chatRoomRepository;
 
+    @Mock
+    private RecSysService recSysService;
+
     @Test
     @DisplayName("거래 내역 저장")
     void given_productAndChatRoomAndSellerAndBuyerAndSellStatus_when_then_updateSellStatusAndSaveLog() {
@@ -62,8 +66,10 @@ class ProductDealServiceTest {
                 .willReturn(Fixture.createProductDealLog(productId, sellerId, buyerId));
         willDoNothing().given(productRepository).updateSellStatus(eq(productId), eq(productSellStatus));
         willDoNothing().given(chatRoomRepository).updateSellStatus(eq(chatRoomId), eq(chatRoomSellStatus));
+        willDoNothing().given(recSysService).purchaseProduct(productId, buyerId);
         // when
-        productDealService.completeProductDeal(productId, chatRoomId, sellerId, buyerId, productSellStatus, chatRoomSellStatus);
+        productDealService.completeProductDeal(
+                productId, chatRoomId, sellerId, buyerId, productSellStatus, chatRoomSellStatus);
         ArgumentCaptor<ProductDealLog> captor = ArgumentCaptor.forClass(ProductDealLog.class);
         // then
         verify(productDealLogRepository, times(1)).save(captor.capture());

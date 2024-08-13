@@ -1,16 +1,17 @@
 package freshtrash.freshtrashbackend.domain.product.service;
 
 import com.querydsl.core.types.Predicate;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.domain.product.dto.projections.ProductFileNameSummary;
 import freshtrash.freshtrashbackend.domain.product.dto.request.ProductRequest;
 import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.product.entity.Product;
-import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
 import freshtrash.freshtrashbackend.global.exception.FileException;
 import freshtrash.freshtrashbackend.global.exception.ProductException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
+import freshtrash.freshtrashbackend.global.infra.RecSysService;
 import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import freshtrash.freshtrashbackend.global.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.Objects;
 public class ProductService {
     private final ProductRepository productRepository;
     private final FileService fileService;
+    private final RecSysService recSysService;
 
     public Product getProduct(Long productId) {
         return productRepository
@@ -49,6 +51,10 @@ public class ProductService {
         Product savedProduct = productRepository.save(product);
         // 이미지 파일 저장
         fileService.uploadFile(imgFile, savedFileName);
+
+        // 상품 프로필 추가
+        recSysService.createProduct(savedProduct);
+
         return ProductResponse.fromEntity(savedProduct, memberPrincipal);
     }
 
@@ -67,6 +73,9 @@ public class ProductService {
         productRepository.save(updatedProduct);
         // 수정된 파일 저장
         fileService.uploadFile(imgFile, updatedFileName);
+
+        // 상품 프로필 수정
+        recSysService.updateProduct(updatedProduct);
 
         return ProductResponse.fromEntity(updatedProduct, memberPrincipal);
     }

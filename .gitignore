@@ -228,3 +228,4 @@ gradle-app.setting
 ### Querydsl
 /src/main/generated
 
+.jpb/
