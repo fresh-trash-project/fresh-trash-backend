@@ -6,6 +6,7 @@ import freshtrash.freshtrashbackend.domain.member.entity.constants.AccountStatus
 import freshtrash.freshtrashbackend.domain.member.entity.constants.LoginType;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.global.common.audit.AuditingAt;
+import freshtrash.freshtrashbackend.global.utils.FileUtils;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -52,7 +53,7 @@ public class Member extends AuditingAt {
     @Column
     private String fileName;
 
-    @Column
+    @Column(nullable = false)
     private int flagCount;
 
     @Enumerated(EnumType.STRING)
@@ -66,6 +67,18 @@ public class Member extends AuditingAt {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountStatus accountStatus;
+
+    @Column(nullable = false)
+    private String productVectorFileName;
+
+    @Column(nullable = false)
+    private String auctionVectorFileName;
+
+    @Column(nullable = false)
+    private int productPurchaseCount;
+
+    @Column(nullable = false)
+    private int auctionPurchaseCount;
 
     @Builder
     private Member(
@@ -85,6 +98,8 @@ public class Member extends AuditingAt {
         this.loginType = loginType;
         this.userRole = userRole;
         this.accountStatus = accountStatus;
+        this.productVectorFileName = FileUtils.generateUniqueFileName(".npy");
+        this.auctionVectorFileName = FileUtils.generateUniqueFileName(".npy");
     }
 
     public static Member fromSignUpRequest(SignUpRequest signUpRequest) {

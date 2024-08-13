@@ -7,6 +7,7 @@ import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductCateg
 import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellStatus;
 import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductStatus;
 import freshtrash.freshtrashbackend.global.common.audit.AuditingAt;
+import freshtrash.freshtrashbackend.global.utils.FileUtils;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -69,6 +70,9 @@ public class Product extends AuditingAt {
     @Column(columnDefinition = "longtext")
     private Address address;
 
+    @Column(nullable = false)
+    private String profileFileName;
+
     @Setter
     private LocalDateTime productDealAt;
 
@@ -100,6 +104,7 @@ public class Product extends AuditingAt {
         this.sellStatus = sellStatus;
         this.address = address;
         this.memberId = memberId;
+        this.profileFileName = FileUtils.generateUniqueFileName("npy");
     }
 
     public static class ProductBuilder {
