@@ -1,11 +1,12 @@
 package freshtrash.freshtrashbackend.domain.auction.entity;
 
 import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionRequest;
-import freshtrash.freshtrashbackend.domain.member.entity.Member;
-import freshtrash.freshtrashbackend.global.common.audit.CreatedAt;
 import freshtrash.freshtrashbackend.domain.auction.entity.constants.AuctionStatus;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
 import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductCategory;
 import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductStatus;
+import freshtrash.freshtrashbackend.global.common.audit.CreatedAt;
+import freshtrash.freshtrashbackend.global.utils.FileUtils;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -63,6 +64,9 @@ public class Auction extends CreatedAt {
     private int finalBid; // 최종 입찰 금액
 
     @Column(nullable = false)
+    private String profileFileName;
+
+    @Column(nullable = false)
     private LocalDateTime startedAt;
 
     @Column(nullable = false)
@@ -108,6 +112,7 @@ public class Auction extends CreatedAt {
         this.startedAt = startedAt;
         this.endedAt = endedAt;
         this.memberId = memberId;
+        this.profileFileName = FileUtils.generateUniqueFileName("npy");
     }
 
     public static Auction fromRequest(AuctionRequest auctionRequest, String fileName, Long memberId) {

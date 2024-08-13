@@ -11,7 +11,6 @@ import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
 import freshtrash.freshtrashbackend.domain.chatRoom.entity.constants.ChatRoomSellStatus;
 import freshtrash.freshtrashbackend.domain.member.entity.Address;
 import freshtrash.freshtrashbackend.domain.member.entity.Member;
-import freshtrash.freshtrashbackend.domain.member.entity.MemberPurchaseProfile;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.AccountStatus;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.LoginType;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
@@ -219,15 +218,5 @@ public class Fixture {
                 .build();
         ReflectionTestUtils.setField(biddingHistory, "id", 1L);
         return biddingHistory;
-    }
-
-    public static MemberPurchaseProfile createMemberPurchaseProfile(Long memberId) {
-        return MemberPurchaseProfile.of(memberId);
-    }
-
-    public static MemberPurchaseProfile createDBMemberPurchaseProfile(Long memberId) {
-        MemberPurchaseProfile memberPurchaseProfile = MemberPurchaseProfile.of(memberId);
-        ReflectionTestUtils.setField(memberPurchaseProfile, "id", 1L);
-        return memberPurchaseProfile;
     }
 }

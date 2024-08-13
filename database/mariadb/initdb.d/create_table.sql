@@ -1,70 +1,50 @@
 ﻿CREATE TABLE `members`
 (
-    `id`             bigint AUTO_INCREMENT NOT NULL,
-    `email`          varchar(255)          NOT NULL,
-    `password`       varchar(255)          NOT NULL,
-    `rating`         double                NOT NULL,
-    `nickname`       varchar(255)          NOT NULL,
-    `address`        json,
-    `file_name`      varchar(255),
-    `flag_count`     integer DEFAULT 0     NOT NULL,
-    `login_type`     varchar(255)          NOT NULL,
-    `user_role`      varchar(255)          NOT NULL,
-    `account_status` varchar(255)          NOT NULL,
-    `created_at`     datetime              NOT NULL,
-    `modified_at`    datetime,
+    `id`                       bigint AUTO_INCREMENT NOT NULL,
+    `email`                    varchar(255)          NOT NULL,
+    `password`                 varchar(255)          NOT NULL,
+    `rating`                   double                NOT NULL,
+    `nickname`                 varchar(255)          NOT NULL,
+    `address`                  json,
+    `file_name`                varchar(255),
+    `flag_count`               integer DEFAULT 0     NOT NULL,
+    `login_type`               varchar(255)          NOT NULL,
+    `user_role`                varchar(255)          NOT NULL,
+    `account_status`           varchar(255)          NOT NULL,
+    `product_vector_file_name` varchar(255)          NOT NULL,
+    `auction_vector_file_name` varchar(255)          NOT NULL,
+    `product_purchase_count`   integer               NOT NULL,
+    `auction_purchase_count`   integer               NOT NULL,
+    `created_at`               datetime              NOT NULL,
+    `modified_at`              datetime,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`email`),
     UNIQUE KEY (`nickname`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='멤버';
 
-CREATE TABLE `member_purchase_profiles`
-(
-    `id`                     bigint AUTO_INCREMENT NOT NULL,
-    `member_id`              bigint                NOT NULL,
-    `product_cumulative_sum` mediumblob,
-    `purchase_count`         integer               NOT NULL,
-    `created_at`             datetime              NOT NULL,
-    `modified_at`            datetime,
-    PRIMARY KEY (`id`),
-    foreign key (`member_id`) references members (id) on delete cascade
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='추천을 위한 회원 구매 프로필 정보';
-
 CREATE TABLE `products`
 (
-    `id`               bigint AUTO_INCREMENT NOT NULL,
-    `member_id`        bigint                NOT NULL,
-    `title`            varchar(255)          NOT NULL,
-    `content`          text                  NOT NULL,
-    `product_price`    integer               NOT NULL,
-    `like_count`       integer               NOT NULL,
-    `view_count`       integer               NOT NULL,
-    `file_name`        varchar(255)          NOT NULL,
-    `product_category` varchar(255)          NOT NULL,
-    `product_status`   varchar(255)          NOT NULL,
-    `sell_status`      varchar(255)          NOT NULL,
-    `address`          json                  NOT NULL,
-    `created_at`       datetime              NOT NULL,
-    `modified_at`      datetime,
-    `product_deal_at`  datetime,
+    `id`                bigint AUTO_INCREMENT NOT NULL,
+    `member_id`         bigint                NOT NULL,
+    `title`             varchar(255)          NOT NULL,
+    `content`           text                  NOT NULL,
+    `product_price`     integer               NOT NULL,
+    `like_count`        integer               NOT NULL,
+    `view_count`        integer               NOT NULL,
+    `file_name`         varchar(255)          NOT NULL,
+    `product_category`  varchar(255)          NOT NULL,
+    `product_status`    varchar(255)          NOT NULL,
+    `sell_status`       varchar(255)          NOT NULL,
+    `address`           json                  NOT NULL,
+    `profile_file_name` varchar(255)          NOT NULL,
+    `created_at`        datetime              NOT NULL,
+    `modified_at`       datetime,
+    `product_deal_at`   datetime,
     PRIMARY KEY (`id`),
     foreign key (`member_id`) references members (id) on delete cascade
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='폐기물';
-
-CREATE TABLE `product_profiles`
-(
-    `id`         bigint AUTO_INCREMENT NOT NULL,
-    `product_id` bigint                NOT NULL,
-    `profile`          mediumblob,
-    `created_at`       datetime              NOT NULL,
-    `modified_at`      datetime,
-    PRIMARY KEY (`id`),
-    foreign key (`product_id`) references products (id) on delete cascade
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='추천을 위한 상품 프로필 정보';
 
 CREATE TABLE `product_reviews`
 (
@@ -159,21 +139,22 @@ CREATE TABLE `alarms`
 
 CREATE TABLE `auctions`
 (
-    `id`               bigint AUTO_INCREMENT NOT NULL,
-    `member_id`        bigint                NOT NULL,
-    `file_name`        varchar(255)          NOT NULL,
-    `title`            varchar(255)          NOT NULL,
-    `content`          text                  NOT NULL,
-    `product_category` varchar(255)          NOT NULL,
-    `product_status`   varchar(255)          NOT NULL,
-    `auction_status`   varchar(255)          NOT NULL,
-    `final_bid`        integer               NOT NULL,
-    `view_count`       integer               NOT NULL,
-    `started_at`       datetime              NOT NULL,
-    `ended_at`         datetime              NOT NULL,
-    `created_at`       datetime              NOT NULL,
-    `deleted_at`       datetime,
-    `version`          integer default 0     NOT NULL,
+    `id`                bigint AUTO_INCREMENT NOT NULL,
+    `member_id`         bigint                NOT NULL,
+    `file_name`         varchar(255)          NOT NULL,
+    `title`             varchar(255)          NOT NULL,
+    `content`           text                  NOT NULL,
+    `product_category`  varchar(255)          NOT NULL,
+    `product_status`    varchar(255)          NOT NULL,
+    `auction_status`    varchar(255)          NOT NULL,
+    `final_bid`         integer               NOT NULL,
+    `view_count`        integer               NOT NULL,
+    `profile_file_name` varchar(255)          NOT NULL,
+    `started_at`        datetime              NOT NULL,
+    `ended_at`          datetime              NOT NULL,
+    `created_at`        datetime              NOT NULL,
+    `deleted_at`        datetime,
+    `version`           integer default 0     NOT NULL,
     PRIMARY KEY (`id`),
     foreign key (`member_id`) references members (id) on delete cascade
 ) ENGINE = InnoDB

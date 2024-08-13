@@ -23,6 +23,10 @@ public class FileUtils {
         return UUID.randomUUID() + EXTENSION_SEPARATOR + getExtension(file.getOriginalFilename());
     }
 
+    public static String generateUniqueFileName(String extension) {
+        return UUID.randomUUID() + EXTENSION_SEPARATOR + extension;
+    }
+
     /**
      * 비어있는 파일인지 호환가능한 파일 형식인지 판단
      */

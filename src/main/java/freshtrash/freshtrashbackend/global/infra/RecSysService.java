@@ -17,23 +17,11 @@ public class RecSysService {
     private final RecSysProperties recSysProperties;
 
     /**
-     * 상품 추가 시 해당 상품의 프로필 정보 추가
+     * 상품 추가/수정 시 해당 상품의 프로필 정보 수정
      */
-    public void createProduct(Product product) {
+    public void createOrUpdateProduct(Product product) {
         Map<String, Object> messageBody = new HashMap<>();
-        messageBody.put("product_id", product.getId());
-        messageBody.put("category", product.getProductCategory().getProfileIndex());
-        messageBody.put("title", product.getTitle());
-        messageBody.put("content", product.getContent());
-        restUtils.post(new HttpEntity<>(messageBody), getUrl(recSysProperties.productEndpoint()), Void.class);
-    }
-
-    /**
-     * 상품 수정 시 해당 상품의 프로필 정보 수정
-     */
-    public void updateProduct(Product product) {
-        Map<String, Object> messageBody = new HashMap<>();
-        messageBody.put("product_id", product.getId());
+        messageBody.put("file_name", product.getProfileFileName());
         messageBody.put("category", product.getProductCategory().getProfileIndex());
         messageBody.put("title", product.getTitle());
         messageBody.put("content", product.getContent());

@@ -53,7 +53,7 @@ public class ProductService {
         fileService.uploadFile(imgFile, savedFileName);
 
         // 상품 프로필 추가
-        recSysService.createProduct(savedProduct);
+        recSysService.createOrUpdateProduct(savedProduct);
 
         return ProductResponse.fromEntity(savedProduct, memberPrincipal);
     }
@@ -75,7 +75,7 @@ public class ProductService {
         fileService.uploadFile(imgFile, updatedFileName);
 
         // 상품 프로필 수정
-        recSysService.updateProduct(updatedProduct);
+        recSysService.createOrUpdateProduct(updatedProduct);
 
         return ProductResponse.fromEntity(updatedProduct, memberPrincipal);
     }

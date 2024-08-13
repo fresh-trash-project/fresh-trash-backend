@@ -2,20 +2,18 @@ package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.domain.member.dto.projections.MemberFileNameSummary;
 import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.MemberFileNameSummary;
 import freshtrash.freshtrashbackend.domain.member.dto.request.ChangePasswordRequest;
 import freshtrash.freshtrashbackend.domain.member.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.domain.member.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.member.entity.Member;
-import freshtrash.freshtrashbackend.domain.member.entity.MemberPurchaseProfile;
-import freshtrash.freshtrashbackend.domain.member.repository.MemberPurchaseProfileRepository;
+import freshtrash.freshtrashbackend.domain.member.repository.MemberRepository;
 import freshtrash.freshtrashbackend.domain.member.service.MemberService;
+import freshtrash.freshtrashbackend.domain.member.service.TokenProvider;
 import freshtrash.freshtrashbackend.global.exception.MemberException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.domain.member.repository.MemberRepository;
-import freshtrash.freshtrashbackend.domain.member.service.TokenProvider;
 import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,9 +42,6 @@ class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
-
-    @Mock
-    private MemberPurchaseProfileRepository memberPurchaseProfileRepository;
 
     @Mock
     private FileService fileService;
@@ -98,14 +93,11 @@ class MemberServiceTest {
     void given_member_when_checkEmailAndNickname_then_saveMemberAndReturn() {
         // given
         Member member = Fixture.createMember();
-        MemberPurchaseProfile memberPurchaseProfile = Fixture.createMemberPurchaseProfile(member.getId());
-        MemberPurchaseProfile dbMemberPurchaseProfile = Fixture.createDBMemberPurchaseProfile(member.getId());
         String encodedPassword = "encodedPassword";
         given(memberRepository.existsByEmail(member.getEmail())).willReturn(false);
         given(memberRepository.existsByNickname(member.getNickname())).willReturn(false);
         given(encoder.encode(member.getPassword())).willReturn(encodedPassword);
         given(memberRepository.save(member)).willReturn(member);
-        given(memberPurchaseProfileRepository.save(memberPurchaseProfile)).willReturn(dbMemberPurchaseProfile);
         // when
         Member savedMember = memberService.registerMember(member);
         // then
