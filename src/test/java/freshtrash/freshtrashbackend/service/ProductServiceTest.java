@@ -90,7 +90,7 @@ class ProductServiceTest {
         Product product = Product.fromRequest(productRequest, "test.png", memberPrincipal.id());
         given(productRepository.save(any(Product.class))).willReturn(product);
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
-        willDoNothing().given(recSysService).createProduct(product);
+        willDoNothing().given(recSysService).createOrUpdateProduct(product);
         // when
         ProductResponse productResponse =
                 productService.addProduct(Fixture.createMultipartFileOfImage("image"), productRequest, memberPrincipal);
@@ -120,7 +120,7 @@ class ProductServiceTest {
                 .willReturn(true);
         given(productRepository.save(any(Product.class))).willReturn(product);
         willDoNothing().given(fileService).uploadFile(any(MultipartFile.class), anyString());
-        willDoNothing().given(recSysService).updateProduct(product);
+        willDoNothing().given(recSysService).createOrUpdateProduct(product);
         // when
         ProductResponse productResponse =
                 productService.updateProduct(productId, multipartFile, productRequest, memberPrincipal);

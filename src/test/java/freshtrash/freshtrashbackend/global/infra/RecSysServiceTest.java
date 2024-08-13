@@ -30,17 +30,6 @@ class RecSysServiceTest {
     @Mock
     private RecSysProperties recSysProperties;
 
-    @DisplayName("상품의 프로필 정보를 추가하는 API를 요청한다.")
-    @Test
-    void given_product_when_requestPostByRest_then_returnVoid() {
-        // given
-        Product product = Fixture.createProduct();
-        given(restUtils.post(any(HttpEntity.class), anyString(), eq(Void.class))).willReturn(ResponseEntity.ok(null));
-        // when
-        recSysService.createProduct(product);
-        // then
-    }
-
     @DisplayName("상품의 프로필 정보를 수정하는 API를 요청한다.")
     @Test
     void given_product_when_requestPutByRest_then_returnVoid() {
@@ -48,7 +37,7 @@ class RecSysServiceTest {
         Product product = Fixture.createProduct();
         given(restUtils.put(any(HttpEntity.class), anyString(), eq(Void.class))).willReturn(ResponseEntity.ok(null));
         // when
-        recSysService.updateProduct(product);
+        recSysService.createOrUpdateProduct(product);
         // then
     }
 
