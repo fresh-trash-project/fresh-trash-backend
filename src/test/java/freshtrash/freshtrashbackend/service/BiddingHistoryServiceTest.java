@@ -1,10 +1,10 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.domain.auction.repository.BiddingHistoryRepository;
 import freshtrash.freshtrashbackend.domain.alarm.service.adapter.AlarmMappingHandlerAdapter;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.domain.auction.repository.BiddingHistoryRepository;
 import freshtrash.freshtrashbackend.domain.auction.service.BiddingHistoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

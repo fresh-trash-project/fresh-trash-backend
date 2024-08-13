@@ -4,11 +4,11 @@ import freshtrash.freshtrashbackend.Fixture.FixtureDto;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
 import freshtrash.freshtrashbackend.domain.auction.controller.AuctionController;
 import freshtrash.freshtrashbackend.domain.auction.dto.request.BiddingRequest;
-import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
-import freshtrash.freshtrashbackend.global.exception.AuctionException;
 import freshtrash.freshtrashbackend.domain.auction.repository.AuctionRepository;
 import freshtrash.freshtrashbackend.domain.auction.service.AuctionEventService;
 import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.global.exception.AuctionException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -63,7 +63,8 @@ public class AuctionIntegrationTest {
                     int price = random.nextInt((5000 - 1000) + 1) + 1000;
                     price -= price % 10;
                     log.info("Bidding price: {}", price);
-                    auctionController.placeBidding(auctionId, new BiddingRequest(price), FixtureDto.createMemberPrincipal());
+                    auctionController.placeBidding(
+                            auctionId, new BiddingRequest(price), FixtureDto.createMemberPrincipal());
                     latch.countDown();
                     latch.await();
                 } catch (InterruptedException e) {

@@ -5,5 +5,6 @@ import freshtrash.freshtrashbackend.domain.alarm.service.parameter.AlarmTemplate
 
 public interface AlarmTemplate {
     void sendAlarm(AlarmTemplateParameter param);
+
     boolean supports(AlarmType alarmType);
 }

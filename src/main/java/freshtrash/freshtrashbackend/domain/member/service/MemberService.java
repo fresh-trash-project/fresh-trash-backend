@@ -1,16 +1,16 @@
 package freshtrash.freshtrashbackend.domain.member.service;
 
-import freshtrash.freshtrashbackend.domain.member.dto.projections.MemberFileNameSummary;
 import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.MemberFileNameSummary;
 import freshtrash.freshtrashbackend.domain.member.dto.request.ChangePasswordRequest;
 import freshtrash.freshtrashbackend.domain.member.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.domain.member.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.member.repository.MemberRepository;
 import freshtrash.freshtrashbackend.global.exception.AuthException;
 import freshtrash.freshtrashbackend.global.exception.MemberException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.domain.member.repository.MemberRepository;
 import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import freshtrash.freshtrashbackend.global.utils.FileUtils;
 import lombok.RequiredArgsConstructor;

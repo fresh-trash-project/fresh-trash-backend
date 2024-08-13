@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.domain.chatMessage.entity;
 
-import freshtrash.freshtrashbackend.domain.member.entity.Member;
 import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
 import freshtrash.freshtrashbackend.global.common.audit.CreatedAt;
 import lombok.*;
 

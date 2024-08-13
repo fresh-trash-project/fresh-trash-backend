@@ -1,14 +1,14 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.alarm.service.NotPaidAuctionAlarm;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.BiddingHistoryAlarmParameter;
-import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
-import freshtrash.freshtrashbackend.domain.member.entity.Member;
-import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
 import freshtrash.freshtrashbackend.domain.auction.service.BiddingHistoryService;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
 import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
@@ -62,11 +62,11 @@ class NotPaidAuctionAlarmTest {
     @DisplayName("NOT_PAY 타입의 알람 전송을 수행하는 작업을 지원한다.")
     @Test
     void given_alarmType_when_supported_then_returnTrue() {
-        //given
+        // given
         AlarmType alarmType = AlarmType.NOT_PAY;
-        //when
+        // when
         boolean isSupport = notPaidAuctionAlarm.supports(alarmType);
-        //then
+        // then
         assertThat(isSupport).isTrue();
     }
 }

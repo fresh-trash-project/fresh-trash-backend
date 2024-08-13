@@ -1,7 +1,7 @@
 package freshtrash.freshtrashbackend.domain.alarm.dto.request;
 
-import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

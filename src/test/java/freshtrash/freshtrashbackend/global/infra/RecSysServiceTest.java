@@ -16,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -44,11 +43,11 @@ class RecSysServiceTest {
     @DisplayName("상품 구매 시 회원의 구매 횟수와 프로필 정보를 업데이트하는 API를 요청한다.")
     @Test
     void given_productIdAndMemberId_when_requestPutByRest_then_returnVoid() {
-        //given
+        // given
         Long productId = 1L, memberId = 2L;
         given(restUtils.put(any(HttpEntity.class), anyString(), eq(Void.class))).willReturn(ResponseEntity.ok(null));
-        //when
+        // when
         recSysService.purchaseProduct(productId, memberId);
-        //then
+        // then
     }
 }

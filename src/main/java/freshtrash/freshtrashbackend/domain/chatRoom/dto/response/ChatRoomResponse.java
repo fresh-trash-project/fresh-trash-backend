@@ -34,7 +34,8 @@ public record ChatRoomResponse(
                 .build();
     }
 
-    public static ChatRoomResponse fromEntity(ChatRoom chatRoom, String productTitle, String sellerNickname, String buyerNickname) {
+    public static ChatRoomResponse fromEntity(
+            ChatRoom chatRoom, String productTitle, String sellerNickname, String buyerNickname) {
         return ChatRoomResponse.builder()
                 .id(chatRoom.getId())
                 .productId(chatRoom.getProductId())

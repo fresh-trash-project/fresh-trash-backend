@@ -5,11 +5,11 @@ import freshtrash.freshtrashbackend.domain.auction.controller.constants.AuctionM
 import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionRequest;
 import freshtrash.freshtrashbackend.domain.auction.dto.request.BiddingRequest;
 import freshtrash.freshtrashbackend.domain.auction.dto.response.AuctionResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.auction.service.AuctionEventService;
 import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
 import freshtrash.freshtrashbackend.domain.auction.service.BiddingHistoryService;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

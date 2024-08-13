@@ -1,10 +1,10 @@
 package freshtrash.freshtrashbackend.service;
 
 import freshtrash.freshtrashbackend.domain.mail.dto.cache.EmailCodeCache;
+import freshtrash.freshtrashbackend.domain.mail.repository.EmailCodeCacheRepository;
 import freshtrash.freshtrashbackend.domain.mail.service.MailService;
 import freshtrash.freshtrashbackend.global.exception.MailException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.domain.mail.repository.EmailCodeCacheRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

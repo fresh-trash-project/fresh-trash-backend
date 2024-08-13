@@ -2,9 +2,9 @@ package freshtrash.freshtrashbackend.domain.product.service;
 
 import freshtrash.freshtrashbackend.domain.product.dto.request.ProductReviewRequest;
 import freshtrash.freshtrashbackend.domain.product.entity.ProductReview;
+import freshtrash.freshtrashbackend.domain.product.repository.ProductReviewRepository;
 import freshtrash.freshtrashbackend.global.exception.ReviewException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.domain.product.repository.ProductReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

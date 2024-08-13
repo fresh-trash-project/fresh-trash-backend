@@ -3,10 +3,10 @@ package freshtrash.freshtrashbackend.domain.chatRoom.service;
 import freshtrash.freshtrashbackend.domain.chatRoom.dto.response.ChatRoomResponse;
 import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
 import freshtrash.freshtrashbackend.domain.chatRoom.entity.constants.ChatRoomSellStatus;
+import freshtrash.freshtrashbackend.domain.chatRoom.repository.ChatRoomRepository;
 import freshtrash.freshtrashbackend.global.exception.ChatException;
 import freshtrash.freshtrashbackend.global.exception.ChatRoomException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.domain.chatRoom.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -62,7 +62,8 @@ public class ChatRoomService {
     /**
      * productId에 해당하며 전달받은 ChatRoomSellStatus가 아닌 채팅방들을 조회
      */
-    private List<ChatRoom> getChatRoomsByProductIdAndNotChatRoomSellStatus(Long productId, ChatRoomSellStatus sellStatus) {
+    private List<ChatRoom> getChatRoomsByProductIdAndNotChatRoomSellStatus(
+            Long productId, ChatRoomSellStatus sellStatus) {
         return chatRoomRepository.findByProduct_IdAndSellStatusNot(productId, sellStatus);
     }
 

@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.domain.alarm.controller;
 
 import freshtrash.freshtrashbackend.domain.alarm.dto.response.AlarmResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.alarm.service.AlarmService;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

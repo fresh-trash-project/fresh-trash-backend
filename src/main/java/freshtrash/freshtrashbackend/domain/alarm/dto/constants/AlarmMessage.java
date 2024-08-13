@@ -17,7 +17,8 @@ public enum AlarmMessage {
     // 경매
     NOT_COMPLETED_AUCTION_MESSAGE("🌫️경매 [%s]가 입찰된 내역이 없습니다."),
     COMPLETE_BID_AUCTION_MESSAGE("🎉경매 [%s]가 낙찰되었습니다."),
-    REQUEST_PAY_AUCTION_MESSAGE("🎉축하합니다! 경매 [%s]가 낙찰되었습니다. 이 알림 메시지를 클릭하여 결제 페이지로 이동해 결제를 진행해주세요. 24시간 이내에 결제를 완료해주세요."),
+    REQUEST_PAY_AUCTION_MESSAGE(
+            "🎉축하합니다! 경매 [%s]가 낙찰되었습니다. 이 알림 메시지를 클릭하여 결제 페이지로 이동해 결제를 진행해주세요. 24시간 이내에 결제를 완료해주세요."),
     CANCEL_AUCTION_MESSAGE("❌경매 [%s]가 취소되었습니다."),
     REVIEW_FROM_BUYER_MESSAGE("📦작성된 상품 리뷰가 있습니다."),
     // 경매 - 결제

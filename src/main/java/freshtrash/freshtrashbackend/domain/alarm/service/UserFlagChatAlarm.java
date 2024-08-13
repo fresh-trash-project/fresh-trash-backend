@@ -1,9 +1,9 @@
 package freshtrash.freshtrashbackend.domain.alarm.service;
 
-import freshtrash.freshtrashbackend.domain.member.entity.Member;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import freshtrash.freshtrashbackend.domain.alarm.service.template.ChatAlarmTemplate;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import freshtrash.freshtrashbackend.producer.ChatProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

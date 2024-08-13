@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.domain.product.controller;
 
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.product.dto.request.ProductReviewRequest;
 import freshtrash.freshtrashbackend.domain.product.dto.response.ProductReviewResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.product.service.ProductReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

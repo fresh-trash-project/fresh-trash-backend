@@ -1,12 +1,12 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.alarm.service.UserFlagChatAlarm;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.ChatAlarmParameter;
-import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
 import freshtrash.freshtrashbackend.domain.member.entity.Member;
-import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import freshtrash.freshtrashbackend.producer.ChatProducer;
 import org.junit.jupiter.api.DisplayName;
@@ -58,11 +58,11 @@ class UserFlagChatAlarmTest {
     @DisplayName("FLAG 타입의 알람 전송을 수행하는 작업을 지원한다.")
     @Test
     void given_alarmType_when_supported_then_returnTrue() {
-        //given
+        // given
         AlarmType alarmType = AlarmType.FLAG;
-        //when
+        // when
         boolean isSupport = userFlagChatAlarm.supports(alarmType);
-        //then
+        // then
         assertThat(isSupport).isTrue();
     }
 }

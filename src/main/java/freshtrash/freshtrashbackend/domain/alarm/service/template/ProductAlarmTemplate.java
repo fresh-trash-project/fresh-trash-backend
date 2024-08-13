@@ -1,10 +1,10 @@
 package freshtrash.freshtrashbackend.domain.alarm.service.template;
 
+import freshtrash.freshtrashbackend.domain.alarm.service.parameter.AlarmTemplateParameter;
+import freshtrash.freshtrashbackend.domain.alarm.service.parameter.ProductAlarmParameter;
 import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
 import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
 import freshtrash.freshtrashbackend.domain.product.service.ProductDealService;
-import freshtrash.freshtrashbackend.domain.alarm.service.parameter.AlarmTemplateParameter;
-import freshtrash.freshtrashbackend.domain.alarm.service.parameter.ProductAlarmParameter;
 import freshtrash.freshtrashbackend.producer.ProductDealProducer;
 import lombok.RequiredArgsConstructor;
 

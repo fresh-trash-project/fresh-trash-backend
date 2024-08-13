@@ -1,9 +1,9 @@
 package freshtrash.freshtrashbackend.domain.auction.service;
 
-import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.domain.alarm.service.adapter.AlarmMappingHandlerAdapter;
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

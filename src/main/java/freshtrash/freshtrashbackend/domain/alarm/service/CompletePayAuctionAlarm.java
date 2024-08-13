@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.domain.alarm.service;
 
-import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.alarm.service.template.BiddingHistoryAlarmTemplate;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,16 +1,16 @@
 package freshtrash.freshtrashbackend.domain.product.controller;
 
 import com.querydsl.core.types.Predicate;
-import freshtrash.freshtrashbackend.domain.product.dto.request.ProductRequest;
 import freshtrash.freshtrashbackend.domain.chatRoom.dto.response.ChatRoomResponse;
-import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
-import freshtrash.freshtrashbackend.domain.member.entity.Member;
-import freshtrash.freshtrashbackend.domain.product.entity.Product;
 import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
-import freshtrash.freshtrashbackend.global.infra.file.FileService;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
+import freshtrash.freshtrashbackend.domain.product.dto.request.ProductRequest;
+import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
+import freshtrash.freshtrashbackend.domain.product.entity.Product;
 import freshtrash.freshtrashbackend.domain.product.service.ProductService;
+import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

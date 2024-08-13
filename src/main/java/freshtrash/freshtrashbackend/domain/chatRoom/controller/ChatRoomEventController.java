@@ -1,11 +1,11 @@
 package freshtrash.freshtrashbackend.domain.chatRoom.controller;
 
-import freshtrash.freshtrashbackend.domain.chatRoom.controller.constants.ProductEventType;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
 import freshtrash.freshtrashbackend.domain.alarm.service.adapter.AlarmMappingHandlerAdapter;
+import freshtrash.freshtrashbackend.domain.chatRoom.controller.constants.ProductEventType;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

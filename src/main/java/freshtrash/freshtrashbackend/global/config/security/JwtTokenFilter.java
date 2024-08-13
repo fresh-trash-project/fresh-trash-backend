@@ -1,9 +1,9 @@
 package freshtrash.freshtrashbackend.global.config.security;
 
 import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import freshtrash.freshtrashbackend.domain.member.service.TokenProvider;
 import freshtrash.freshtrashbackend.global.exception.AuthException;
-import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

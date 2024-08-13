@@ -3,8 +3,8 @@ package freshtrash.freshtrashbackend.global.config.security;
 import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.member.dto.security.OAuthAttributes;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
-import freshtrash.freshtrashbackend.global.exception.MemberException;
 import freshtrash.freshtrashbackend.domain.member.service.MemberService;
+import freshtrash.freshtrashbackend.global.exception.MemberException;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,7 +46,12 @@ public class SecurityConfig {
                         .permitAll()
                         .regexMatchers("/oauth2.*", ".*auth/signup", ".*auth/signin", ".*mail.*")
                         .hasAnyRole("ANONYMOUS")
-                        .regexMatchers(".*products(?:\\?.*)?", ".*auctions(?:\\?.*)?", "/chat-ws", ".*auth/check-nickname.*", "/actuator/prometheus")
+                        .regexMatchers(
+                                ".*products(?:\\?.*)?",
+                                ".*auctions(?:\\?.*)?",
+                                "/chat-ws",
+                                ".*auth/check-nickname.*",
+                                "/actuator/prometheus")
                         .permitAll()
                         .anyRequest()
                         .hasAnyRole("USER", "ADMIN"))

@@ -52,7 +52,8 @@ class AuctionReviewServiceTest {
         given(auctionService.getAuction(auctionId)).willReturn(auction);
         willDoNothing().given(auctionProducer).publishToSellerForReview(auctionReview.getAuction(), memberId);
         // when
-        AuctionReview savedAuctionReview = auctionReviewService.insertAuctionReview(auctionReviewRequest, auctionId, memberId);
+        AuctionReview savedAuctionReview =
+                auctionReviewService.insertAuctionReview(auctionReviewRequest, auctionId, memberId);
         // then
         assertThat(savedAuctionReview.getContent()).isEqualTo(auctionReviewRequest.content());
         assertThat(savedAuctionReview.getRating()).isEqualTo(auctionReviewRequest.rate());

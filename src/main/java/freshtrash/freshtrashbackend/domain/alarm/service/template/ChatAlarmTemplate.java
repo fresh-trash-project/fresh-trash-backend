@@ -1,9 +1,9 @@
 package freshtrash.freshtrashbackend.domain.alarm.service.template;
 
-import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
-import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.AlarmTemplateParameter;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.ChatAlarmParameter;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.domain.member.service.MemberService;
 import freshtrash.freshtrashbackend.producer.ChatProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

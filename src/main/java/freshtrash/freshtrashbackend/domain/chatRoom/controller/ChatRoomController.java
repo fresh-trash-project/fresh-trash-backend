@@ -2,8 +2,8 @@ package freshtrash.freshtrashbackend.domain.chatRoom.controller;
 
 import freshtrash.freshtrashbackend.domain.chatRoom.dto.response.ChatRoomResponse;
 import freshtrash.freshtrashbackend.domain.chatRoom.dto.response.ChatRoomWithMessagesResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.chatRoom.service.ChatRoomService;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

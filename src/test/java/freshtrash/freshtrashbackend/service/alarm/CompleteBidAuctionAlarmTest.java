@@ -1,10 +1,10 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.alarm.service.CompleteBidAuctionAlarm;
 import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
-import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
 import freshtrash.freshtrashbackend.domain.auction.service.BiddingHistoryService;
 import freshtrash.freshtrashbackend.producer.AuctionProducer;
@@ -68,11 +68,11 @@ class CompleteBidAuctionAlarmTest {
     @DisplayName("BIDDING 타입의 알람 전송을 수행하는 작업을 지원한다.")
     @Test
     void given_alarmType_when_supported_then_returnTrue() {
-        //given
+        // given
         AlarmType alarmType = AlarmType.BIDDING;
-        //when
+        // when
         boolean isSupport = completeBidAuctionAlarm.supports(alarmType);
-        //then
+        // then
         assertThat(isSupport).isTrue();
     }
 }

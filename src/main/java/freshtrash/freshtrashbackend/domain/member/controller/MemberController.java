@@ -4,8 +4,8 @@ import freshtrash.freshtrashbackend.domain.member.dto.request.ChangePasswordRequ
 import freshtrash.freshtrashbackend.domain.member.dto.request.MemberRequest;
 import freshtrash.freshtrashbackend.domain.member.dto.response.MemberResponse;
 import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
-import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import freshtrash.freshtrashbackend.domain.member.service.MemberService;
+import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

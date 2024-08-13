@@ -1,11 +1,11 @@
 package freshtrash.freshtrashbackend.domain.product.service;
 
 import freshtrash.freshtrashbackend.domain.chatRoom.entity.constants.ChatRoomSellStatus;
+import freshtrash.freshtrashbackend.domain.chatRoom.repository.ChatRoomRepository;
 import freshtrash.freshtrashbackend.domain.product.controller.constants.ProductDealMemberType;
 import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
 import freshtrash.freshtrashbackend.domain.product.entity.ProductDealLog;
 import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductSellStatus;
-import freshtrash.freshtrashbackend.domain.chatRoom.repository.ChatRoomRepository;
 import freshtrash.freshtrashbackend.domain.product.repository.ProductDealLogRepository;
 import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
 import freshtrash.freshtrashbackend.global.infra.RecSysService;
@@ -52,14 +52,23 @@ public class ProductDealService {
      */
     @Transactional
     public void completeProductDeal(
-            Long productId, Long chatRoomId, Long sellerId, Long buyerId, ProductSellStatus productSellStatus, ChatRoomSellStatus chatRoomSellStatus) {
+            Long productId,
+            Long chatRoomId,
+            Long sellerId,
+            Long buyerId,
+            ProductSellStatus productSellStatus,
+            ChatRoomSellStatus chatRoomSellStatus) {
         updateSellStatus(productId, chatRoomId, productSellStatus, chatRoomSellStatus);
         saveProductDealLog(productId, sellerId, buyerId);
         recSysService.purchaseProduct(productId, buyerId);
     }
 
     @Transactional
-    public void updateSellStatus(Long productId, Long chatRoomId, ProductSellStatus productSellStatus, ChatRoomSellStatus chatRoomSellStatus) {
+    public void updateSellStatus(
+            Long productId,
+            Long chatRoomId,
+            ProductSellStatus productSellStatus,
+            ChatRoomSellStatus chatRoomSellStatus) {
         productRepository.updateSellStatus(productId, productSellStatus);
         chatRoomRepository.updateSellStatus(chatRoomId, chatRoomSellStatus);
     }

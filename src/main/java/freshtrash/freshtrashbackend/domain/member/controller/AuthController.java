@@ -2,11 +2,11 @@ package freshtrash.freshtrashbackend.domain.member.controller;
 
 import freshtrash.freshtrashbackend.domain.member.dto.request.LoginRequest;
 import freshtrash.freshtrashbackend.domain.member.dto.request.SignUpRequest;
-import freshtrash.freshtrashbackend.global.common.response.ApiResponse;
 import freshtrash.freshtrashbackend.domain.member.dto.response.LoginResponse;
 import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.member.entity.Member;
 import freshtrash.freshtrashbackend.domain.member.service.MemberService;
+import freshtrash.freshtrashbackend.global.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

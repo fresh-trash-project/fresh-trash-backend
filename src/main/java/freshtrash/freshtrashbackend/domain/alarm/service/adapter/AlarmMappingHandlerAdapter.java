@@ -1,16 +1,16 @@
 package freshtrash.freshtrashbackend.domain.alarm.service.adapter;
 
-import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
-import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
-import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.global.exception.AlarmException;
-import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.AuctionAlarmParameter;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.BiddingHistoryAlarmParameter;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.ChatAlarmParameter;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.ProductAlarmParameter;
 import freshtrash.freshtrashbackend.domain.alarm.service.template.AlarmTemplate;
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
+import freshtrash.freshtrashbackend.global.exception.AlarmException;
+import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;

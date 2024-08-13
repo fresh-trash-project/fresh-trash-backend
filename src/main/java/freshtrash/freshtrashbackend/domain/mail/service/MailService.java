@@ -1,9 +1,9 @@
 package freshtrash.freshtrashbackend.domain.mail.service;
 
 import freshtrash.freshtrashbackend.domain.mail.dto.cache.EmailCodeCache;
+import freshtrash.freshtrashbackend.domain.mail.repository.EmailCodeCacheRepository;
 import freshtrash.freshtrashbackend.global.exception.MailException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.domain.mail.repository.EmailCodeCacheRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;

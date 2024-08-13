@@ -1,9 +1,9 @@
 package freshtrash.freshtrashbackend.domain.alarm.service;
 
-import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
-import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
 import freshtrash.freshtrashbackend.domain.alarm.service.template.AuctionAlarmTemplate;
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
+import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
 import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

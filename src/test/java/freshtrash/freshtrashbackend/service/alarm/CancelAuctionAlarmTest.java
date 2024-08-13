@@ -1,12 +1,12 @@
 package freshtrash.freshtrashbackend.service.alarm;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.alarm.service.CancelAuctionAlarm;
+import freshtrash.freshtrashbackend.domain.alarm.service.parameter.AuctionAlarmParameter;
 import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
-import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
-import freshtrash.freshtrashbackend.domain.alarm.service.parameter.AuctionAlarmParameter;
 import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,18 +44,19 @@ class CancelAuctionAlarmTest {
         willDoNothing().given(producer).publishToBiddersForCancelAuction(auction, biddingHistory.getMemberId());
         willDoNothing().given(producer).publishToSellerForCancelAuction(auction);
         // when
-        assertThatCode(() -> cancelAuctionAlarm.sendAlarm(auctionAlarmParameter)).doesNotThrowAnyException();
+        assertThatCode(() -> cancelAuctionAlarm.sendAlarm(auctionAlarmParameter))
+                .doesNotThrowAnyException();
         // then
     }
 
     @DisplayName("CANCEL_AUCTION 타입의 알람 전송을 수행하는 작업을 지원한다.")
     @Test
     void given_alarmType_when_supported_then_returnTrue() {
-        //given
+        // given
         AlarmType alarmType = AlarmType.CANCEL_AUCTION;
-        //when
+        // when
         boolean isSupport = cancelAuctionAlarm.supports(alarmType);
-        //then
+        // then
         assertThat(isSupport).isTrue();
     }
 }

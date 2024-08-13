@@ -1,9 +1,9 @@
 package freshtrash.freshtrashbackend.domain.auction.dto.response;
 
-import freshtrash.freshtrashbackend.domain.member.dto.response.MemberResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.auction.entity.constants.AuctionStatus;
+import freshtrash.freshtrashbackend.domain.member.dto.response.MemberResponse;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductCategory;
 import freshtrash.freshtrashbackend.domain.product.entity.constants.ProductStatus;
 import lombok.Builder;

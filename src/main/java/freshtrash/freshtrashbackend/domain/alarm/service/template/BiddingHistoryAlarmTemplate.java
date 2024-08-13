@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.domain.alarm.service.template;
 
-import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.AlarmTemplateParameter;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.BiddingHistoryAlarmParameter;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

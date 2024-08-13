@@ -30,8 +30,7 @@ public class DeadLetterConsumer {
                 "#{dlqAuctionPayQueue.name}",
                 "#{dlqReviewQueue.name}"
             })
-    public void handleFailedMessage(
-            Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, Message message) {
+    public void handleFailedMessage(Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag, Message message) {
         log.debug("consume from dead letter queue");
         log.debug("message: {}", message);
 

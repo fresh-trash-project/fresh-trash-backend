@@ -2,8 +2,8 @@ package freshtrash.freshtrashbackend.controller;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.config.TestSecurityConfig;
-import freshtrash.freshtrashbackend.domain.product.controller.constants.ProductDealMemberType;
 import freshtrash.freshtrashbackend.domain.product.controller.ProductDealController;
+import freshtrash.freshtrashbackend.domain.product.controller.constants.ProductDealMemberType;
 import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
 import freshtrash.freshtrashbackend.domain.product.service.ProductDealService;
 import org.junit.jupiter.api.DisplayName;

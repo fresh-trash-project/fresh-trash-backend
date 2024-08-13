@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.domain.alarm.dto.request;
 
+import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
-import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import lombok.Builder;
 
 import java.util.HashMap;

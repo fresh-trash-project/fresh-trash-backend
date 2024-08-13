@@ -1,11 +1,11 @@
 package freshtrash.freshtrashbackend.domain.auction.service;
 
-import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.domain.alarm.service.adapter.AlarmMappingHandlerAdapter;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.domain.auction.repository.BiddingHistoryRepository;
 import freshtrash.freshtrashbackend.global.exception.BiddingHistoryException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.domain.auction.repository.BiddingHistoryRepository;
-import freshtrash.freshtrashbackend.domain.alarm.service.adapter.AlarmMappingHandlerAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

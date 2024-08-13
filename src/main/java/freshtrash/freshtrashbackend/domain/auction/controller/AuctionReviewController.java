@@ -2,8 +2,8 @@ package freshtrash.freshtrashbackend.domain.auction.controller;
 
 import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionReviewRequest;
 import freshtrash.freshtrashbackend.domain.auction.dto.response.AuctionReviewResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.auction.service.AuctionReviewService;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

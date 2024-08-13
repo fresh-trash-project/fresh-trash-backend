@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.domain.member.repository;
 
-import freshtrash.freshtrashbackend.domain.member.entity.Member;
-import freshtrash.freshtrashbackend.domain.member.dto.projections.MemberFileNameSummary;
 import freshtrash.freshtrashbackend.domain.member.dto.projections.FlagCountSummary;
+import freshtrash.freshtrashbackend.domain.member.dto.projections.MemberFileNameSummary;
+import freshtrash.freshtrashbackend.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Propagation;

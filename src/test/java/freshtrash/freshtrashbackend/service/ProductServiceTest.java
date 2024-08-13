@@ -3,18 +3,18 @@ package freshtrash.freshtrashbackend.service;
 import com.querydsl.core.types.Predicate;
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
+import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.domain.product.dto.projections.ProductFileNameSummary;
 import freshtrash.freshtrashbackend.domain.product.dto.request.ProductRequest;
 import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.product.entity.Product;
 import freshtrash.freshtrashbackend.domain.product.entity.QProduct;
+import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
 import freshtrash.freshtrashbackend.domain.product.service.ProductService;
-import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.global.exception.FileException;
 import freshtrash.freshtrashbackend.global.exception.ProductException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
-import freshtrash.freshtrashbackend.domain.product.repository.ProductRepository;
 import freshtrash.freshtrashbackend.global.infra.RecSysService;
 import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import org.junit.jupiter.api.DisplayName;
@@ -192,7 +192,8 @@ class ProductServiceTest {
         // given
         Long productId = 1L;
         String fileName = "file";
-        given(productRepository.findFileNameById(productId)).willReturn(Optional.of(new ProductFileNameSummary(fileName)));
+        given(productRepository.findFileNameById(productId))
+                .willReturn(Optional.of(new ProductFileNameSummary(fileName)));
         // when
         ProductFileNameSummary productFileNameSummary = productService.findFileNameOfProduct(productId);
         // then

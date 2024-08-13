@@ -2,8 +2,8 @@ package freshtrash.freshtrashbackend.service.producer;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
 import freshtrash.freshtrashbackend.domain.alarm.dto.events.AlarmEvent;
-import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionAlarmPayload;
 import freshtrash.freshtrashbackend.domain.alarm.dto.request.BaseAlarmPayload;
+import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionAlarmPayload;
 import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
 import freshtrash.freshtrashbackend.producer.AuctionProducer;

@@ -2,11 +2,11 @@ package freshtrash.freshtrashbackend.consumer;
 
 import com.rabbitmq.client.Channel;
 import freshtrash.freshtrashbackend.Fixture.FixtureDto;
-import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionAlarmPayload;
 import freshtrash.freshtrashbackend.domain.alarm.dto.request.BaseAlarmPayload;
 import freshtrash.freshtrashbackend.domain.alarm.dto.response.AlarmResponse;
 import freshtrash.freshtrashbackend.domain.alarm.entity.Alarm;
 import freshtrash.freshtrashbackend.domain.alarm.service.AlarmService;
+import freshtrash.freshtrashbackend.domain.auction.dto.request.AuctionAlarmPayload;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

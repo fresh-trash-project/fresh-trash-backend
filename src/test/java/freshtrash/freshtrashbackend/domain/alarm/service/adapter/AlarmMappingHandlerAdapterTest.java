@@ -1,9 +1,6 @@
 package freshtrash.freshtrashbackend.domain.alarm.service.adapter;
 
 import freshtrash.freshtrashbackend.Fixture.Fixture;
-import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
-import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
-import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.AuctionAlarmParameter;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.BiddingHistoryAlarmParameter;
@@ -13,6 +10,9 @@ import freshtrash.freshtrashbackend.domain.alarm.service.template.AuctionAlarmTe
 import freshtrash.freshtrashbackend.domain.alarm.service.template.BiddingHistoryAlarmTemplate;
 import freshtrash.freshtrashbackend.domain.alarm.service.template.ChatAlarmTemplate;
 import freshtrash.freshtrashbackend.domain.alarm.service.template.ProductAlarmTemplate;
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
+import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.domain.chatRoom.entity.ChatRoom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

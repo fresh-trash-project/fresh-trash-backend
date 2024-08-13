@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.domain.product.controller;
 
+import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.product.controller.constants.ProductDealMemberType;
 import freshtrash.freshtrashbackend.domain.product.dto.response.ProductResponse;
-import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.product.service.ProductDealService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,8 @@ public class ProductDealController {
             @AuthenticationPrincipal MemberPrincipal memberPrincipal,
             @PageableDefault(size = 6, sort = "createdAt", direction = DESC) Pageable pageable) {
 
-        Page<ProductResponse> products = productDealService.getTransactedProducts(memberPrincipal.id(), memberType, pageable);
+        Page<ProductResponse> products =
+                productDealService.getTransactedProducts(memberPrincipal.id(), memberType, pageable);
         return ResponseEntity.ok(products);
     }
 }

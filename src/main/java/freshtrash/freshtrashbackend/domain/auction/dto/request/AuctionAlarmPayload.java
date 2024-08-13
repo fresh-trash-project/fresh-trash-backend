@@ -1,8 +1,8 @@
 package freshtrash.freshtrashbackend.domain.auction.dto.request;
 
 import freshtrash.freshtrashbackend.domain.alarm.dto.request.BaseAlarmPayload;
-import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
