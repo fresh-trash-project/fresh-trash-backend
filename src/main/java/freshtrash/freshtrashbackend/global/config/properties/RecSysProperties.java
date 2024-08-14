@@ -11,7 +11,9 @@ import javax.validation.constraints.Positive;
 @ConfigurationProperties(prefix = "rec-sys")
 public record RecSysProperties(
         @NotBlank String host,
-        @NotBlank String productEndpoint,
+        @NotBlank String profileEndpoint,
         @NotBlank String productPurchase,
+        @NotBlank String auctionPurchase,
         @NotBlank String recommendProduct,
-        @Positive @NotNull Integer productLimit) {}
+        @NotBlank String recommendAuction,
+        @Positive @NotNull Integer recommendLimit) {}

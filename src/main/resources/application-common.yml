@@ -30,7 +30,9 @@ webhook:
 
 rec-sys:
   host: ${REC_SYS_HOST}
-  product-endpoint: ${REC_PRODUCT_ENDPOINT}
+  profile-endpoint: ${PROFILE_ENDPOINT}
   product-purchase: ${REC_PRODUCT_PURCHASE}
+  auction-purchase: ${REC_AUCTION_PURCHASE}
   recommend-product: ${RECOMMEND_PRODUCT}
-  product-limit: ${REC_PRODUCT_LIMIT}
+  recommend-auction: ${RECOMMEND_AUCTION}
+  recommend-limit: ${REC_LIMIT}

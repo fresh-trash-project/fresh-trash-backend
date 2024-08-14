@@ -11,6 +11,7 @@ import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
 import freshtrash.freshtrashbackend.global.exception.AuctionException;
 import freshtrash.freshtrashbackend.global.exception.constants.ErrorCode;
+import freshtrash.freshtrashbackend.global.infra.RecSysService;
 import freshtrash.freshtrashbackend.global.infra.file.FileService;
 import freshtrash.freshtrashbackend.global.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final FileService fileService;
     private final BiddingHistoryService biddingHistoryService;
+    private final RecSysService recSysService;
 
     public AuctionResponse addAuction(
             MultipartFile imgFile, AuctionRequest auctionRequest, MemberPrincipal memberPrincipal) {
@@ -46,6 +48,9 @@ public class AuctionService {
         Auction savedAuction = auctionRepository.save(auction);
         // 이미지 파일 저장
         fileService.uploadFile(imgFile, savedFileName);
+        // 경매 프로필 업데이트
+        recSysService.createAuction(savedAuction);
+
         return AuctionResponse.fromEntity(savedAuction, memberPrincipal);
     }
 
