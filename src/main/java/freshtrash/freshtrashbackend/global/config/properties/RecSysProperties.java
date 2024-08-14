@@ -16,4 +16,4 @@ public record RecSysProperties(
         @NotBlank String auctionPurchase,
         @NotBlank String recommendProduct,
         @NotBlank String recommendAuction,
-        @Positive @NotNull Integer productLimit) {}
+        @Positive @NotNull Integer recommendLimit) {}
