@@ -5,6 +5,7 @@ import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.alarm.service.CompletePayAuctionAlarm;
 import freshtrash.freshtrashbackend.domain.alarm.service.parameter.BiddingHistoryAlarmParameter;
 import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.global.infra.RecSysService;
 import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,9 @@ class CompletePayAuctionAlarmTest {
     @Mock
     private AuctionProducer producer;
 
+    @Mock
+    private RecSysService recSysService;
+
     @Test
     @DisplayName("낙찰된 경매 상품을 결제 완료하면 해당 입찰 내역의 결제 여부를 true로 변경하고 알림을 전송한다.")
     void given_biddingHistory_when_completePay_then_updatePayAndSendAlarm() {
@@ -35,6 +39,7 @@ class CompletePayAuctionAlarmTest {
         int price = 1000;
         BiddingHistory biddingHistory = Fixture.createBiddingHistory(auctionId, memberId, price);
         BiddingHistoryAlarmParameter biddingHistoryAlarmParameter = new BiddingHistoryAlarmParameter(biddingHistory);
+        willDoNothing().given(recSysService).purchaseAuction(auctionId, memberId);
         willDoNothing().given(producer).publishForCompletedPayAndRequestDelivery(biddingHistory);
         // when
         assertThatCode(() -> completePayAuctionAlarm.sendAlarm(biddingHistoryAlarmParameter))

@@ -14,6 +14,7 @@ import freshtrash.freshtrashbackend.domain.auction.service.AuctionService;
 import freshtrash.freshtrashbackend.domain.auction.service.BiddingHistoryService;
 import freshtrash.freshtrashbackend.domain.member.dto.security.MemberPrincipal;
 import freshtrash.freshtrashbackend.domain.member.entity.constants.UserRole;
+import freshtrash.freshtrashbackend.global.infra.RecSysService;
 import freshtrash.freshtrashbackend.global.infra.file.LocalFileService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,9 @@ class AuctionServiceTest {
     @Mock
     private BiddingHistoryService biddingHistoryService;
 
+    @Mock
+    private RecSysService recSysService;
+
     @DisplayName("경매 추가")
     @Test
     void given_imageAndAuctionRequestData_when_addAuction_then_returnSavedAuctionData() {
@@ -67,6 +71,7 @@ class AuctionServiceTest {
         Auction auction = Auction.fromRequest(auctionRequest, fileName, memberPrincipal.id());
         given(auctionRepository.save(any(Auction.class))).willReturn(auction);
         willDoNothing().given(fileService).uploadFile(eq(image), anyString());
+        willDoNothing().given(recSysService).createAuction(auction);
         // when
         AuctionResponse auctionResponse = auctionService.addAuction(image, auctionRequest, memberPrincipal);
         // then
