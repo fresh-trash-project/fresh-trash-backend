@@ -3,6 +3,7 @@ package freshtrash.freshtrashbackend.domain.alarm.service;
 import freshtrash.freshtrashbackend.domain.alarm.entity.constants.AlarmType;
 import freshtrash.freshtrashbackend.domain.alarm.service.template.BiddingHistoryAlarmTemplate;
 import freshtrash.freshtrashbackend.domain.auction.entity.BiddingHistory;
+import freshtrash.freshtrashbackend.global.infra.RecSysService;
 import freshtrash.freshtrashbackend.producer.AuctionProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -10,14 +11,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class CompletePayAuctionAlarm extends BiddingHistoryAlarmTemplate {
+    private final RecSysService recSysService;
 
-    public CompletePayAuctionAlarm(AuctionProducer producer) {
+    public CompletePayAuctionAlarm(AuctionProducer producer, RecSysService recSysService) {
         super(producer);
+        this.recSysService = recSysService;
     }
 
     @Override
     public void update(BiddingHistory biddingHistory) {
-        log.debug("결제 여부를 true로 업데이트");
+        log.debug("프로필 업데이트 후 결제 여부를 true로 업데이트");
+        recSysService.purchaseAuction(biddingHistory.getAuctionId(), biddingHistory.getMemberId());
         biddingHistory.setPay(true);
     }
 

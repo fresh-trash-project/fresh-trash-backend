@@ -1,5 +1,6 @@
 package freshtrash.freshtrashbackend.global.infra;
 
+import freshtrash.freshtrashbackend.domain.auction.entity.Auction;
 import freshtrash.freshtrashbackend.domain.product.entity.Product;
 import freshtrash.freshtrashbackend.global.config.properties.RecSysProperties;
 import freshtrash.freshtrashbackend.global.utils.RestUtils;
@@ -25,7 +26,19 @@ public class RecSysService {
         messageBody.put("category", product.getProductCategory().getProfileIndex());
         messageBody.put("title", product.getTitle());
         messageBody.put("content", product.getContent());
-        restUtils.put(new HttpEntity<>(messageBody), getUrl(recSysProperties.productEndpoint()), Void.class);
+        restUtils.put(new HttpEntity<>(messageBody), getUrl(recSysProperties.profileEndpoint()), Void.class);
+    }
+
+    /**
+     * 경매 추가/수정 시 해당 상품의 프로필 정보 수정
+     */
+    public void createAuction(Auction auction) {
+        Map<String, Object> messageBody = new HashMap<>();
+        messageBody.put("file_name", auction.getProfileFileName());
+        messageBody.put("category", auction.getProductCategory().getProfileIndex());
+        messageBody.put("title", auction.getTitle());
+        messageBody.put("content", auction.getContent());
+        restUtils.put(new HttpEntity<>(messageBody), getUrl(recSysProperties.profileEndpoint()), Void.class);
     }
 
     /**
@@ -36,6 +49,16 @@ public class RecSysService {
     public void purchaseProduct(Long productId, Long memberId) {
         restUtils.put(
                 new HttpEntity<>(null), getUrl(recSysProperties.productPurchase(), productId, memberId), Void.class);
+    }
+
+    /**
+     * 낙찰된 경매 상품 구매 시 구매자의 프로필 정보 수정
+     * 1. 구매 횟수 + 1
+     * 2. 경매 프로필 누적 합 계산
+     */
+    public void purchaseAuction(Long auctionId, Long memberId) {
+        restUtils.put(
+                new HttpEntity<>(null), getUrl(recSysProperties.auctionPurchase(), auctionId, memberId), Void.class);
     }
 
     private String getUrl(String endpoint) {
