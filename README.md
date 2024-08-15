@@ -36,6 +36,10 @@
    <img src="https://github.com/user-attachments/assets/235d3586-2b35-48b9-a18f-0f57926d340c" alt="architecture" />
 </p>
 
+## 추천 시스템
+
+- [fresh-trash-recsys](https://github.com/fresh-trash-project/fresh-trash-recsys)에 Python과 FastAPI를 활용하여 추천 시스템 서버를 구축했습니다.
+
 ## Tech Stacks
 
 ### Backend
