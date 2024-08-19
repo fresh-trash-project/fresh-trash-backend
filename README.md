@@ -36,6 +36,10 @@
    <img src="https://github.com/user-attachments/assets/235d3586-2b35-48b9-a18f-0f57926d340c" alt="architecture" />
 </p>
 
+## API Documentation
+
+- [fresh-trash-backend API 명세](https://documenter.getpostman.com/view/11961003/2sA3XTeKsv#b6f1f4e9-cca7-4d74-b3ae-35cad3d59fa1)
+
 ## 추천 시스템
 
 - [fresh-trash-recsys](https://github.com/fresh-trash-project/fresh-trash-recsys)에 Python과 FastAPI를 활용하여 추천 시스템 서버를 구축했습니다.
@@ -139,5 +143,3 @@
 - [X] 1:1 채팅 기능
 - [X] 경매 조회/등록/삭제
 - [X] 경매 입찰/낙찰
-
-
