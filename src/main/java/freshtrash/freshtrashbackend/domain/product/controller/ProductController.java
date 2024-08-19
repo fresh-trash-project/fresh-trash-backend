@@ -39,8 +39,8 @@ public class ProductController {
      */
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long productId) {
-        productService.updateViewCount(productId);
         ProductResponse productResponse = ProductResponse.fromEntity(productService.getProduct(productId));
+        productService.updateViewCount(productId);
         return ResponseEntity.ok(productResponse);
     }
 
