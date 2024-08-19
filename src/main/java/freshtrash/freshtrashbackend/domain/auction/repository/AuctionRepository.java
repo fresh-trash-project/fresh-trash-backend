@@ -54,4 +54,7 @@ public interface AuctionRepository
 
     @Query(nativeQuery = true, value = "update auctions a set a.auction_status = 'CANCEL' where a.id = ?1")
     void cancelAuctionById(Long auctionId);
+
+    @Query(nativeQuery = true, value = "update auctions a set a.view_count = a.view_count + 1 where a.id = ?1")
+    void updateViewCount(Long auctionId);
 }

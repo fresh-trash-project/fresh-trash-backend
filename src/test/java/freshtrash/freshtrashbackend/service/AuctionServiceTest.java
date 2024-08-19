@@ -233,4 +233,15 @@ class AuctionServiceTest {
         // then
         assertThat(auctionLogs.getTotalElements()).isEqualTo(1);
     }
+
+    @DisplayName("경매 상세 정보를 조회하면 viewCount + 1을 해준다.")
+    @Test
+    void given_auctionId_when_getAuction_then_increaseViewCount() {
+        //given
+        Long auctionId = 1L;
+        willDoNothing().given(auctionRepository).updateViewCount(auctionId);
+        //when
+        auctionService.updateViewCount(auctionId);
+        //then
+    }
 }

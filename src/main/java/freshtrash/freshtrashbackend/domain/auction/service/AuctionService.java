@@ -74,6 +74,10 @@ public class AuctionService {
         auctionRepository.deleteById(auctionId);
     }
 
+    public void updateViewCount(Long auctionId) {
+        auctionRepository.updateViewCount(auctionId);
+    }
+
     @Transactional
     @Retryable(
             value = {ObjectOptimisticLockingFailureException.class, CannotAcquireLockException.class},
