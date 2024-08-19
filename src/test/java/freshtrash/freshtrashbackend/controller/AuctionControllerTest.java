@@ -114,6 +114,7 @@ class AuctionControllerTest {
         // given
         Auction auction = Fixture.createAuction();
         given(auctionService.getAuction(auction.getId())).willReturn(auction);
+        willDoNothing().given(auctionService).updateViewCount(auction.getId());
         // when
         mvc.perform(get("/api/v1/auctions/" + auction.getId()))
                 .andExpect(status().isOk())
