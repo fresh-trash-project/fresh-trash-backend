@@ -44,6 +44,7 @@ public class AuctionController {
     @GetMapping("/{auctionId}")
     public ResponseEntity<AuctionResponse> getAuction(@PathVariable Long auctionId) {
         AuctionResponse auctionResponse = AuctionResponse.fromEntity(auctionService.getAuction(auctionId));
+        auctionService.updateViewCount(auctionId);
         return ResponseEntity.ok(auctionResponse);
     }
 
