@@ -1,9 +1,38 @@
 services:
+  fresh-trash-database:
+    container_name: fresh-trash-database
+    cpus: 1
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--password=$MARIADB_ROOT_PASSWORD"]
+      interval: 40s # healthcheck 실행 간격
+      timeout: 30s # healthcheck 완료되기 기다리는 시간
+      retries: 3 # healthcheck 실패한 후 재시도할 횟수
+      start_period: 60s # 초기화 시간 (안정적으로 실행되기까지 대기하는 시간)
+    image: jade0423786/fresh-trash-database:${DB_VERSION}
+    environment:
+      - MARIADB_DATABASE=fresh_trash
+      - MARIADB_USER=${SPRING_DATASOURCE_USER}
+      - MARIADB_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${SPRING_DATASOURCE_ROOT_PASSWORD}
+    volumes:
+      - ./docker/database/mariadb/conf.d:/etc/mysql
+      - ./docker/database/mariadb/initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "3307:3307"
+    networks:
+      - docker_app
+  fresh-trash-redis:
+    container_name: fresh-trash-redis
+    cpus: 1
+    mem_limit: 500m
+    image: jade0423786/fresh-trash-redis:${REDIS_VERSION}
+    ports:
+      - "6379:6379"
+    networks:
+      - docker_app
   fresh-trash-rabbitmq:
     container_name: fresh-trash-rabbitmq
-    build:
-      dockerfile: Dockerfile
-      context: ./rabbitmq
     cpus: 1
     mem_limit: 1g
     healthcheck:
@@ -13,7 +42,7 @@ services:
       timeout: 30s # healthcheck 완료되기 기다리는 시간
       retries: 3 # healthcheck 실패한 후 재시도할 횟수
       start_period: 60s # 초기화 시간 (안정적으로 실행되기까지 대기하는 시간)
-    image: fresh-trash-rabbitmq:0.0.1
+    image: jade0423786/fresh-trash-rabbitmq:${RABBITMQ_VERSION}
     environment:
       - RABBITMQ_DEFAULT_USER=${AMQP_USER}
       - RABBITMQ_DEFAULT_PASS=${AMQP_PASS}
@@ -25,10 +54,7 @@ services:
       - docker_app
   fresh-trash-nginx:
     container_name: fresh-trash-nginx
-    image: fresh-trash-nginx:0.0.1
-    build:
-      dockerfile: Dockerfile
-      context: ./nginx
+    image: jade0423786/fresh-trash-nginx:${NGINX_VERSION}
     cpus: 1
     mem_limit: 1g
     depends_on:
@@ -40,15 +66,14 @@ services:
     networks:
       - docker_app
   fresh-trash-api:
-    image: fresh-trash-api:1.0.0
+    image: jade0423786/fresh-trash-api:${API_VERSION}
     container_name: fresh-trash-api
-    build:
-      dockerfile: Dockerfile
-      context: ./
     cpus: 2
     mem_limit: 4g
     depends_on:
       fresh-trash-rabbitmq:
+        condition: service_healthy
+      fresh-trash-database:
         condition: service_healthy
     environment:
       - DB_URL=${DB_URL}
@@ -89,7 +114,21 @@ services:
       - "8090:8090"
     networks:
       - docker_app
+  fresh-trash-recsys:
+    image: jade0423786/fresh-trash-recsys:${RECSYS_VERSION}
+    container_name: fresh-trash-recsys
+    cpus: 1
+    mem_limit: 1g
+    depends_on:
+      fresh-trash-database:
+        condition: service_healthy
+    ports:
+      - "9080:9080"
+    networks:
+      - docker_app
 
 networks:
   docker_app:
     driver: bridge
+
+
