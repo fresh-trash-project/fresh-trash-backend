@@ -27,7 +27,7 @@
 ## Project Architecture
 
 <p>
-   <img src="https://github.com/user-attachments/assets/0fa9e9d8-5e96-45a6-99ff-188a2cb29430" alt="architecture" />
+   <img src="https://github.com/user-attachments/assets/e3c3e00e-9c3d-4016-9a22-94fa1bc033c6" alt="architecture" />
 </p>
 
 ## 3-Layered Architecture
